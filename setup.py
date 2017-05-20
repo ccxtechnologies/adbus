@@ -33,15 +33,15 @@ def pkgconfig(*packages, **kw):
 def build():
     """Build Package."""
 
-    setup(name='async-dbus',
+    sdbus = Extension("sdbus", ["sdbus/*.pyx"],
+            **pkgconfig('libsystemd'))
+
+    setup(name='adbus',
             version='0.1',
-            description='asyncio dbus interface',
+            description='asyncio based dbus interface',
             author='Charles Eidsness',
             author_email='charles.eidsness@ieee.org',
-            ext_modules=cythonize([
-                Extension("adbus", ["adbus.pyx"],
-                    **pkgconfig('dbus-1'))
-                ])
+            ext_modules=cythonize([sdbus])
             )
 
 if __name__ == "__main__":
