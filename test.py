@@ -5,12 +5,12 @@
 
 """test scripts for async-dbus-python."""
 
-from sdbus import Service
+from adbus.sd_bus import SdBusService
 
 def test_service():
     """Test Service Creation."""
 
-    service = Service("com.test")
+    SdBusService("com.test")
 
     while(True):
         pass

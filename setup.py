@@ -33,7 +33,7 @@ def pkgconfig(*packages, **kw):
 def build():
     """Build Package."""
 
-    sdbus = Extension("sdbus", ["sdbus/*.pyx"],
+    sdbus = Extension("adbus.sd_bus", ["adbus/sd_bus/sd_bus.pyx"],
             **pkgconfig('libsystemd'))
 
     setup(name='adbus',
