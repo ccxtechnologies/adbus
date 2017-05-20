@@ -10,10 +10,13 @@ from adbus.sd_bus import SdBusService
 def test_service():
     """Test Service Creation."""
 
-    SdBusService("com.test")
+    def callback():
+        print("ccccc")
 
-    while(True):
-        pass
+    service = SdBusService("com.test")
+    service.add_object("/com/test/xxx", callback)
+
+    service.process()
 
 if __name__ == "__main__":
     test_service()
