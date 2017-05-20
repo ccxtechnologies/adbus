@@ -5,9 +5,11 @@
 
 """distutils build and configuration script for async-dbus-python."""
 
+import subprocess
+
 from distutils.core import setup
 from distutils.core import Extension
-import subprocess
+from Cython.Build import cythonize
 
 def pkgconfig(*packages, **kw):
     """Calls pkg-config to get library c-flags."""
@@ -28,15 +30,19 @@ def pkgconfig(*packages, **kw):
             config.setdefault(distutils_key, []).extend([i[_n:] for i in items])
     return config
 
-def main():
-    """Main Function."""
-
-    libdbus = Extension('libdbus', sources=['libdbus_wrap.c'], **pkgconfig('dbus-1'))
+def build():
+    """Build Package."""
 
     setup(name='async-dbus',
-            version='1.0',
-            description='This is a demo package',
-            ext_modules=[libdbus])
+            version='0.1',
+            description='asyncio dbus interface',
+            author='Charles Eidsness',
+            author_email='charles.eidsness@ieee.org',
+            ext_modules=cythonize([
+                Extension("adbus", ["adbus.pyx"],
+                    **pkgconfig('dbus-1'))
+                ])
+            )
 
 if __name__ == "__main__":
-    main()
+    build()
