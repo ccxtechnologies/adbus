@@ -3,8 +3,8 @@
 
 """D-Bus Service"""
 
-from adbus import sd_bus
+from adbus import _sdbus
 
-class Service(sd_bus.Service):
+class Service(_sdbus.Service):
     """D-Bus Service"""
     pass
