@@ -14,7 +14,7 @@ def test_service():
         print("ccccc")
 
     service = SdBusService("com.test")
-    service.add_object("/com/test/xxx", callback)
+    service.add_object("/com/dtest/xxx", callback)
 
     service.process()
 
