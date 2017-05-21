@@ -3,6 +3,43 @@
 
 from libc cimport stdint
 
+cdef extern from "systemd/sd-bus.h":
+
+    # -- Callbacks --
+
+    ctypedef int (*sd_bus_message_handler_t)(sd_bus_message *m, 
+            void *userdata, sd_bus_error *ret_error)
+
+    ctypedef int (*sd_bus_property_get_t) (sd_bus *bus, const char *path, 
+            const char *interface, const char *property, 
+            sd_bus_message *reply, void *userdata, sd_bus_error *ret_error)
+
+    ctypedef int (*sd_bus_property_set_t) (sd_bus *bus, const char *path, 
+            const char *interface, const char *property, 
+            sd_bus_message *value, void *userdata, sd_bus_error *ret_error)
+    
+    
+ctypedef struct sd_bus_vtable_start:
+    size_t element_size
+
+ctypedef struct sd_bus_vtable_method:
+    const char *member
+    const char *signature
+    const char *result
+    sd_bus_message_handler_t handler
+    size_t offset
+
+ctypedef struct sd_bus_vtable_signal:
+    const char *member
+    const char *signature
+
+ctypedef struct sd_bus_vtable_property:
+    const char *member
+    const char *signature
+    sd_bus_property_get_t get
+    sd_bus_property_set_t set
+    size_t offset
+
 cdef extern from "systemd/sd-bus-vtable.h":
 
     # -- Constants --
@@ -25,47 +62,8 @@ cdef extern from "systemd/sd-bus-vtable.h":
         SD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION  = 1 << 14
         SD_BUS_VTABLE_PROPERTY_EXPLICIT            = 1 << 15
     
-    cdef enum:
-        SD_BUS_NAME_REPLACE_EXISTING  = 1 << 0
-        SD_BUS_NAME_ALLOW_REPLACEMENT = 1 << 1
-        SD_BUS_NAME_QUEUE             = 1 << 2
-    
-    # -- Callbacks --
-    
-    ctypedef int (*sd_bus_message_handler_t)(sd_bus_message *m, 
-            void *userdata, sd_bus_error *ret_error)
-
-    ctypedef int (*sd_bus_property_get_t) (sd_bus *bus, const char *path, 
-            const char *interface, const char *property, 
-            sd_bus_message *reply, void *userdata, sd_bus_error *ret_error)
-
-    ctypedef int (*sd_bus_property_set_t) (sd_bus *bus, const char *path, 
-            const char *interface, const char *property, 
-            sd_bus_message *value, void *userdata, sd_bus_error *ret_error)
-    
     # -- Structs --
 
-    ctypedef struct sd_bus_vtable_start:
-        size_t element_size
-
-    ctypedef struct sd_bus_vtable_method:
-        const char *member
-        const char *signature
-        const char *result
-        sd_bus_message_handler_t handler
-        size_t offset
-    
-    ctypedef struct sd_bus_vtable_signal:
-        const char *member
-        const char *signature
-    
-    ctypedef struct sd_bus_vtable_property:
-        const char *member
-        const char *signature
-        sd_bus_property_get_t get
-        sd_bus_property_set_t set
-        size_t offset
-    
     ctypedef union sd_bus_vtable_data:
         sd_bus_vtable_start start
         sd_bus_vtable_method method
@@ -75,6 +73,17 @@ cdef extern from "systemd/sd-bus-vtable.h":
     ctypedef struct sd_bus_vtable:
         stdint.uint64_t flags
         sd_bus_vtable_data x
+    
+cdef extern from "systemd/sd-bus.h":
+
+    # -- Constants --
+    
+    cdef enum:
+        SD_BUS_NAME_REPLACE_EXISTING  = 1 << 0
+        SD_BUS_NAME_ALLOW_REPLACEMENT = 1 << 1
+        SD_BUS_NAME_QUEUE             = 1 << 2
+    
+    # -- Structs --
     
     ctypedef struct sd_bus:
         pass

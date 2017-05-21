@@ -1,37 +1,45 @@
 # == Copyright: 2017, Charles Eidsness
 
-cimport _sdbus_h
-from libc cimport stdint
-
-cdef int message_handler(_sdbus_h.sd_bus_message *m, 
+cdef int method_message_handler(_sdbus_h.sd_bus_message *m, 
         void *f, _sdbus_h.sd_bus_error *e):
     (<object>f)()
     return 0
 
 cdef class Method:
+    cdef stdint.uint8_t type
     cdef stdint.uint64_t flags
-    cdef _sdbus_h.sd_bus_vtable_method vtable
+    cdef _sdbus_h.sd_bus_vtable_method x 
     cdef void *userdata
 
     def __cinit__(self, name, callback, arg_types='', return_type='',
             deprectiated=False, hidden=False, unprivledged=False):
+    
+        self.type = _sdbus_h._SD_BUS_VTABLE_METHOD
+        self.flags = 0
 
-        self.flags = _SD_BUS_VTABLE_METHOD
         if not return_type:
-            self.flags |= SD_BUS_VTABLE_METHOD_NO_REPLY
+            self.flags |= _sdbus_h.SD_BUS_VTABLE_METHOD_NO_REPLY
+
         if deprectiated:
-            self.flags |= SD_BUS_VTABLE_DEPRECATED
+            self.flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED
+
         if hidden:
-            self.flags |= SD_BUS_VTABLE_HIDDEN
+            self.flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN
+
         if unprivledged:
-            self.flags |= SD_BUS_VTABLE_UNPRIVILEGED
+            self.flags |= _sdbus_h.SD_BUS_VTABLE_UNPRIVILEGED
 
-        self.vtable.member = name
+        self.x.member = name
+        self.x.handler = method_message_handler
+        
         if arg_types:
-            self.vtable.signature = arg_type
+            self.x.signature = arg_types
+        else:
+            self.x.signature = NULL
+
         if return_type:
-            self.vtable.result = return_type
-        self.vtable.handler = message_handler
-
-        self.userdata = callback
-
+            self.x.result = return_type
+        else:
+            self.x.result = NULL
+        
+        self.userdata = <void *>callback

@@ -1,7 +1,5 @@
 # == Copyright: 2017, Charles Eidsness
 
-cimport _sdbus_h
-
 cdef class Service:
     cdef _sdbus_h.sd_bus *_bus
 
