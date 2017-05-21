@@ -1,3 +1,3 @@
 # == Copyright: 2017, Charles Eidsness
 
-include "service.pyx"
+include "_sdbus/service.pyx"
