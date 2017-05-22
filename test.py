@@ -5,18 +5,19 @@
 
 """test scripts for async-dbus-python."""
 
-from adbus.sd_bus import SdBusService
+from adbus import _sdbus
+
+def callback():
+    print("Test Callback")
 
 def test_service():
     """Test Service Creation."""
 
-    def callback():
-        print("ccccc")
+    s = _sdbus.Service(b"com.test")
+    o = _sdbus.Object(s, b"/com/test/xxx", b"com.test",
+            [_sdbus.Method(b"tester", callback)])
 
-    service = SdBusService("com.test")
-    service.add_object("/com/dtest/xxx", callback)
-
-    service.process()
+    s.process()
 
 if __name__ == "__main__":
     test_service()

@@ -6,7 +6,6 @@ cdef int method_message_handler(_sdbus_h.sd_bus_message *m,
     return 0
 
 cdef class Method:
-    cdef stdint.uint8_t type
     cdef stdint.uint64_t flags
     cdef _sdbus_h.sd_bus_vtable_method x 
     cdef void *userdata
@@ -14,8 +13,8 @@ cdef class Method:
     def __cinit__(self, name, callback, arg_types='', return_type='',
             deprectiated=False, hidden=False, unprivledged=False):
     
-        self.type = _sdbus_h._SD_BUS_VTABLE_METHOD
-        self.flags = 0
+        self.flags = _sdbus_h._SD_BUS_VTABLE_METHOD
+        self.flags = self.flags << 56
 
         if not return_type:
             self.flags |= _sdbus_h.SD_BUS_VTABLE_METHOD_NO_REPLY

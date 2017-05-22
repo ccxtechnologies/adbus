@@ -25,20 +25,20 @@ cdef class Object:
         self._vtable[len(vtable)+1].flags = _sdbus_h._SD_BUS_VTABLE_END
 
         for i in range(0, len(vtable)):
-            if vtable[i].type == _sdbus_h._SD_BUS_VTABLE_METHOD:
-                self._vtable[i+1].flags = _sdbus_h._SD_BUS_VTABLE_METHOD
-                self._vtable[i+1].flags |= (<Method>vtable[i]).flags << 8 
+            if type(vtable[i]) == Method:
+                self._vtable[i+1].flags = (<Method>vtable[i]).flags
                 memcpy(&self._vtable[i].x, &(<Method>vtable[i]).x, 
                         sizeof(_sdbus_h.sd_bus_vtable_method))
                 self._vtable[i+1].x.method.offset = i
                 self._userdata[i] = (<Method>vtable[i]).userdata
             else:
-                raise SdbusError(f"Unknown vtable type {vtable[i].type}")
+                raise SdbusError(f"Unknown vtable type {type(vtable[i])}")
             
         # -- Register vtable --
-        if _sdbus_h.sd_bus_add_object_vtable((<Service>service)._bus, 
-                &self._slot, path, interface, self._vtable, self._userdata) < 0:
-            raise BusError("Failed to add vtable")
+        r = _sdbus_h.sd_bus_add_object_vtable((<Service>service)._bus, 
+                &self._slot, path, interface, self._vtable, self._userdata)
+        if r < 0:
+            raise SdbusError(f"Failed to add vtable: {r}")
 
     def __dealloc__(self):
         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)

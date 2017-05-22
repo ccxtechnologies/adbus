@@ -12,7 +12,7 @@ cdef class Service:
             if _sdbus_h.sd_bus_open_user(&self._bus) < 0:
                 raise BusError("Failed to connect to Bus")
 
-        if _sdbus_h.sd_bus_request_name(self._bus, name.encode('utf-8'), 0) < 0:
+        if _sdbus_h.sd_bus_request_name(self._bus, name, 0) < 0:
             raise BusError(f"Failed to acquire name {name}")
 
     def __dealloc__(self):
