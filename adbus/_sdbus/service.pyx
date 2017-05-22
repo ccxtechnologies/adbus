@@ -4,6 +4,7 @@ cdef class Service:
     cdef _sdbus_h.sd_bus *_bus
 
     def __cinit__(self, name, system=False):
+        _sdbus_h.log_parse_environment()
         if system:
             if _sdbus_h.sd_bus_open_system(&self._bus) < 0:
                 raise BusError("Failed to connect to Bus")

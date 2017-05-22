@@ -3,6 +3,8 @@
 
 from libc cimport stdint
 
+cdef extern void log_parse_environment()
+
 cdef extern from "systemd/sd-bus.h":
 
     # -- Callbacks --
@@ -40,6 +42,12 @@ ctypedef struct sd_bus_vtable_property:
     sd_bus_property_set_t set
     size_t offset
 
+ctypedef union sd_bus_vtable_data:
+    sd_bus_vtable_start start
+    sd_bus_vtable_method method
+    sd_bus_vtable_signal signal
+    sd_bus_vtable_property property
+
 cdef extern from "systemd/sd-bus-vtable.h":
 
     # -- Constants --
@@ -64,13 +72,8 @@ cdef extern from "systemd/sd-bus-vtable.h":
     
     # -- Structs --
 
-    ctypedef union sd_bus_vtable_data:
-        sd_bus_vtable_start start
-        sd_bus_vtable_method method
-        sd_bus_vtable_signal signal
-        sd_bus_vtable_property property
-    
     ctypedef struct sd_bus_vtable:
+        stdint.uint8_t type
         stdint.uint64_t flags
         sd_bus_vtable_data x
     

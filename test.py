@@ -14,7 +14,7 @@ def test_service():
     """Test Service Creation."""
 
     s = _sdbus.Service(b"com.test")
-    o = _sdbus.Object(s, b"/com/test/xxx", b"com.test",
+    o = _sdbus.Object(s, b"/com/test/xxx", b"com.test.xxx",
             [_sdbus.Method(b"tester", callback)])
 
     s.process()

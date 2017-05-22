@@ -5,20 +5,17 @@
 
 """distutils build and configuration script for async-dbus-python."""
 
+from Cython.Build import cythonize
 from distutils.core import setup
 from distutils.core import Extension
 
 def build():
     """Build Package."""
 
-    try:
-        from Cython.Build import cythonize
-        sdbus = cythonize(Extension("adbus._sdbus", ["adbus/_sdbus.pyx"],
-                libraries=['systemd']))
+    sdbus = cythonize([Extension("adbus._sdbus", ["adbus/_sdbus.pyx"],
+        libraries=["systemd-shared-232"])]) # so can set log for temperary debug
+ #       libraries=["systemd"])])
 
-    except ImportError:
-        sdbus = [Extension("adbus._sdbus", ["adbus/_sdbus.c"],
-                libraries=['systemd'])]
 
     setup(name='adbus',
             version='0.1',

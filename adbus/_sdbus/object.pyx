@@ -19,15 +19,16 @@ cdef class Object:
             raise MemoryError("Failed to allocate userdata")
 
         # -- Populate vtable --
-        self._vtable[0].flags = _sdbus_h._SD_BUS_VTABLE_START
-        self._vtable[0].x.start.element_size = sizeof(_sdbus_h.sd_bus_vtable)
+        self._vtable[0].type = _sdbus_h._SD_BUS_VTABLE_START
+        self._vtable[0].x.start.element_size = sizeof(self._vtable[0])
 
-        self._vtable[len(vtable)+1].flags = _sdbus_h._SD_BUS_VTABLE_END
+        self._vtable[len(vtable)+1].type = _sdbus_h._SD_BUS_VTABLE_END
 
         for i in range(0, len(vtable)):
             if type(vtable[i]) == Method:
+                self._vtable[i+1].type = (<Method>vtable[i]).type
                 self._vtable[i+1].flags = (<Method>vtable[i]).flags
-                memcpy(&self._vtable[i].x, &(<Method>vtable[i]).x, 
+                memcpy(&self._vtable[i+1].x, &(<Method>vtable[i]).x, 
                         sizeof(_sdbus_h.sd_bus_vtable_method))
                 self._vtable[i+1].x.method.offset = i
                 self._userdata[i] = (<Method>vtable[i]).userdata
