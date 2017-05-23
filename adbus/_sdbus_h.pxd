@@ -61,14 +61,14 @@ cdef extern from "systemd/sd-bus-vtable.h":
         _SD_BUS_VTABLE_WRITABLE_PROPERTY = 87 # ascii 'W'
 
     cdef enum:
-        SD_BUS_VTABLE_DEPRECATED                   = 1 << 0
-        SD_BUS_VTABLE_HIDDEN                       = 1 << 1
-        SD_BUS_VTABLE_UNPRIVILEGED                 = 1 << 2
-        SD_BUS_VTABLE_METHOD_NO_REPLY              = 1 << 3
-        SD_BUS_VTABLE_PROPERTY_CONST               = 1 << 4
-        SD_BUS_VTABLE_PROPERTY_EMITS_CHANGE        = 1 << 5
-        SD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION  = 1 << 6
-        SD_BUS_VTABLE_PROPERTY_EXPLICIT            = 1 << 7
+        SD_BUS_VTABLE_DEPRECATED                   = 1ULL << 0
+        SD_BUS_VTABLE_HIDDEN                       = 1ULL << 1
+        SD_BUS_VTABLE_UNPRIVILEGED                 = 1ULL << 2
+        SD_BUS_VTABLE_METHOD_NO_REPLY              = 1ULL << 3
+        SD_BUS_VTABLE_PROPERTY_CONST               = 1ULL << 4
+        SD_BUS_VTABLE_PROPERTY_EMITS_CHANGE        = 1ULL << 5
+        SD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION  = 1ULL << 6
+        SD_BUS_VTABLE_PROPERTY_EXPLICIT            = 1ULL << 7
     
     # -- Structs --
 

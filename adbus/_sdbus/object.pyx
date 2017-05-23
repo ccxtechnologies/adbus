@@ -13,7 +13,7 @@ cdef class Object:
         if not self._vtable:
             raise MemoryError("Failed to allocate vtable")
 
-        self._userdata = <void **>PyMem_Malloc(len(vtable)*
+        self._userdata = <void **>PyMem_Malloc((len(vtable)+2)*
                 sizeof(void*))
         if not self._userdata:
             raise MemoryError("Failed to allocate userdata")
@@ -28,9 +28,9 @@ cdef class Object:
             if type(vtable[i]) == Method:
                 self._vtable[i+1].type = (<Method>vtable[i]).type
                 self._vtable[i+1].flags = (<Method>vtable[i]).flags
-                memcpy(&self._vtable[i+1].x, &(<Method>vtable[i]).x, 
+                memcpy(&(self._vtable[i+1].x), &((<Method>vtable[i]).x), 
                         sizeof(_sdbus_h.sd_bus_vtable_method))
-                self._vtable[i+1].x.method.offset = i
+                self._vtable[i+1].x.method.offset = i*sizeof(void*)
                 self._userdata[i] = (<Method>vtable[i]).userdata
             else:
                 raise SdbusError(f"Unknown vtable type {type(vtable[i])}")

@@ -1,7 +1,8 @@
 # == Copyright: 2017, Charles Eidsness
 
 cdef int method_message_handler(_sdbus_h.sd_bus_message *m, 
-        void *f, _sdbus_h.sd_bus_error *e):
+        void *userdata, _sdbus_h.sd_bus_error *e):
+    cdef void *f = (<void**>userdata)[0]
     (<object>f)()
     return 0
 
