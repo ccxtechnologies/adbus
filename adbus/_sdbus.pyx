@@ -3,6 +3,7 @@
 cimport _sdbus_h
 
 from libc cimport stdint
+from libc cimport stdio
 from cpython.mem cimport PyMem_Malloc
 from cpython.mem cimport PyMem_Free
 from libc.string cimport memcpy

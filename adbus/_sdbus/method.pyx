@@ -9,10 +9,10 @@ cdef int method_message_handler(_sdbus_h.sd_bus_message *m,
 cdef class Method:
     cdef stdint.uint8_t type
     cdef stdint.uint64_t flags
-    cdef _sdbus_h.sd_bus_vtable_method x 
+    cdef _sdbus_h.sd_bus_vtable_method x
     cdef void *userdata
 
-    def __cinit__(self, name, callback, arg_types='', return_type='',
+    def __cinit__(self, name, callback, arg_types=b'', return_type=b'',
             deprectiated=False, hidden=False, unprivledged=False):
     
         self.type = _sdbus_h._SD_BUS_VTABLE_METHOD
@@ -32,15 +32,7 @@ cdef class Method:
 
         self.x.member = name
         self.x.handler = method_message_handler
-        
-        if arg_types:
-            self.x.signature = arg_types
-        else:
-            self.x.signature = NULL
-
-        if return_type:
-            self.x.result = return_type
-        else:
-            self.x.result = NULL
+        self.x.signature = arg_types
+        self.x.result = return_type
         
         self.userdata = <void *>callback

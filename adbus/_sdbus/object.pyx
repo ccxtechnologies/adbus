@@ -8,21 +8,22 @@ cdef class Object:
     def __cinit__(self, service, path, interface, vtable):
 
         # -- Allocate Memory --
-        self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc((len(vtable)+2)*
-                sizeof(_sdbus_h.sd_bus_vtable))
+        self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(
+                (len(vtable)+2)*sizeof(_sdbus_h.sd_bus_vtable))
         if not self._vtable:
             raise MemoryError("Failed to allocate vtable")
 
-        self._userdata = <void **>PyMem_Malloc((len(vtable)+2)*
-                sizeof(void*))
+        self._userdata = <void **>PyMem_Malloc((len(vtable)+2)*sizeof(void*))
         if not self._userdata:
             raise MemoryError("Failed to allocate userdata")
 
         # -- Populate vtable --
         self._vtable[0].type = _sdbus_h._SD_BUS_VTABLE_START
+        self._vtable[0].flags = 0
         self._vtable[0].x.start.element_size = sizeof(self._vtable[0])
 
         self._vtable[len(vtable)+1].type = _sdbus_h._SD_BUS_VTABLE_END
+        self._vtable[len(vtable)+1].flags = 0
 
         for i in range(0, len(vtable)):
             if type(vtable[i]) == Method:
