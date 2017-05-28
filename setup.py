@@ -13,8 +13,7 @@ def build():
     """Build Package."""
 
     sdbus = cythonize([Extension("adbus._sdbus", ["adbus/_sdbus.pyx"],
-        libraries=["systemd-shared-232"])]) # so can set log for temperary debug
- #       libraries=["systemd"])])
+        libraries=["systemd"])])
 
 
     setup(name='adbus',

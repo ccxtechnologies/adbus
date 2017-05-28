@@ -2,6 +2,7 @@
 
 cimport _sdbus_h
 
+from errno import errorcode
 from libc cimport stdint
 from libc cimport stdio
 from cpython.mem cimport PyMem_Malloc

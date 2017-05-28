@@ -36,3 +36,8 @@ cdef class Method:
         self.x.result = return_type
         
         self.userdata = <void *>callback
+    
+    cdef populate_vtable(self, _sdbus_h.sd_bus_vtable *vtable):
+        vtable.type = self.type
+        vtable.flags = self.flags
+        memcpy(&vtable.x, &self.x, sizeof(self.x))

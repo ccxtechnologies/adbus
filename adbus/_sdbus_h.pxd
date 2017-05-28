@@ -3,8 +3,6 @@
 
 from libc cimport stdint
 
-cdef extern void log_parse_environment()
-
 cdef extern from "systemd/sd-bus.h":
 
     # -- Callbacks --
