@@ -5,7 +5,8 @@ cdef class Object:
     cdef _sdbus_h.sd_bus_vtable *_vtable
     cdef void **_userdata;
 
-    def __cinit__(self, service, path, interface, vtable):
+    def __cinit__(self, service, path, interface, vtable, 
+            deprectiated=False, hidden=False,):
 
         # -- Allocate Memory --
         self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(
@@ -17,11 +18,16 @@ cdef class Object:
         if not self._userdata:
             raise MemoryError("Failed to allocate userdata")
 
-        # -- Populate vtable --
+        # -- vtable start --
         self._vtable[0].type = _sdbus_h._SD_BUS_VTABLE_START
         self._vtable[0].flags = 0
+        if deprectiated:
+            self._vtable[0].flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED
+        if hidden:
+            sself._vtable[0].flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN
         self._vtable[0].x.start.element_size = sizeof(self._vtable[0])
 
+        # -- vtable end --
         self._vtable[len(vtable)+1].type = _sdbus_h._SD_BUS_VTABLE_END
         self._vtable[len(vtable)+1].flags = 0
 
