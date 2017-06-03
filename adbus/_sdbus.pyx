@@ -17,6 +17,7 @@ cdef class SdbusError(Exception):
     """SD-Bus Library Configuration Error"""
     pass
 
+include "_sdbus/message.pyx"
 include "_sdbus/service.pyx"
 include "_sdbus/object.pyx"
 include "_sdbus/method.pyx"

@@ -3,6 +3,31 @@
 
 from libc cimport stdint
 
+cdef extern from "systemd/sd-bus-protocol.h":
+    cdef enum:
+        _SD_BUS_TYPE_INVALID         =   0 # NUL
+        SD_BUS_TYPE_BYTE             = 121 # 'y'
+        SD_BUS_TYPE_BOOLEAN          =  98 # 'b'
+        SD_BUS_TYPE_INT16            = 110 # 'n'
+        SD_BUS_TYPE_UINT16           = 113 # 'q'
+        SD_BUS_TYPE_INT32            = 105 # 'i'
+        SD_BUS_TYPE_UINT32           = 117 # 'u'
+        SD_BUS_TYPE_INT64            = 120 # 'x'
+        SD_BUS_TYPE_UINT64           = 116 # 't'
+        SD_BUS_TYPE_DOUBLE           = 100 # 'd'
+        SD_BUS_TYPE_STRING           = 115 # 's'
+        SD_BUS_TYPE_OBJECT_PATH      = 111 # 'o'
+        SD_BUS_TYPE_SIGNATURE        = 103 # 'g'
+        SD_BUS_TYPE_UNIX_FD          = 104 # 'h'
+        SD_BUS_TYPE_ARRAY            =  97 # 'a'
+        SD_BUS_TYPE_VARIANT          = 118 # 'v'
+        SD_BUS_TYPE_STRUCT           = 114 # 'r'
+        SD_BUS_TYPE_STRUCT_BEGIN     =  40 # '('
+        SD_BUS_TYPE_STRUCT_END       =  41 # ')'
+        SD_BUS_TYPE_DICT_ENTRY       = 101 # 'e'
+        SD_BUS_TYPE_DICT_ENTRY_BEGIN = 123 # '{'
+        SD_BUS_TYPE_DICT_ENTRY_END   = 124 # '}'
+
 cdef extern from "systemd/sd-bus.h":
 
     # -- Callbacks --
@@ -118,4 +143,6 @@ cdef extern from "systemd/sd-bus.h":
 
     int sd_bus_process(sd_bus *bus, sd_bus_message **r)
     int sd_bus_wait(sd_bus *bus, stdint.uint64_t timeout_usec)
+    
+    const char *sd_bus_message_get_signature(sd_bus_message *m, int complete)
 

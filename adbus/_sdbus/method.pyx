@@ -2,8 +2,9 @@
 
 cdef int method_message_handler(_sdbus_h.sd_bus_message *m, 
         void *userdata, _sdbus_h.sd_bus_error *e):
-    cdef void *f = (<void**>userdata)[0]
-    (<object>f)()
+    cdef void *callback = (<void**>userdata)[0]
+    args = message_read(m)
+    (<object>callback)(*args)
     return 0
 
 cdef class Method:
