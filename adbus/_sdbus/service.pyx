@@ -19,15 +19,19 @@ cdef class Service:
     def __dealloc__(self):
         self.bus = _sdbus_h.sd_bus_unref(self.bus)
 
-    def process(self):
-        #TODO: Replace with somethin that uses asyncio
+    async def process(self):
         while True:
-            r = _sdbus_h.sd_bus_process(self.bus, NULL)
-            if r < 0:
-                raise BusError("Failed to process bus")
-            if r > 0:
-                continue
+            if not self._bus_process():
+                await self._bus_wait()
 
-            if _sdbus_h.sd_bus_wait(self.bus, -1) < 0:
-                raise BusError("Failed to wait for bus")
+    async def _bus_wait(self):
+        r = _sdbus_h.sd_bus_wait(self.bus, -1)
+        if r < 0:
+            raise BusError(f"Failed to wait for bus {self.name}")
+
+    def _bus_process(self):
+        r = _sdbus_h.sd_bus_process(self.bus, NULL)
+        if r < 0:
+            raise BusError(f"Failed to process bus {self.name}")
+        return bool(r)
 

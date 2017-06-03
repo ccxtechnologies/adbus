@@ -1,12 +1,14 @@
 # async-dbus-python
 D-Bus Binding for Python supporting coroutines (asyncio)
 
+## Status
 # This project is currently under development
 
 ## Dependcies
 
 1. Python >= 3.6
 2. libsystemd >= 232 (don't need systemd, just libsystemd which is a seperate package)
+3. Cython >= 0.25.2
 
 ## Building / Installing
 
