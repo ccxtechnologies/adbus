@@ -3,6 +3,12 @@
 
 """D-Bus Object"""
 
+from . import _sdbus
+
 class Object:
     """D-Bus Object / Node"""
-    pass
+
+    def __init__(self, service, path, interface, vtable, 
+            deprectiated=False, hidden=False):
+        self.sdbus = _sdbus.Object(service.sdbus, path, interface,
+                [v.sdbus for v in vtable], deprectiated, hidden)

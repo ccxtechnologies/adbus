@@ -7,9 +7,7 @@
 
 import unittest
 import asyncio
-import time
-from concurrent.futures import ThreadPoolExecutor
-from adbus import _sdbus
+import adbus
 
 def callback_str(message):
     """test callback with single string argument, no return"""
@@ -21,13 +19,12 @@ class Test(unittest.TestCase):
     def test_method_single_str(self):
         """test method with single string arg and no return"""
 
-        l = asyncio.get_event_loop()
-        p = ThreadPoolExecutor(3)
+        loop = asyncio.get_event_loop()
 
-        s = _sdbus.Service(b"adbus.test")
-        m = [_sdbus.Method(b"SingleStringArg", callback_str, arg_types=b's')]
-        o = _sdbus.Object(s, b"/adbus/test/methods", b"adbus.test", m)
-        
+        service = adbus.Service("adbus.test")
+        vtable = [adbus.Method("SingleStringArg", callback_str, arg_types='s')]
+        adbus.Object(service, "/adbus/test/methods", "adbus.test", vtable)
+
         async def run_method():
             """Run the method"""
             while True:
@@ -36,21 +33,7 @@ class Test(unittest.TestCase):
                 print("----------------------")
                 await asyncio.sleep(1)
 
-        def block():
-            print("-+-+-+-+-+-+-")
-            time.sleep(2)
-
-        async def looperX():
-            while True:
-                await l.run_in_executor(p, block)
-                await l.run_in_executor(p, s._bus_process)
-                await l.run_in_executor(p, s._bus_wait)
-
-        l.run_until_complete(asyncio.gather(
-            looperX(),
-            run_method(),
-            ))
-        l.close()
+        loop.run_until_complete(asyncio.gather(run_method(),))
 
 if __name__ == "__main__":
     unittest.main()

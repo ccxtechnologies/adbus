@@ -652,10 +652,10 @@ static const char *__pyx_f[] = {
 /*--- Type declarations ---*/
 struct __pyx_obj_5adbus_6_sdbus_BusError;
 struct __pyx_obj_5adbus_6_sdbus_SdbusError;
+struct __pyx_obj_5adbus_6_sdbus_Message;
 struct __pyx_obj_5adbus_6_sdbus_Service;
 struct __pyx_obj_5adbus_6_sdbus_Object;
 struct __pyx_obj_5adbus_6_sdbus_Method;
-struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process;
 struct __pyx_t_5adbus_8_sdbus_h_sd_bus_vtable_start;
 typedef struct __pyx_t_5adbus_8_sdbus_h_sd_bus_vtable_start __pyx_t_5adbus_8_sdbus_h_sd_bus_vtable_start;
 struct __pyx_t_5adbus_8_sdbus_h_sd_bus_vtable_method;
@@ -734,8 +734,8 @@ union __pyx_t_5adbus_8_sdbus_h_sd_bus_vtable_data {
   __pyx_t_5adbus_8_sdbus_h_sd_bus_vtable_property property;
 };
 
-/* "adbus/_sdbus.pyx":14
- * from libc.string cimport memcpy
+/* "adbus/_sdbus.pyx":15
+ * from libc.string cimport strncpy
  * 
  * cdef class BusError(Exception):             # <<<<<<<<<<<<<<
  *     """D-Bus Bus Error (i.e. failed to connect)"""
@@ -746,7 +746,7 @@ struct __pyx_obj_5adbus_6_sdbus_BusError {
 };
 
 
-/* "adbus/_sdbus.pyx":18
+/* "adbus/_sdbus.pyx":19
  *     pass
  * 
  * cdef class SdbusError(Exception):             # <<<<<<<<<<<<<<
@@ -758,16 +758,30 @@ struct __pyx_obj_5adbus_6_sdbus_SdbusError {
 };
 
 
-/* "adbus/_sdbus/service.pyx":15
- * #  ----> use a thread pool and add threads as messages come in
+/* "adbus/_sdbus/message.pyx":3
+ * # == Copyright: 2017, Charles Eidsness
+ * 
+ * cdef class Message:             # <<<<<<<<<<<<<<
+ * 
+ *     @staticmethod
+ */
+struct __pyx_obj_5adbus_6_sdbus_Message {
+  PyObject_HEAD
+  struct __pyx_vtabstruct_5adbus_6_sdbus_Message *__pyx_vtab;
+};
+
+
+/* "adbus/_sdbus/service.pyx":3
+ * # == Copyright: 2017, Charles Eidsness
  * 
  * cdef class Service:             # <<<<<<<<<<<<<<
  *     cdef _sdbus_h.sd_bus *bus
- * 
+ *     cdef bytes name
  */
 struct __pyx_obj_5adbus_6_sdbus_Service {
   PyObject_HEAD
   sd_bus *bus;
+  PyObject *name;
 };
 
 
@@ -783,6 +797,8 @@ struct __pyx_obj_5adbus_6_sdbus_Object {
   sd_bus_slot *_slot;
   sd_bus_vtable *_vtable;
   void **_userdata;
+  PyObject *path;
+  PyObject *interface;
 };
 
 
@@ -800,23 +816,25 @@ struct __pyx_obj_5adbus_6_sdbus_Method {
   uint64_t flags;
   __pyx_t_5adbus_8_sdbus_h_sd_bus_vtable_method x;
   void *userdata;
+  PyObject *name;
+  PyObject *arg_types;
+  PyObject *return_type;
 };
 
 
-/* "adbus/_sdbus/service.pyx":34
- *         self.bus = _sdbus_h.sd_bus_unref(self.bus)
+
+/* "adbus/_sdbus/message.pyx":3
+ * # == Copyright: 2017, Charles Eidsness
  * 
- *     async def process(self):             # <<<<<<<<<<<<<<
- *         loop = get_event_loop()
- *         pool = ThreadPoolExecutor(5)
+ * cdef class Message:             # <<<<<<<<<<<<<<
+ * 
+ *     @staticmethod
  */
-struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process {
-  PyObject_HEAD
-  PyObject *__pyx_v_loop;
-  PyObject *__pyx_v_pool;
-  struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self;
-};
 
+struct __pyx_vtabstruct_5adbus_6_sdbus_Message {
+  PyObject *(*args)(sd_bus_message *);
+};
+static struct __pyx_vtabstruct_5adbus_6_sdbus_Message *__pyx_vtabptr_5adbus_6_sdbus_Message;
 
 
 /* "adbus/_sdbus/method.pyx":10
@@ -983,9 +1001,6 @@ static int __Pyx_ParseOptionalKeywords(PyObject *kwds, PyObject **argnames[],\
 static void __Pyx_RaiseArgtupleInvalid(const char* func_name, int exact,
     Py_ssize_t num_min, Py_ssize_t num_max, Py_ssize_t num_found);
 
-/* GetModuleGlobalName.proto */
-static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
-
 /* PyCFunctionFastCall.proto */
 #if CYTHON_FAST_PYCCALL
 static CYTHON_INLINE PyObject *__Pyx_PyCFunction_FastCall(PyObject *func, PyObject **args, Py_ssize_t nargs);
@@ -1019,72 +1034,6 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func);
 #define __Pyx_PyObject_CallNoArg(func) __Pyx_PyObject_Call(func, __pyx_empty_tuple, NULL)
 #endif
 
-/* FetchCommonType.proto */
-static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type);
-
-/* SwapException.proto */
-#if CYTHON_FAST_THREAD_STATE
-#define __Pyx_ExceptionSwap(type, value, tb)  __Pyx__ExceptionSwap(__pyx_tstate, type, value, tb)
-static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb);
-#else
-static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb);
-#endif
-
-/* PyObjectCallMethod1.proto */
-static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg);
-
-/* CoroutineBase.proto */
-typedef PyObject *(*__pyx_coroutine_body_t)(PyObject *, PyObject *);
-typedef struct {
-    PyObject_HEAD
-    __pyx_coroutine_body_t body;
-    PyObject *closure;
-    PyObject *exc_type;
-    PyObject *exc_value;
-    PyObject *exc_traceback;
-    PyObject *gi_weakreflist;
-    PyObject *classobj;
-    PyObject *yieldfrom;
-    PyObject *gi_name;
-    PyObject *gi_qualname;
-    PyObject *gi_modulename;
-    int resume_label;
-    char is_running;
-} __pyx_CoroutineObject;
-static __pyx_CoroutineObject *__Pyx__Coroutine_New(
-    PyTypeObject *type, __pyx_coroutine_body_t body, PyObject *closure,
-    PyObject *name, PyObject *qualname, PyObject *module_name);
-static int __Pyx_Coroutine_clear(PyObject *self);
-#if 1 || PY_VERSION_HEX < 0x030300B0
-static int __Pyx_PyGen_FetchStopIterationValue(PyObject **pvalue);
-#else
-#define __Pyx_PyGen_FetchStopIterationValue(pvalue) PyGen_FetchStopIterationValue(pvalue)
-#endif
-
-/* PatchModuleWithCoroutine.proto */
-static PyObject* __Pyx_Coroutine_patch_module(PyObject* module, const char* py_code);
-
-/* PatchGeneratorABC.proto */
-static int __Pyx_patch_abc(void);
-
-/* Coroutine.proto */
-#define __Pyx_Coroutine_USED
-static PyTypeObject *__pyx_CoroutineType = 0;
-static PyTypeObject *__pyx_CoroutineAwaitType = 0;
-#define __Pyx_Coroutine_CheckExact(obj) (Py_TYPE(obj) == __pyx_CoroutineType)
-#define __Pyx_Coroutine_New(body, closure, name, qualname, module_name)\
-    __Pyx__Coroutine_New(__pyx_CoroutineType, body, closure, name, qualname, module_name)
-static int __pyx_Coroutine_init(void);
-static PyObject *__Pyx__Coroutine_await(PyObject *coroutine);
-
-/* GetAwaitIter.proto */
-static CYTHON_INLINE PyObject *__Pyx_Coroutine_GetAwaitableIter(PyObject *o);
-static PyObject *__Pyx__Coroutine_GetAwaitableIter(PyObject *o);
-
-/* CoroutineYieldFrom.proto */
-#define __Pyx_Coroutine_Yield_From(gen, source) __Pyx__Coroutine_Yield_From(gen, source, 0)
-static CYTHON_INLINE PyObject* __Pyx__Coroutine_Yield_From(__pyx_CoroutineObject *gen, PyObject *source, int warn);
-
 /* PyIntBinop.proto */
 #if !CYTHON_COMPILING_IN_PYPY
 static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, int inplace);
@@ -1093,19 +1042,22 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, long intval, 
     (inplace ? PyNumber_InPlaceAdd(op1, op2) : PyNumber_Add(op1, op2))
 #endif
 
+/* GetModuleGlobalName.proto */
+static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name);
+
 /* WriteUnraisableException.proto */
 static void __Pyx_WriteUnraisable(const char *name, int clineno,
                                   int lineno, const char *filename,
                                   int full_traceback, int nogil);
-
-/* IncludeStringH.proto */
-#include <string.h>
 
 /* SetVTable.proto */
 static int __Pyx_SetVtable(PyObject *dict, void *vtable);
 
 /* Import.proto */
 static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level);
+
+/* PatchModuleWithCoroutine.proto */
+static PyObject* __Pyx_Coroutine_patch_module(PyObject* module, const char* py_code);
 
 /* PatchInspect.proto */
 static PyObject* __Pyx_patch_inspect(PyObject* module);
@@ -1166,6 +1118,7 @@ static int __Pyx_check_binary_version(void);
 /* InitStrings.proto */
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
 
+static PyObject *__pyx_f_5adbus_6_sdbus_7Message_args(sd_bus_message *__pyx_v_message); /* proto*/
 static PyObject *__pyx_f_5adbus_6_sdbus_6Method_populate_vtable(struct __pyx_obj_5adbus_6_sdbus_Method *__pyx_v_self, sd_bus_vtable *__pyx_v_vtable); /* proto*/
 
 /* Module declarations from 'libc' */
@@ -1183,11 +1136,10 @@ static PyObject *__pyx_f_5adbus_6_sdbus_6Method_populate_vtable(struct __pyx_obj
 /* Module declarations from 'adbus._sdbus' */
 static PyTypeObject *__pyx_ptype_5adbus_6_sdbus_BusError = 0;
 static PyTypeObject *__pyx_ptype_5adbus_6_sdbus_SdbusError = 0;
+static PyTypeObject *__pyx_ptype_5adbus_6_sdbus_Message = 0;
 static PyTypeObject *__pyx_ptype_5adbus_6_sdbus_Service = 0;
 static PyTypeObject *__pyx_ptype_5adbus_6_sdbus_Object = 0;
 static PyTypeObject *__pyx_ptype_5adbus_6_sdbus_Method = 0;
-static PyTypeObject *__pyx_ptype_5adbus_6_sdbus___pyx_scope_struct__process = 0;
-static PyObject *__pyx_f_5adbus_6_sdbus_message_read(sd_bus_message *); /*proto*/
 static int __pyx_f_5adbus_6_sdbus_method_message_handler(sd_bus_message *, void *, sd_bus_error *); /*proto*/
 #define __Pyx_MODULE_NAME "adbus._sdbus"
 int __pyx_module_is_main_adbus___sdbus = 0;
@@ -1195,20 +1147,16 @@ int __pyx_module_is_main_adbus___sdbus = 0;
 /* Implementation of 'adbus._sdbus' */
 static PyObject *__pyx_builtin_enumerate;
 static PyObject *__pyx_builtin_MemoryError;
-static const char __pyx_k__7[] = "";
+static const char __pyx_k__6[] = "";
 static const char __pyx_k_end[] = "end";
-static const char __pyx_k_args[] = "args";
 static const char __pyx_k_file[] = "file";
 static const char __pyx_k_main[] = "__main__";
 static const char __pyx_k_name[] = "name";
 static const char __pyx_k_path[] = "path";
-static const char __pyx_k_send[] = "send";
 static const char __pyx_k_test[] = "__test__";
-static const char __pyx_k_await[] = "__await__";
-static const char __pyx_k_close[] = "close";
 static const char __pyx_k_errno[] = "errno";
 static const char __pyx_k_print[] = "print";
-static const char __pyx_k_throw[] = "throw";
+static const char __pyx_k_encode[] = "encode";
 static const char __pyx_k_hidden[] = "hidden";
 static const char __pyx_k_import[] = "__import__";
 static const char __pyx_k_length[] = "length";
@@ -1219,9 +1167,7 @@ static const char __pyx_k_vtable[] = "vtable";
 static const char __pyx_k_Waiting[] = "Waiting";
 static const char __pyx_k_asyncio[] = "asyncio";
 static const char __pyx_k_inspect[] = "inspect";
-static const char __pyx_k_process[] = "process";
 static const char __pyx_k_service[] = "service";
-static const char __pyx_k_bus_wait[] = "_bus_wait";
 static const char __pyx_k_callback[] = "callback";
 static const char __pyx_k_arg_types[] = "arg_types";
 static const char __pyx_k_enumerate[] = "enumerate";
@@ -1231,18 +1177,14 @@ static const char __pyx_k_Data_Types[] = "Data Types ";
 static const char __pyx_k_Processing[] = "Processing";
 static const char __pyx_k_pyx_vtable[] = "__pyx_vtable__";
 static const char __pyx_k_MemoryError[] = "MemoryError";
-static const char __pyx_k_bus_process[] = "_bus_process";
 static const char __pyx_k_init_vtable[] = "_init_vtable";
 static const char __pyx_k_return_type[] = "return_type";
 static const char __pyx_k_NULL_Message[] = "NULL Message";
-static const char __pyx_k_adbus__sdbus[] = "adbus._sdbus";
 static const char __pyx_k_deprectiated[] = "deprectiated";
 static const char __pyx_k_unprivledged[] = "unprivledged";
 static const char __pyx_k_asyncio_tasks[] = "asyncio.tasks";
 static const char __pyx_k_get_event_loop[] = "get_event_loop";
-static const char __pyx_k_Service_process[] = "Service.process";
 static const char __pyx_k_register_vtable[] = "_register_vtable";
-static const char __pyx_k_run_in_executor[] = "run_in_executor";
 static const char __pyx_k_ThreadPoolExecutor[] = "ThreadPoolExecutor";
 static const char __pyx_k_asyncio_coroutines[] = "asyncio.coroutines";
 static const char __pyx_k_concurrent_futures[] = "concurrent.futures";
@@ -1264,23 +1206,17 @@ static PyObject *__pyx_kp_u_Failed_to_wait_for_bus;
 static PyObject *__pyx_n_s_MemoryError;
 static PyObject *__pyx_kp_s_NULL_Message;
 static PyObject *__pyx_n_s_Processing;
-static PyObject *__pyx_n_s_Service_process;
 static PyObject *__pyx_n_s_ThreadPoolExecutor;
 static PyObject *__pyx_n_s_Waiting;
-static PyObject *__pyx_kp_b__7;
-static PyObject *__pyx_n_s_adbus__sdbus;
+static PyObject *__pyx_kp_s__6;
 static PyObject *__pyx_n_s_arg_types;
-static PyObject *__pyx_n_s_args;
 static PyObject *__pyx_n_s_asyncio;
 static PyObject *__pyx_n_s_asyncio_coroutines;
 static PyObject *__pyx_n_s_asyncio_tasks;
-static PyObject *__pyx_n_s_await;
-static PyObject *__pyx_n_s_bus_process;
-static PyObject *__pyx_n_s_bus_wait;
 static PyObject *__pyx_n_s_callback;
-static PyObject *__pyx_n_s_close;
 static PyObject *__pyx_n_s_concurrent_futures;
 static PyObject *__pyx_n_s_deprectiated;
+static PyObject *__pyx_n_s_encode;
 static PyObject *__pyx_n_s_end;
 static PyObject *__pyx_n_s_enumerate;
 static PyObject *__pyx_n_s_errno;
@@ -1298,56 +1234,49 @@ static PyObject *__pyx_n_s_malloc;
 static PyObject *__pyx_n_s_name;
 static PyObject *__pyx_n_s_path;
 static PyObject *__pyx_n_s_print;
-static PyObject *__pyx_n_s_process;
 static PyObject *__pyx_n_s_pyx_vtable;
 static PyObject *__pyx_n_s_register_vtable;
 static PyObject *__pyx_n_s_return_type;
-static PyObject *__pyx_n_s_run_in_executor;
-static PyObject *__pyx_n_s_send;
 static PyObject *__pyx_n_s_service;
 static PyObject *__pyx_n_s_system;
 static PyObject *__pyx_n_s_test;
 static PyObject *__pyx_n_b_tester;
-static PyObject *__pyx_n_s_throw;
 static PyObject *__pyx_n_s_unprivledged;
 static PyObject *__pyx_n_s_vtable;
 static int __pyx_pf_5adbus_6_sdbus_7Service___cinit__(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self, PyObject *__pyx_v_name, PyObject *__pyx_v_system); /* proto */
 static void __pyx_pf_5adbus_6_sdbus_7Service_2__dealloc__(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_4process(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_7_bus_wait(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_9_bus_process(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_4bus_wait(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_6bus_process(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self); /* proto */
 static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_service, PyObject *__pyx_v_path, PyObject *__pyx_v_interface, PyObject *__pyx_v_vtable, PyObject *__pyx_v_deprectiated, PyObject *__pyx_v_hidden); /* proto */
-static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_length); /* proto */
-static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_deprectiated, PyObject *__pyx_v_hidden, PyObject *__pyx_v_length); /* proto */
-static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_6_register_vtable(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_service, PyObject *__pyx_v_path, PyObject *__pyx_v_interface); /* proto */
-static void __pyx_pf_5adbus_6_sdbus_6Object_8__dealloc__(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self); /* proto */
+static void __pyx_pf_5adbus_6_sdbus_6Object_2__dealloc__(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_malloc(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_length); /* proto */
+static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_6_init_vtable(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_deprectiated, PyObject *__pyx_v_hidden, PyObject *__pyx_v_length); /* proto */
+static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_8_register_vtable(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_service, PyObject *__pyx_v_path, PyObject *__pyx_v_interface); /* proto */
 static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_sdbus_Method *__pyx_v_self, PyObject *__pyx_v_name, PyObject *__pyx_v_callback, PyObject *__pyx_v_arg_types, PyObject *__pyx_v_return_type, PyObject *__pyx_v_deprectiated, PyObject *__pyx_v_hidden, PyObject *__pyx_v_unprivledged); /* proto */
 static PyObject *__pyx_tp_new_5adbus_6_sdbus_BusError(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5adbus_6_sdbus_SdbusError(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
+static PyObject *__pyx_tp_new_5adbus_6_sdbus_Message(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5adbus_6_sdbus_Service(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5adbus_6_sdbus_Object(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5adbus_6_sdbus_Method(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
-static PyObject *__pyx_tp_new_5adbus_6_sdbus___pyx_scope_struct__process(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_int_0;
 static PyObject *__pyx_int_1;
 static PyObject *__pyx_int_2;
-static PyObject *__pyx_int_5;
 static PyObject *__pyx_tuple_;
 static PyObject *__pyx_tuple__2;
 static PyObject *__pyx_tuple__3;
 static PyObject *__pyx_tuple__4;
 static PyObject *__pyx_tuple__5;
-static PyObject *__pyx_tuple__6;
 
-/* "adbus/_sdbus/message.pyx":3
- * # == Copyright: 2017, Charles Eidsness
+/* "adbus/_sdbus/message.pyx":6
  * 
- * cdef list message_read(_sdbus_h.sd_bus_message *m):             # <<<<<<<<<<<<<<
- *     cdef const char * types
- *     stack = []
+ *     @staticmethod
+ *     cdef list args(_sdbus_h.sd_bus_message *message):             # <<<<<<<<<<<<<<
+ *         cdef const char * types
+ *         stack = []
  */
 
-static PyObject *__pyx_f_5adbus_6_sdbus_message_read(sd_bus_message *__pyx_v_m) {
+static PyObject *__pyx_f_5adbus_6_sdbus_7Message_args(sd_bus_message *__pyx_v_message) {
   char const *__pyx_v_types;
   CYTHON_UNUSED PyObject *__pyx_v_stack = NULL;
   PyObject *__pyx_r = NULL;
@@ -1355,87 +1284,87 @@ static PyObject *__pyx_f_5adbus_6_sdbus_message_read(sd_bus_message *__pyx_v_m) 
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("message_read", 0);
+  __Pyx_RefNannySetupContext("args", 0);
 
-  /* "adbus/_sdbus/message.pyx":5
- * cdef list message_read(_sdbus_h.sd_bus_message *m):
- *     cdef const char * types
- *     stack = []             # <<<<<<<<<<<<<<
+  /* "adbus/_sdbus/message.pyx":8
+ *     cdef list args(_sdbus_h.sd_bus_message *message):
+ *         cdef const char * types
+ *         stack = []             # <<<<<<<<<<<<<<
  * 
- *     types = _sdbus_h.sd_bus_message_get_signature(m, 0)
+ *         types = _sdbus_h.sd_bus_message_get_signature(message, 0)
  */
-  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 5, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 8, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_stack = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
-  /* "adbus/_sdbus/message.pyx":7
- *     stack = []
+  /* "adbus/_sdbus/message.pyx":10
+ *         stack = []
  * 
- *     types = _sdbus_h.sd_bus_message_get_signature(m, 0)             # <<<<<<<<<<<<<<
+ *         types = _sdbus_h.sd_bus_message_get_signature(message, 0)             # <<<<<<<<<<<<<<
  * 
- *     if types == NULL:
+ *         if types == NULL:
  */
-  __pyx_v_types = sd_bus_message_get_signature(__pyx_v_m, 0);
+  __pyx_v_types = sd_bus_message_get_signature(__pyx_v_message, 0);
 
-  /* "adbus/_sdbus/message.pyx":9
- *     types = _sdbus_h.sd_bus_message_get_signature(m, 0)
+  /* "adbus/_sdbus/message.pyx":12
+ *         types = _sdbus_h.sd_bus_message_get_signature(message, 0)
  * 
- *     if types == NULL:             # <<<<<<<<<<<<<<
- *         raise SdbusError("NULL Message")
+ *         if types == NULL:             # <<<<<<<<<<<<<<
+ *             raise SdbusError("NULL Message")
  * 
  */
   __pyx_t_2 = ((__pyx_v_types == NULL) != 0);
   if (__pyx_t_2) {
 
-    /* "adbus/_sdbus/message.pyx":10
+    /* "adbus/_sdbus/message.pyx":13
  * 
- *     if types == NULL:
- *         raise SdbusError("NULL Message")             # <<<<<<<<<<<<<<
+ *         if types == NULL:
+ *             raise SdbusError("NULL Message")             # <<<<<<<<<<<<<<
  * 
- *     print(f"Data Types {types}")
+ *         print(f"Data Types {types}")
  */
-    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_SdbusError), __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 10, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_SdbusError), __pyx_tuple_, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 13, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_Raise(__pyx_t_1, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __PYX_ERR(1, 10, __pyx_L1_error)
+    __PYX_ERR(1, 13, __pyx_L1_error)
 
-    /* "adbus/_sdbus/message.pyx":9
- *     types = _sdbus_h.sd_bus_message_get_signature(m, 0)
+    /* "adbus/_sdbus/message.pyx":12
+ *         types = _sdbus_h.sd_bus_message_get_signature(message, 0)
  * 
- *     if types == NULL:             # <<<<<<<<<<<<<<
- *         raise SdbusError("NULL Message")
+ *         if types == NULL:             # <<<<<<<<<<<<<<
+ *             raise SdbusError("NULL Message")
  * 
  */
   }
 
-  /* "adbus/_sdbus/message.pyx":12
- *         raise SdbusError("NULL Message")
+  /* "adbus/_sdbus/message.pyx":15
+ *             raise SdbusError("NULL Message")
  * 
- *     print(f"Data Types {types}")             # <<<<<<<<<<<<<<
+ *         print(f"Data Types {types}")             # <<<<<<<<<<<<<<
  * 
- *     return [b'tester']
+ *         return [b'tester']
  */
-  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_types); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_types); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_1, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_1, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Data_Types, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 12, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Data_Types, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  if (__Pyx_PrintOne(0, __pyx_t_1) < 0) __PYX_ERR(1, 12, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_t_1) < 0) __PYX_ERR(1, 15, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "adbus/_sdbus/message.pyx":14
- *     print(f"Data Types {types}")
+  /* "adbus/_sdbus/message.pyx":17
+ *         print(f"Data Types {types}")
  * 
- *     return [b'tester']             # <<<<<<<<<<<<<<
+ *         return [b'tester']             # <<<<<<<<<<<<<<
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 14, __pyx_L1_error)
+  __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_b_tester);
   __Pyx_GIVEREF(__pyx_n_b_tester);
@@ -1444,19 +1373,19 @@ static PyObject *__pyx_f_5adbus_6_sdbus_message_read(sd_bus_message *__pyx_v_m) 
   __pyx_t_1 = 0;
   goto __pyx_L0;
 
-  /* "adbus/_sdbus/message.pyx":3
- * # == Copyright: 2017, Charles Eidsness
+  /* "adbus/_sdbus/message.pyx":6
  * 
- * cdef list message_read(_sdbus_h.sd_bus_message *m):             # <<<<<<<<<<<<<<
- *     cdef const char * types
- *     stack = []
+ *     @staticmethod
+ *     cdef list args(_sdbus_h.sd_bus_message *message):             # <<<<<<<<<<<<<<
+ *         cdef const char * types
+ *         stack = []
  */
 
   /* function exit code */
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("adbus._sdbus.message_read", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("adbus._sdbus.Message.args", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
   __Pyx_XDECREF(__pyx_v_stack);
@@ -1465,12 +1394,12 @@ static PyObject *__pyx_f_5adbus_6_sdbus_message_read(sd_bus_message *__pyx_v_m) 
   return __pyx_r;
 }
 
-/* "adbus/_sdbus/service.pyx":18
- *     cdef _sdbus_h.sd_bus *bus
+/* "adbus/_sdbus/service.pyx":7
+ *     cdef bytes name
  * 
  *     def __cinit__(self, name, system=False):             # <<<<<<<<<<<<<<
  * 
- *         if system:
+ *         self.name = name.encode()
  */
 
 /* Python wrapper */
@@ -1506,7 +1435,7 @@ static int __pyx_pw_5adbus_6_sdbus_7Service_1__cinit__(PyObject *__pyx_v_self, P
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(2, 18, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(2, 7, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -1521,7 +1450,7 @@ static int __pyx_pw_5adbus_6_sdbus_7Service_1__cinit__(PyObject *__pyx_v_self, P
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(2, 18, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 1, 2, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(2, 7, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("adbus._sdbus.Service.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -1537,46 +1466,81 @@ static int __pyx_pw_5adbus_6_sdbus_7Service_1__cinit__(PyObject *__pyx_v_self, P
 static int __pyx_pf_5adbus_6_sdbus_7Service___cinit__(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self, PyObject *__pyx_v_name, PyObject *__pyx_v_system) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
+  PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  char const *__pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_4;
+  char const *__pyx_t_5;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "adbus/_sdbus/service.pyx":20
+  /* "adbus/_sdbus/service.pyx":9
  *     def __cinit__(self, name, system=False):
+ * 
+ *         self.name = name.encode()             # <<<<<<<<<<<<<<
+ * 
+ *         if system:
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_name, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 9, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_3) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 9, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 9, __pyx_L1_error)
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!(likely(PyBytes_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(2, 9, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->name);
+  __Pyx_DECREF(__pyx_v_self->name);
+  __pyx_v_self->name = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "adbus/_sdbus/service.pyx":11
+ *         self.name = name.encode()
  * 
  *         if system:             # <<<<<<<<<<<<<<
  *             if _sdbus_h.sd_bus_open_system(&self.bus) < 0:
  *                 raise BusError("Failed to connect to Bus")
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_system); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 20, __pyx_L1_error)
-  if (__pyx_t_1) {
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_system); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(2, 11, __pyx_L1_error)
+  if (__pyx_t_4) {
 
-    /* "adbus/_sdbus/service.pyx":21
+    /* "adbus/_sdbus/service.pyx":12
  * 
  *         if system:
  *             if _sdbus_h.sd_bus_open_system(&self.bus) < 0:             # <<<<<<<<<<<<<<
  *                 raise BusError("Failed to connect to Bus")
  * 
  */
-    __pyx_t_1 = ((sd_bus_open_system((&__pyx_v_self->bus)) < 0) != 0);
-    if (__pyx_t_1) {
+    __pyx_t_4 = ((sd_bus_open_system((&__pyx_v_self->bus)) < 0) != 0);
+    if (__pyx_t_4) {
 
-      /* "adbus/_sdbus/service.pyx":22
+      /* "adbus/_sdbus/service.pyx":13
  *         if system:
  *             if _sdbus_h.sd_bus_open_system(&self.bus) < 0:
  *                 raise BusError("Failed to connect to Bus")             # <<<<<<<<<<<<<<
  * 
  *         else:
  */
-      __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 22, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_Raise(__pyx_t_2, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __PYX_ERR(2, 22, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 13, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __PYX_ERR(2, 13, __pyx_L1_error)
 
-      /* "adbus/_sdbus/service.pyx":21
+      /* "adbus/_sdbus/service.pyx":12
  * 
  *         if system:
  *             if _sdbus_h.sd_bus_open_system(&self.bus) < 0:             # <<<<<<<<<<<<<<
@@ -1585,8 +1549,8 @@ static int __pyx_pf_5adbus_6_sdbus_7Service___cinit__(struct __pyx_obj_5adbus_6_
  */
     }
 
-    /* "adbus/_sdbus/service.pyx":20
- *     def __cinit__(self, name, system=False):
+    /* "adbus/_sdbus/service.pyx":11
+ *         self.name = name.encode()
  * 
  *         if system:             # <<<<<<<<<<<<<<
  *             if _sdbus_h.sd_bus_open_system(&self.bus) < 0:
@@ -1595,7 +1559,7 @@ static int __pyx_pf_5adbus_6_sdbus_7Service___cinit__(struct __pyx_obj_5adbus_6_
     goto __pyx_L3;
   }
 
-  /* "adbus/_sdbus/service.pyx":25
+  /* "adbus/_sdbus/service.pyx":16
  * 
  *         else:
  *             if _sdbus_h.sd_bus_open_user(&self.bus) < 0:             # <<<<<<<<<<<<<<
@@ -1603,23 +1567,23 @@ static int __pyx_pf_5adbus_6_sdbus_7Service___cinit__(struct __pyx_obj_5adbus_6_
  * 
  */
   /*else*/ {
-    __pyx_t_1 = ((sd_bus_open_user((&__pyx_v_self->bus)) < 0) != 0);
-    if (__pyx_t_1) {
+    __pyx_t_4 = ((sd_bus_open_user((&__pyx_v_self->bus)) < 0) != 0);
+    if (__pyx_t_4) {
 
-      /* "adbus/_sdbus/service.pyx":26
+      /* "adbus/_sdbus/service.pyx":17
  *         else:
  *             if _sdbus_h.sd_bus_open_user(&self.bus) < 0:
  *                 raise BusError("Failed to connect to Bus")             # <<<<<<<<<<<<<<
  * 
- *         if _sdbus_h.sd_bus_request_name(self.bus, name, 0) < 0:
+ *         if _sdbus_h.sd_bus_request_name(self.bus, self.name, 0) < 0:
  */
-      __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 26, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_Raise(__pyx_t_2, 0, 0, 0);
-      __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-      __PYX_ERR(2, 26, __pyx_L1_error)
+      __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 17, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_1);
+      __Pyx_Raise(__pyx_t_1, 0, 0, 0);
+      __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+      __PYX_ERR(2, 17, __pyx_L1_error)
 
-      /* "adbus/_sdbus/service.pyx":25
+      /* "adbus/_sdbus/service.pyx":16
  * 
  *         else:
  *             if _sdbus_h.sd_bus_open_user(&self.bus) < 0:             # <<<<<<<<<<<<<<
@@ -1630,64 +1594,65 @@ static int __pyx_pf_5adbus_6_sdbus_7Service___cinit__(struct __pyx_obj_5adbus_6_
   }
   __pyx_L3:;
 
-  /* "adbus/_sdbus/service.pyx":28
+  /* "adbus/_sdbus/service.pyx":19
  *                 raise BusError("Failed to connect to Bus")
  * 
- *         if _sdbus_h.sd_bus_request_name(self.bus, name, 0) < 0:             # <<<<<<<<<<<<<<
- *             raise BusError(f"Failed to acquire name {name}")
+ *         if _sdbus_h.sd_bus_request_name(self.bus, self.name, 0) < 0:             # <<<<<<<<<<<<<<
+ *             raise BusError(f"Failed to acquire name {self.name}")
  * 
  */
-  __pyx_t_3 = __Pyx_PyObject_AsString(__pyx_v_name); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(2, 28, __pyx_L1_error)
-  __pyx_t_1 = ((sd_bus_request_name(__pyx_v_self->bus, __pyx_t_3, 0) < 0) != 0);
-  if (__pyx_t_1) {
+  __pyx_t_5 = __Pyx_PyObject_AsString(__pyx_v_self->name); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(2, 19, __pyx_L1_error)
+  __pyx_t_4 = ((sd_bus_request_name(__pyx_v_self->bus, __pyx_t_5, 0) < 0) != 0);
+  if (__pyx_t_4) {
 
-    /* "adbus/_sdbus/service.pyx":29
+    /* "adbus/_sdbus/service.pyx":20
  * 
- *         if _sdbus_h.sd_bus_request_name(self.bus, name, 0) < 0:
- *             raise BusError(f"Failed to acquire name {name}")             # <<<<<<<<<<<<<<
+ *         if _sdbus_h.sd_bus_request_name(self.bus, self.name, 0) < 0:
+ *             raise BusError(f"Failed to acquire name {self.name}")             # <<<<<<<<<<<<<<
  * 
  *     def __dealloc__(self):
  */
-    __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_v_name, __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 29, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_FormatSimple(__pyx_v_self->name, __pyx_empty_unicode); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 20, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Failed_to_acquire_name, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 20, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_4 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Failed_to_acquire_name, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 29, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 29, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 20, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_GIVEREF(__pyx_t_2);
+    PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_t_2);
+    __pyx_t_2 = 0;
+    __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_t_1, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 20, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_GIVEREF(__pyx_t_4);
-    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_4);
-    __pyx_t_4 = 0;
-    __pyx_t_4 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_t_2, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 29, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_4);
+    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_Raise(__pyx_t_4, 0, 0, 0);
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __PYX_ERR(2, 29, __pyx_L1_error)
+    __PYX_ERR(2, 20, __pyx_L1_error)
 
-    /* "adbus/_sdbus/service.pyx":28
+    /* "adbus/_sdbus/service.pyx":19
  *                 raise BusError("Failed to connect to Bus")
  * 
- *         if _sdbus_h.sd_bus_request_name(self.bus, name, 0) < 0:             # <<<<<<<<<<<<<<
- *             raise BusError(f"Failed to acquire name {name}")
+ *         if _sdbus_h.sd_bus_request_name(self.bus, self.name, 0) < 0:             # <<<<<<<<<<<<<<
+ *             raise BusError(f"Failed to acquire name {self.name}")
  * 
  */
   }
 
-  /* "adbus/_sdbus/service.pyx":18
- *     cdef _sdbus_h.sd_bus *bus
+  /* "adbus/_sdbus/service.pyx":7
+ *     cdef bytes name
  * 
  *     def __cinit__(self, name, system=False):             # <<<<<<<<<<<<<<
  * 
- *         if system:
+ *         self.name = name.encode()
  */
 
   /* function exit code */
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("adbus._sdbus.Service.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
@@ -1695,8 +1660,8 @@ static int __pyx_pf_5adbus_6_sdbus_7Service___cinit__(struct __pyx_obj_5adbus_6_
   return __pyx_r;
 }
 
-/* "adbus/_sdbus/service.pyx":31
- *             raise BusError(f"Failed to acquire name {name}")
+/* "adbus/_sdbus/service.pyx":22
+ *             raise BusError(f"Failed to acquire name {self.name}")
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         self.bus = _sdbus_h.sd_bus_unref(self.bus)
@@ -1718,17 +1683,17 @@ static void __pyx_pf_5adbus_6_sdbus_7Service_2__dealloc__(struct __pyx_obj_5adbu
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
 
-  /* "adbus/_sdbus/service.pyx":32
+  /* "adbus/_sdbus/service.pyx":23
  * 
  *     def __dealloc__(self):
  *         self.bus = _sdbus_h.sd_bus_unref(self.bus)             # <<<<<<<<<<<<<<
  * 
- *     async def process(self):
+ *     def bus_wait(self):
  */
   __pyx_v_self->bus = sd_bus_unref(__pyx_v_self->bus);
 
-  /* "adbus/_sdbus/service.pyx":31
- *             raise BusError(f"Failed to acquire name {name}")
+  /* "adbus/_sdbus/service.pyx":22
+ *             raise BusError(f"Failed to acquire name {self.name}")
  * 
  *     def __dealloc__(self):             # <<<<<<<<<<<<<<
  *         self.bus = _sdbus_h.sd_bus_unref(self.bus)
@@ -1738,364 +1703,48 @@ static void __pyx_pf_5adbus_6_sdbus_7Service_2__dealloc__(struct __pyx_obj_5adbu
   /* function exit code */
   __Pyx_RefNannyFinishContext();
 }
-static PyObject *__pyx_gb_5adbus_6_sdbus_7Service_6generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value); /* proto */
 
-/* "adbus/_sdbus/service.pyx":34
+/* "adbus/_sdbus/service.pyx":25
  *         self.bus = _sdbus_h.sd_bus_unref(self.bus)
  * 
- *     async def process(self):             # <<<<<<<<<<<<<<
- *         loop = get_event_loop()
- *         pool = ThreadPoolExecutor(5)
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_5process(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_5process(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("process (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_6_sdbus_7Service_4process(((struct __pyx_obj_5adbus_6_sdbus_Service *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_4process(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self) {
-  struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *__pyx_cur_scope;
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("process", 0);
-  __pyx_cur_scope = (struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *)__pyx_tp_new_5adbus_6_sdbus___pyx_scope_struct__process(__pyx_ptype_5adbus_6_sdbus___pyx_scope_struct__process, __pyx_empty_tuple, NULL);
-  if (unlikely(!__pyx_cur_scope)) {
-    __pyx_cur_scope = ((struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *)Py_None);
-    __Pyx_INCREF(Py_None);
-    __PYX_ERR(2, 34, __pyx_L1_error)
-  } else {
-    __Pyx_GOTREF(__pyx_cur_scope);
-  }
-  __pyx_cur_scope->__pyx_v_self = __pyx_v_self;
-  __Pyx_INCREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  __Pyx_GIVEREF((PyObject *)__pyx_cur_scope->__pyx_v_self);
-  {
-    __pyx_CoroutineObject *gen = __Pyx_Coroutine_New((__pyx_coroutine_body_t) __pyx_gb_5adbus_6_sdbus_7Service_6generator, (PyObject *) __pyx_cur_scope, __pyx_n_s_process, __pyx_n_s_Service_process, __pyx_n_s_adbus__sdbus); if (unlikely(!gen)) __PYX_ERR(2, 34, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_cur_scope);
-    __Pyx_RefNannyFinishContext();
-    return (PyObject *) gen;
-  }
-
-  /* function exit code */
-  __pyx_L1_error:;
-  __Pyx_AddTraceback("adbus._sdbus.Service.process", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_r = NULL;
-  __Pyx_DECREF(((PyObject *)__pyx_cur_scope));
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_gb_5adbus_6_sdbus_7Service_6generator(__pyx_CoroutineObject *__pyx_generator, PyObject *__pyx_sent_value) /* generator body */
-{
-  struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *__pyx_cur_scope = ((struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *)__pyx_generator->closure);
-  PyObject *__pyx_r = NULL;
-  PyObject *__pyx_t_1 = NULL;
-  PyObject *__pyx_t_2 = NULL;
-  PyObject *__pyx_t_3 = NULL;
-  PyObject *__pyx_t_4 = NULL;
-  int __pyx_t_5;
-  PyObject *__pyx_t_6 = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("None", 0);
-  switch (__pyx_generator->resume_label) {
-    case 0: goto __pyx_L3_first_run;
-    case 1: goto __pyx_L6_resume_from_yield;
-    case 2: goto __pyx_L7_resume_from_yield;
-    default: /* CPython raises the right error here */
-    __Pyx_RefNannyFinishContext();
-    return NULL;
-  }
-  __pyx_L3_first_run:;
-  if (unlikely(!__pyx_sent_value)) __PYX_ERR(2, 34, __pyx_L1_error)
-
-  /* "adbus/_sdbus/service.pyx":35
- * 
- *     async def process(self):
- *         loop = get_event_loop()             # <<<<<<<<<<<<<<
- *         pool = ThreadPoolExecutor(5)
- *         while True:
- */
-  __pyx_t_2 = __Pyx_GetModuleGlobalName(__pyx_n_s_get_event_loop); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 35, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
-      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
-      __Pyx_INCREF(function);
-      __Pyx_DECREF_SET(__pyx_t_2, function);
-    }
-  }
-  if (__pyx_t_3) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 35, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  } else {
-    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 35, __pyx_L1_error)
-  }
-  __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __Pyx_GIVEREF(__pyx_t_1);
-  __pyx_cur_scope->__pyx_v_loop = __pyx_t_1;
-  __pyx_t_1 = 0;
-
-  /* "adbus/_sdbus/service.pyx":36
- *     async def process(self):
- *         loop = get_event_loop()
- *         pool = ThreadPoolExecutor(5)             # <<<<<<<<<<<<<<
- *         while True:
- *             await loop.run_in_executor(pool, self._bus_process)
- */
-  __pyx_t_1 = __Pyx_GetModuleGlobalName(__pyx_n_s_ThreadPoolExecutor); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-  __Pyx_GIVEREF(__pyx_t_2);
-  __pyx_cur_scope->__pyx_v_pool = __pyx_t_2;
-  __pyx_t_2 = 0;
-
-  /* "adbus/_sdbus/service.pyx":37
- *         loop = get_event_loop()
- *         pool = ThreadPoolExecutor(5)
- *         while True:             # <<<<<<<<<<<<<<
- *             await loop.run_in_executor(pool, self._bus_process)
- *             await loop.run_in_executor(pool, self._bus_wait)
- */
-  while (1) {
-
-    /* "adbus/_sdbus/service.pyx":38
- *         pool = ThreadPoolExecutor(5)
- *         while True:
- *             await loop.run_in_executor(pool, self._bus_process)             # <<<<<<<<<<<<<<
- *             await loop.run_in_executor(pool, self._bus_wait)
- * 
- */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_loop, __pyx_n_s_run_in_executor); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 38, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_3 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_bus_process); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 38, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_4 = NULL;
-    __pyx_t_5 = 0;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_1);
-      if (likely(__pyx_t_4)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-        __Pyx_INCREF(__pyx_t_4);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
-        __pyx_t_5 = 1;
-      }
-    }
-    #if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(__pyx_t_1)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_pool, __pyx_t_3};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 38, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    } else
-    #endif
-    #if CYTHON_FAST_PYCCALL
-    if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_cur_scope->__pyx_v_pool, __pyx_t_3};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 38, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    } else
-    #endif
-    {
-      __pyx_t_6 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 38, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_6);
-      if (__pyx_t_4) {
-        __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
-      }
-      __Pyx_INCREF(__pyx_cur_scope->__pyx_v_pool);
-      __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_pool);
-      PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_5, __pyx_cur_scope->__pyx_v_pool);
-      __Pyx_GIVEREF(__pyx_t_3);
-      PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_t_3);
-      __pyx_t_3 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 38, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    }
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XGOTREF(__pyx_r);
-    if (likely(__pyx_r)) {
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      /* return from generator, yielding value */
-      __pyx_generator->resume_label = 1;
-      return __pyx_r;
-      __pyx_L6_resume_from_yield:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(2, 38, __pyx_L1_error)
-    } else {
-      PyObject* exc_type = PyErr_Occurred();
-      if (exc_type) {
-        if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-        else __PYX_ERR(2, 38, __pyx_L1_error)
-      }
-    }
-
-    /* "adbus/_sdbus/service.pyx":39
- *         while True:
- *             await loop.run_in_executor(pool, self._bus_process)
- *             await loop.run_in_executor(pool, self._bus_wait)             # <<<<<<<<<<<<<<
- * 
- *     def _bus_wait(self):
- */
-    __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_loop, __pyx_n_s_run_in_executor); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 39, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_1);
-    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_cur_scope->__pyx_v_self), __pyx_n_s_bus_wait); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 39, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_6);
-    __pyx_t_3 = NULL;
-    __pyx_t_5 = 0;
-    if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_1))) {
-      __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_1);
-      if (likely(__pyx_t_3)) {
-        PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_1);
-        __Pyx_INCREF(__pyx_t_3);
-        __Pyx_INCREF(function);
-        __Pyx_DECREF_SET(__pyx_t_1, function);
-        __pyx_t_5 = 1;
-      }
-    }
-    #if CYTHON_FAST_PYCALL
-    if (PyFunction_Check(__pyx_t_1)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_pool, __pyx_t_6};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 39, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    } else
-    #endif
-    #if CYTHON_FAST_PYCCALL
-    if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_3, __pyx_cur_scope->__pyx_v_pool, __pyx_t_6};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 39, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    } else
-    #endif
-    {
-      __pyx_t_4 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 39, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_4);
-      if (__pyx_t_3) {
-        __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_4, 0, __pyx_t_3); __pyx_t_3 = NULL;
-      }
-      __Pyx_INCREF(__pyx_cur_scope->__pyx_v_pool);
-      __Pyx_GIVEREF(__pyx_cur_scope->__pyx_v_pool);
-      PyTuple_SET_ITEM(__pyx_t_4, 0+__pyx_t_5, __pyx_cur_scope->__pyx_v_pool);
-      __Pyx_GIVEREF(__pyx_t_6);
-      PyTuple_SET_ITEM(__pyx_t_4, 1+__pyx_t_5, __pyx_t_6);
-      __pyx_t_6 = 0;
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_4, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 39, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    }
-    __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_r = __Pyx_Coroutine_Yield_From(__pyx_generator, __pyx_t_2);
-    __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_XGOTREF(__pyx_r);
-    if (likely(__pyx_r)) {
-      __Pyx_XGIVEREF(__pyx_r);
-      __Pyx_RefNannyFinishContext();
-      /* return from generator, yielding value */
-      __pyx_generator->resume_label = 2;
-      return __pyx_r;
-      __pyx_L7_resume_from_yield:;
-      if (unlikely(!__pyx_sent_value)) __PYX_ERR(2, 39, __pyx_L1_error)
-    } else {
-      PyObject* exc_type = PyErr_Occurred();
-      if (exc_type) {
-        if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-        else __PYX_ERR(2, 39, __pyx_L1_error)
-      }
-    }
-  }
-  CYTHON_MAYBE_UNUSED_VAR(__pyx_cur_scope);
-
-  /* "adbus/_sdbus/service.pyx":34
- *         self.bus = _sdbus_h.sd_bus_unref(self.bus)
- * 
- *     async def process(self):             # <<<<<<<<<<<<<<
- *         loop = get_event_loop()
- *         pool = ThreadPoolExecutor(5)
- */
-
-  /* function exit code */
-  PyErr_SetNone(PyExc_StopIteration);
-  goto __pyx_L0;
-  __pyx_L1_error:;
-  __Pyx_XDECREF(__pyx_t_1);
-  __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_4);
-  __Pyx_XDECREF(__pyx_t_6);
-  __Pyx_AddTraceback("process", __pyx_clineno, __pyx_lineno, __pyx_filename);
-  __pyx_L0:;
-  __Pyx_XDECREF(__pyx_r); __pyx_r = 0;
-  __pyx_generator->resume_label = -1;
-  __Pyx_Coroutine_clear((PyObject*)__pyx_generator);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-/* "adbus/_sdbus/service.pyx":41
- *             await loop.run_in_executor(pool, self._bus_wait)
- * 
- *     def _bus_wait(self):             # <<<<<<<<<<<<<<
+ *     def bus_wait(self):             # <<<<<<<<<<<<<<
  *         print("Waiting")
  *         r = _sdbus_h.sd_bus_wait(self.bus, -1)
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_8_bus_wait(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_8_bus_wait(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_5bus_wait(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_5bus_wait(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_bus_wait (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_6_sdbus_7Service_7_bus_wait(((struct __pyx_obj_5adbus_6_sdbus_Service *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("bus_wait (wrapper)", 0);
+  __pyx_r = __pyx_pf_5adbus_6_sdbus_7Service_4bus_wait(((struct __pyx_obj_5adbus_6_sdbus_Service *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_7_bus_wait(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self) {
+static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_4bus_wait(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self) {
   int __pyx_v_r;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("_bus_wait", 0);
+  __Pyx_RefNannySetupContext("bus_wait", 0);
 
-  /* "adbus/_sdbus/service.pyx":42
+  /* "adbus/_sdbus/service.pyx":26
  * 
- *     def _bus_wait(self):
+ *     def bus_wait(self):
  *         print("Waiting")             # <<<<<<<<<<<<<<
  *         r = _sdbus_h.sd_bus_wait(self.bus, -1)
  *         if r < 0:
  */
-  if (__Pyx_PrintOne(0, __pyx_n_s_Waiting) < 0) __PYX_ERR(2, 42, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_n_s_Waiting) < 0) __PYX_ERR(2, 26, __pyx_L1_error)
 
-  /* "adbus/_sdbus/service.pyx":43
- *     def _bus_wait(self):
+  /* "adbus/_sdbus/service.pyx":27
+ *     def bus_wait(self):
  *         print("Waiting")
  *         r = _sdbus_h.sd_bus_wait(self.bus, -1)             # <<<<<<<<<<<<<<
  *         if r < 0:
@@ -2103,7 +1752,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_7_bus_wait(struct __pyx_obj_5a
  */
   __pyx_v_r = sd_bus_wait(__pyx_v_self->bus, -1LL);
 
-  /* "adbus/_sdbus/service.pyx":44
+  /* "adbus/_sdbus/service.pyx":28
  *         print("Waiting")
  *         r = _sdbus_h.sd_bus_wait(self.bus, -1)
  *         if r < 0:             # <<<<<<<<<<<<<<
@@ -2113,34 +1762,31 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_7_bus_wait(struct __pyx_obj_5a
   __pyx_t_1 = ((__pyx_v_r < 0) != 0);
   if (__pyx_t_1) {
 
-    /* "adbus/_sdbus/service.pyx":45
+    /* "adbus/_sdbus/service.pyx":29
  *         r = _sdbus_h.sd_bus_wait(self.bus, -1)
  *         if r < 0:
  *             raise BusError(f"Failed to wait for bus {self.name}")             # <<<<<<<<<<<<<<
  * 
- *     def _bus_process(self):
+ *     def bus_process(self):
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 45, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_v_self->name, __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 29, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_2, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 45, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Failed_to_wait_for_bus, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 29, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Failed_to_wait_for_bus, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 45, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 29, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 45, __pyx_L1_error)
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
+    __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 29, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
-    __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 45, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(2, 45, __pyx_L1_error)
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __PYX_ERR(2, 29, __pyx_L1_error)
 
-    /* "adbus/_sdbus/service.pyx":44
+    /* "adbus/_sdbus/service.pyx":28
  *         print("Waiting")
  *         r = _sdbus_h.sd_bus_wait(self.bus, -1)
  *         if r < 0:             # <<<<<<<<<<<<<<
@@ -2149,10 +1795,10 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_7_bus_wait(struct __pyx_obj_5a
  */
   }
 
-  /* "adbus/_sdbus/service.pyx":41
- *             await loop.run_in_executor(pool, self._bus_wait)
+  /* "adbus/_sdbus/service.pyx":25
+ *         self.bus = _sdbus_h.sd_bus_unref(self.bus)
  * 
- *     def _bus_wait(self):             # <<<<<<<<<<<<<<
+ *     def bus_wait(self):             # <<<<<<<<<<<<<<
  *         print("Waiting")
  *         r = _sdbus_h.sd_bus_wait(self.bus, -1)
  */
@@ -2163,7 +1809,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_7_bus_wait(struct __pyx_obj_5a
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("adbus._sdbus.Service._bus_wait", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("adbus._sdbus.Service.bus_wait", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2171,47 +1817,47 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_7_bus_wait(struct __pyx_obj_5a
   return __pyx_r;
 }
 
-/* "adbus/_sdbus/service.pyx":47
+/* "adbus/_sdbus/service.pyx":31
  *             raise BusError(f"Failed to wait for bus {self.name}")
  * 
- *     def _bus_process(self):             # <<<<<<<<<<<<<<
+ *     def bus_process(self):             # <<<<<<<<<<<<<<
  *         print("Processing")
  *         r = _sdbus_h.sd_bus_process(self.bus, NULL)
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_10_bus_process(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_10_bus_process(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_7bus_process(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_7bus_process(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("_bus_process (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_6_sdbus_7Service_9_bus_process(((struct __pyx_obj_5adbus_6_sdbus_Service *)__pyx_v_self));
+  __Pyx_RefNannySetupContext("bus_process (wrapper)", 0);
+  __pyx_r = __pyx_pf_5adbus_6_sdbus_7Service_6bus_process(((struct __pyx_obj_5adbus_6_sdbus_Service *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_9_bus_process(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self) {
+static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_6bus_process(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self) {
   int __pyx_v_r;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  __Pyx_RefNannySetupContext("_bus_process", 0);
+  __Pyx_RefNannySetupContext("bus_process", 0);
 
-  /* "adbus/_sdbus/service.pyx":48
+  /* "adbus/_sdbus/service.pyx":32
  * 
- *     def _bus_process(self):
+ *     def bus_process(self):
  *         print("Processing")             # <<<<<<<<<<<<<<
  *         r = _sdbus_h.sd_bus_process(self.bus, NULL)
  *         if r < 0:
  */
-  if (__Pyx_PrintOne(0, __pyx_n_s_Processing) < 0) __PYX_ERR(2, 48, __pyx_L1_error)
+  if (__Pyx_PrintOne(0, __pyx_n_s_Processing) < 0) __PYX_ERR(2, 32, __pyx_L1_error)
 
-  /* "adbus/_sdbus/service.pyx":49
- *     def _bus_process(self):
+  /* "adbus/_sdbus/service.pyx":33
+ *     def bus_process(self):
  *         print("Processing")
  *         r = _sdbus_h.sd_bus_process(self.bus, NULL)             # <<<<<<<<<<<<<<
  *         if r < 0:
@@ -2219,7 +1865,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_9_bus_process(struct __pyx_obj
  */
   __pyx_v_r = sd_bus_process(__pyx_v_self->bus, NULL);
 
-  /* "adbus/_sdbus/service.pyx":50
+  /* "adbus/_sdbus/service.pyx":34
  *         print("Processing")
  *         r = _sdbus_h.sd_bus_process(self.bus, NULL)
  *         if r < 0:             # <<<<<<<<<<<<<<
@@ -2229,34 +1875,31 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_9_bus_process(struct __pyx_obj
   __pyx_t_1 = ((__pyx_v_r < 0) != 0);
   if (__pyx_t_1) {
 
-    /* "adbus/_sdbus/service.pyx":51
+    /* "adbus/_sdbus/service.pyx":35
  *         r = _sdbus_h.sd_bus_process(self.bus, NULL)
  *         if r < 0:
  *             raise BusError(f"Failed to process bus {self.name}")             # <<<<<<<<<<<<<<
  *         return bool(r)
  * 
  */
-    __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_name); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 51, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_FormatSimple(__pyx_v_self->name, __pyx_empty_unicode); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_3 = __Pyx_PyObject_FormatSimple(__pyx_t_2, __pyx_empty_unicode); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 51, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Failed_to_process_bus, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Failed_to_process_bus, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 51, __pyx_L1_error)
+    __pyx_t_2 = PyTuple_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 51, __pyx_L1_error)
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_t_3);
+    __pyx_t_3 = 0;
+    __pyx_t_3 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_t_2, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __Pyx_GIVEREF(__pyx_t_2);
-    PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_2);
-    __pyx_t_2 = 0;
-    __pyx_t_2 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_BusError), __pyx_t_3, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 51, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(2, 51, __pyx_L1_error)
+    __Pyx_Raise(__pyx_t_3, 0, 0, 0);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+    __PYX_ERR(2, 35, __pyx_L1_error)
 
-    /* "adbus/_sdbus/service.pyx":50
+    /* "adbus/_sdbus/service.pyx":34
  *         print("Processing")
  *         r = _sdbus_h.sd_bus_process(self.bus, NULL)
  *         if r < 0:             # <<<<<<<<<<<<<<
@@ -2265,27 +1908,27 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_9_bus_process(struct __pyx_obj
  */
   }
 
-  /* "adbus/_sdbus/service.pyx":52
+  /* "adbus/_sdbus/service.pyx":36
  *         if r < 0:
  *             raise BusError(f"Failed to process bus {self.name}")
  *         return bool(r)             # <<<<<<<<<<<<<<
  * 
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_r); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_2); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 52, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_2 = __Pyx_PyBool_FromLong((!(!__pyx_t_1))); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 52, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_2);
-  __pyx_r = __pyx_t_2;
-  __pyx_t_2 = 0;
+  __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_r); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 36, __pyx_L1_error)
+  __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  __pyx_t_3 = __Pyx_PyBool_FromLong((!(!__pyx_t_1))); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_r = __pyx_t_3;
+  __pyx_t_3 = 0;
   goto __pyx_L0;
 
-  /* "adbus/_sdbus/service.pyx":47
+  /* "adbus/_sdbus/service.pyx":31
  *             raise BusError(f"Failed to wait for bus {self.name}")
  * 
- *     def _bus_process(self):             # <<<<<<<<<<<<<<
+ *     def bus_process(self):             # <<<<<<<<<<<<<<
  *         print("Processing")
  *         r = _sdbus_h.sd_bus_process(self.bus, NULL)
  */
@@ -2294,7 +1937,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_9_bus_process(struct __pyx_obj
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_AddTraceback("adbus._sdbus.Service._bus_process", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __Pyx_AddTraceback("adbus._sdbus.Service.bus_process", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -2302,8 +1945,8 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_9_bus_process(struct __pyx_obj
   return __pyx_r;
 }
 
-/* "adbus/_sdbus/object.pyx":8
- *     cdef void **_userdata;
+/* "adbus/_sdbus/object.pyx":10
+ *     cdef bytes interface
  * 
  *     def __cinit__(self, service, path, interface, vtable,             # <<<<<<<<<<<<<<
  *             deprectiated=False, hidden=False):
@@ -2326,12 +1969,12 @@ static int __pyx_pw_5adbus_6_sdbus_6Object_1__cinit__(PyObject *__pyx_v_self, Py
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_service,&__pyx_n_s_path,&__pyx_n_s_interface,&__pyx_n_s_vtable,&__pyx_n_s_deprectiated,&__pyx_n_s_hidden,0};
     PyObject* values[6] = {0,0,0,0,0,0};
 
-    /* "adbus/_sdbus/object.pyx":9
+    /* "adbus/_sdbus/object.pyx":11
  * 
  *     def __cinit__(self, service, path, interface, vtable,
  *             deprectiated=False, hidden=False):             # <<<<<<<<<<<<<<
  * 
- *         self._malloc(len(vtable))
+ *         self.path = path.encode()
  */
     values[4] = ((PyObject *)Py_False);
     values[5] = ((PyObject *)Py_False);
@@ -2356,17 +1999,17 @@ static int __pyx_pw_5adbus_6_sdbus_6Object_1__cinit__(PyObject *__pyx_v_self, Py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_path)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 1); __PYX_ERR(0, 8, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 1); __PYX_ERR(0, 10, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_interface)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 2); __PYX_ERR(0, 8, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 2); __PYX_ERR(0, 10, __pyx_L3_error)
         }
         case  3:
         if (likely((values[3] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_vtable)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 3); __PYX_ERR(0, 8, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, 3); __PYX_ERR(0, 10, __pyx_L3_error)
         }
         case  4:
         if (kw_args > 0) {
@@ -2380,7 +2023,7 @@ static int __pyx_pw_5adbus_6_sdbus_6Object_1__cinit__(PyObject *__pyx_v_self, Py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 8, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(0, 10, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -2403,7 +2046,7 @@ static int __pyx_pw_5adbus_6_sdbus_6Object_1__cinit__(PyObject *__pyx_v_self, Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 8, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 4, 6, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 10, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("adbus._sdbus.Object.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -2411,8 +2054,8 @@ static int __pyx_pw_5adbus_6_sdbus_6Object_1__cinit__(PyObject *__pyx_v_self, Py
   __pyx_L4_argument_unpacking_done:;
   __pyx_r = __pyx_pf_5adbus_6_sdbus_6Object___cinit__(((struct __pyx_obj_5adbus_6_sdbus_Object *)__pyx_v_self), __pyx_v_service, __pyx_v_path, __pyx_v_interface, __pyx_v_vtable, __pyx_v_deprectiated, __pyx_v_hidden);
 
-  /* "adbus/_sdbus/object.pyx":8
- *     cdef void **_userdata;
+  /* "adbus/_sdbus/object.pyx":10
+ *     cdef bytes interface
  * 
  *     def __cinit__(self, service, path, interface, vtable,             # <<<<<<<<<<<<<<
  *             deprectiated=False, hidden=False):
@@ -2431,8 +2074,8 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
-  Py_ssize_t __pyx_t_3;
-  PyObject *__pyx_t_4 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  Py_ssize_t __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   PyObject *__pyx_t_6 = NULL;
   int __pyx_t_7;
@@ -2443,18 +2086,86 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
   void *__pyx_t_12;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "adbus/_sdbus/object.pyx":11
+  /* "adbus/_sdbus/object.pyx":13
  *             deprectiated=False, hidden=False):
+ * 
+ *         self.path = path.encode()             # <<<<<<<<<<<<<<
+ *         self.interface = interface.encode()
+ * 
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_path, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_3) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!(likely(PyBytes_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 13, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->path);
+  __Pyx_DECREF(__pyx_v_self->path);
+  __pyx_v_self->path = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "adbus/_sdbus/object.pyx":14
+ * 
+ *         self.path = path.encode()
+ *         self.interface = interface.encode()             # <<<<<<<<<<<<<<
+ * 
+ *         self._malloc(len(vtable))
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_interface, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_3) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 14, __pyx_L1_error)
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!(likely(PyBytes_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(0, 14, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->interface);
+  __Pyx_DECREF(__pyx_v_self->interface);
+  __pyx_v_self->interface = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "adbus/_sdbus/object.pyx":16
+ *         self.interface = interface.encode()
  * 
  *         self._malloc(len(vtable))             # <<<<<<<<<<<<<<
  *         self._init_vtable(deprectiated, hidden, len(vtable))
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_malloc); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 11, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_malloc); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 16, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_Length(__pyx_v_vtable); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 11, __pyx_L1_error)
-  __pyx_t_4 = PyInt_FromSsize_t(__pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 11, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_t_4 = PyObject_Length(__pyx_v_vtable); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __pyx_t_3 = PyInt_FromSsize_t(__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 16, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = NULL;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
     __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
@@ -2466,36 +2177,36 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
     }
   }
   if (!__pyx_t_5) {
-    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
-    __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else {
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[2] = {__pyx_t_5, __pyx_t_4};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+      PyObject *__pyx_temp[2] = {__pyx_t_5, __pyx_t_3};
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     } else
     #endif
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[2] = {__pyx_t_5, __pyx_t_4};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+      PyObject *__pyx_temp[2] = {__pyx_t_5, __pyx_t_3};
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-1, 1+1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
       __Pyx_GOTREF(__pyx_t_1);
-      __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
+      __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     } else
     #endif
     {
-      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 11, __pyx_L1_error)
+      __pyx_t_6 = PyTuple_New(1+1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 16, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_5); __pyx_t_5 = NULL;
-      __Pyx_GIVEREF(__pyx_t_4);
-      PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_4);
-      __pyx_t_4 = 0;
-      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 11, __pyx_L1_error)
+      __Pyx_GIVEREF(__pyx_t_3);
+      PyTuple_SET_ITEM(__pyx_t_6, 0+1, __pyx_t_3);
+      __pyx_t_3 = 0;
+      __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 16, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
@@ -2503,25 +2214,25 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "adbus/_sdbus/object.pyx":12
+  /* "adbus/_sdbus/object.pyx":17
  * 
  *         self._malloc(len(vtable))
  *         self._init_vtable(deprectiated, hidden, len(vtable))             # <<<<<<<<<<<<<<
  * 
  *         for i, v in enumerate(vtable):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_init_vtable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_init_vtable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyObject_Length(__pyx_v_vtable); if (unlikely(__pyx_t_3 == -1)) __PYX_ERR(0, 12, __pyx_L1_error)
-  __pyx_t_6 = PyInt_FromSsize_t(__pyx_t_3); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 12, __pyx_L1_error)
+  __pyx_t_4 = PyObject_Length(__pyx_v_vtable); if (unlikely(__pyx_t_4 == -1)) __PYX_ERR(0, 17, __pyx_L1_error)
+  __pyx_t_6 = PyInt_FromSsize_t(__pyx_t_4); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_6);
-  __pyx_t_4 = NULL;
+  __pyx_t_3 = NULL;
   __pyx_t_7 = 0;
   if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_4)) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_4);
+      __Pyx_INCREF(__pyx_t_3);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_2, function);
       __pyx_t_7 = 1;
@@ -2529,27 +2240,27 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
   }
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[4] = {__pyx_t_4, __pyx_v_deprectiated, __pyx_v_hidden, __pyx_t_6};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    PyObject *__pyx_temp[4] = {__pyx_t_3, __pyx_v_deprectiated, __pyx_v_hidden, __pyx_t_6};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[4] = {__pyx_t_4, __pyx_v_deprectiated, __pyx_v_hidden, __pyx_t_6};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
+    PyObject *__pyx_temp[4] = {__pyx_t_3, __pyx_v_deprectiated, __pyx_v_hidden, __pyx_t_6};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 12, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    if (__pyx_t_4) {
-      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_4); __pyx_t_4 = NULL;
+    if (__pyx_t_3) {
+      __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
     }
     __Pyx_INCREF(__pyx_v_deprectiated);
     __Pyx_GIVEREF(__pyx_v_deprectiated);
@@ -2560,14 +2271,14 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
     __Pyx_GIVEREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_5, 2+__pyx_t_7, __pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 17, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "adbus/_sdbus/object.pyx":14
+  /* "adbus/_sdbus/object.pyx":19
  *         self._init_vtable(deprectiated, hidden, len(vtable))
  * 
  *         for i, v in enumerate(vtable):             # <<<<<<<<<<<<<<
@@ -2577,29 +2288,29 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
   __Pyx_INCREF(__pyx_int_0);
   __pyx_t_1 = __pyx_int_0;
   if (likely(PyList_CheckExact(__pyx_v_vtable)) || PyTuple_CheckExact(__pyx_v_vtable)) {
-    __pyx_t_2 = __pyx_v_vtable; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
+    __pyx_t_2 = __pyx_v_vtable; __Pyx_INCREF(__pyx_t_2); __pyx_t_4 = 0;
     __pyx_t_8 = NULL;
   } else {
-    __pyx_t_3 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_vtable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 14, __pyx_L1_error)
+    __pyx_t_4 = -1; __pyx_t_2 = PyObject_GetIter(__pyx_v_vtable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 19, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_8 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 14, __pyx_L1_error)
+    __pyx_t_8 = Py_TYPE(__pyx_t_2)->tp_iternext; if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 19, __pyx_L1_error)
   }
   for (;;) {
     if (likely(!__pyx_t_8)) {
       if (likely(PyList_CheckExact(__pyx_t_2))) {
-        if (__pyx_t_3 >= PyList_GET_SIZE(__pyx_t_2)) break;
+        if (__pyx_t_4 >= PyList_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 14, __pyx_L1_error)
+        __pyx_t_5 = PyList_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_5); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 19, __pyx_L1_error)
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 14, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 19, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       } else {
-        if (__pyx_t_3 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
+        if (__pyx_t_4 >= PyTuple_GET_SIZE(__pyx_t_2)) break;
         #if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_3); __Pyx_INCREF(__pyx_t_5); __pyx_t_3++; if (unlikely(0 < 0)) __PYX_ERR(0, 14, __pyx_L1_error)
+        __pyx_t_5 = PyTuple_GET_ITEM(__pyx_t_2, __pyx_t_4); __Pyx_INCREF(__pyx_t_5); __pyx_t_4++; if (unlikely(0 < 0)) __PYX_ERR(0, 19, __pyx_L1_error)
         #else
-        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_3); __pyx_t_3++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 14, __pyx_L1_error)
+        __pyx_t_5 = PySequence_ITEM(__pyx_t_2, __pyx_t_4); __pyx_t_4++; if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 19, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_5);
         #endif
       }
@@ -2609,7 +2320,7 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
         PyObject* exc_type = PyErr_Occurred();
         if (exc_type) {
           if (likely(exc_type == PyExc_StopIteration || PyErr_GivenExceptionMatches(exc_type, PyExc_StopIteration))) PyErr_Clear();
-          else __PYX_ERR(0, 14, __pyx_L1_error)
+          else __PYX_ERR(0, 19, __pyx_L1_error)
         }
         break;
       }
@@ -2619,71 +2330,71 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
     __pyx_t_5 = 0;
     __Pyx_INCREF(__pyx_t_1);
     __Pyx_XDECREF_SET(__pyx_v_i, __pyx_t_1);
-    __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 14, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_t_1, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 19, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_1);
     __pyx_t_1 = __pyx_t_5;
     __pyx_t_5 = 0;
 
-    /* "adbus/_sdbus/object.pyx":15
+    /* "adbus/_sdbus/object.pyx":20
  * 
  *         for i, v in enumerate(vtable):
  *             if type(v) == Method:             # <<<<<<<<<<<<<<
  *                 (<Method>v).populate_vtable(&self._vtable[i+1])
  *                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
  */
-    __pyx_t_5 = PyObject_RichCompare(((PyObject *)Py_TYPE(__pyx_v_v)), ((PyObject *)__pyx_ptype_5adbus_6_sdbus_Method), Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 15, __pyx_L1_error)
-    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 15, __pyx_L1_error)
+    __pyx_t_5 = PyObject_RichCompare(((PyObject *)Py_TYPE(__pyx_v_v)), ((PyObject *)__pyx_ptype_5adbus_6_sdbus_Method), Py_EQ); __Pyx_XGOTREF(__pyx_t_5); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 20, __pyx_L1_error)
+    __pyx_t_9 = __Pyx_PyObject_IsTrue(__pyx_t_5); if (unlikely(__pyx_t_9 < 0)) __PYX_ERR(0, 20, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     if (__pyx_t_9) {
 
-      /* "adbus/_sdbus/object.pyx":16
+      /* "adbus/_sdbus/object.pyx":21
  *         for i, v in enumerate(vtable):
  *             if type(v) == Method:
  *                 (<Method>v).populate_vtable(&self._vtable[i+1])             # <<<<<<<<<<<<<<
  *                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
  *                 self._userdata[i] = (<Method>v).userdata
  */
-      __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_i, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 16, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_AddObjC(__pyx_v_i, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 21, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_5); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 16, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_5); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 21, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_5 = ((struct __pyx_vtabstruct_5adbus_6_sdbus_Method *)((struct __pyx_obj_5adbus_6_sdbus_Method *)__pyx_v_v)->__pyx_vtab)->populate_vtable(((struct __pyx_obj_5adbus_6_sdbus_Method *)__pyx_v_v), (&(__pyx_v_self->_vtable[__pyx_t_10]))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 16, __pyx_L1_error)
+      __pyx_t_5 = ((struct __pyx_vtabstruct_5adbus_6_sdbus_Method *)((struct __pyx_obj_5adbus_6_sdbus_Method *)__pyx_v_v)->__pyx_vtab)->populate_vtable(((struct __pyx_obj_5adbus_6_sdbus_Method *)__pyx_v_v), (&(__pyx_v_self->_vtable[__pyx_t_10]))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 21, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
 
-      /* "adbus/_sdbus/object.pyx":17
+      /* "adbus/_sdbus/object.pyx":22
  *             if type(v) == Method:
  *                 (<Method>v).populate_vtable(&self._vtable[i+1])
  *                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])             # <<<<<<<<<<<<<<
  *                 self._userdata[i] = (<Method>v).userdata
  * 
  */
-      __pyx_t_5 = __Pyx_PyInt_FromSize_t((sizeof((__pyx_v_self->_userdata[0])))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 17, __pyx_L1_error)
+      __pyx_t_5 = __Pyx_PyInt_FromSize_t((sizeof((__pyx_v_self->_userdata[0])))); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 22, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
-      __pyx_t_6 = PyNumber_Multiply(__pyx_v_i, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 17, __pyx_L1_error)
+      __pyx_t_6 = PyNumber_Multiply(__pyx_v_i, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 22, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-      __pyx_t_11 = __Pyx_PyInt_As_size_t(__pyx_t_6); if (unlikely((__pyx_t_11 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 17, __pyx_L1_error)
+      __pyx_t_11 = __Pyx_PyInt_As_size_t(__pyx_t_6); if (unlikely((__pyx_t_11 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-      __pyx_t_6 = __Pyx_PyInt_AddObjC(__pyx_v_i, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 17, __pyx_L1_error)
+      __pyx_t_6 = __Pyx_PyInt_AddObjC(__pyx_v_i, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 22, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
-      __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 17, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_t_6); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 22, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
       (__pyx_v_self->_vtable[__pyx_t_10]).x.method.offset = __pyx_t_11;
 
-      /* "adbus/_sdbus/object.pyx":18
+      /* "adbus/_sdbus/object.pyx":23
  *                 (<Method>v).populate_vtable(&self._vtable[i+1])
  *                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
  *                 self._userdata[i] = (<Method>v).userdata             # <<<<<<<<<<<<<<
  * 
- *         self._register_vtable(service, path, interface)
+ *         self._register_vtable(service, self.path, self.interface)
  */
       __pyx_t_12 = ((struct __pyx_obj_5adbus_6_sdbus_Method *)__pyx_v_v)->userdata;
-      __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_v_i); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 18, __pyx_L1_error)
+      __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_v_i); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 23, __pyx_L1_error)
       (__pyx_v_self->_userdata[__pyx_t_10]) = __pyx_t_12;
 
-      /* "adbus/_sdbus/object.pyx":15
+      /* "adbus/_sdbus/object.pyx":20
  * 
  *         for i, v in enumerate(vtable):
  *             if type(v) == Method:             # <<<<<<<<<<<<<<
@@ -2692,7 +2403,7 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
  */
     }
 
-    /* "adbus/_sdbus/object.pyx":14
+    /* "adbus/_sdbus/object.pyx":19
  *         self._init_vtable(deprectiated, hidden, len(vtable))
  * 
  *         for i, v in enumerate(vtable):             # <<<<<<<<<<<<<<
@@ -2703,14 +2414,14 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "adbus/_sdbus/object.pyx":20
+  /* "adbus/_sdbus/object.pyx":25
  *                 self._userdata[i] = (<Method>v).userdata
  * 
- *         self._register_vtable(service, path, interface)             # <<<<<<<<<<<<<<
+ *         self._register_vtable(service, self.path, self.interface)             # <<<<<<<<<<<<<<
  * 
- *     def _malloc(self, length):
+ *     def __dealloc__(self):
  */
-  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_register_vtable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_register_vtable); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_6 = NULL;
   __pyx_t_7 = 0;
@@ -2726,22 +2437,22 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
   }
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_v_service, __pyx_v_path, __pyx_v_interface};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+    PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_v_service, __pyx_v_self->path, __pyx_v_self->interface};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_v_service, __pyx_v_path, __pyx_v_interface};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+    PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_v_service, __pyx_v_self->path, __pyx_v_self->interface};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_7, 3+__pyx_t_7); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_GOTREF(__pyx_t_1);
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 20, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(3+__pyx_t_7); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 25, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     if (__pyx_t_6) {
       __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6); __pyx_t_6 = NULL;
@@ -2749,21 +2460,21 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
     __Pyx_INCREF(__pyx_v_service);
     __Pyx_GIVEREF(__pyx_v_service);
     PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_7, __pyx_v_service);
-    __Pyx_INCREF(__pyx_v_path);
-    __Pyx_GIVEREF(__pyx_v_path);
-    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_7, __pyx_v_path);
-    __Pyx_INCREF(__pyx_v_interface);
-    __Pyx_GIVEREF(__pyx_v_interface);
-    PyTuple_SET_ITEM(__pyx_t_5, 2+__pyx_t_7, __pyx_v_interface);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+    __Pyx_INCREF(__pyx_v_self->path);
+    __Pyx_GIVEREF(__pyx_v_self->path);
+    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_7, __pyx_v_self->path);
+    __Pyx_INCREF(__pyx_v_self->interface);
+    __Pyx_GIVEREF(__pyx_v_self->interface);
+    PyTuple_SET_ITEM(__pyx_t_5, 2+__pyx_t_7, __pyx_v_self->interface);
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
 
-  /* "adbus/_sdbus/object.pyx":8
- *     cdef void **_userdata;
+  /* "adbus/_sdbus/object.pyx":10
+ *     cdef bytes interface
  * 
  *     def __cinit__(self, service, path, interface, vtable,             # <<<<<<<<<<<<<<
  *             deprectiated=False, hidden=False):
@@ -2776,7 +2487,7 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
-  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_AddTraceback("adbus._sdbus.Object.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -2788,8 +2499,70 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
   return __pyx_r;
 }
 
-/* "adbus/_sdbus/object.pyx":22
- *         self._register_vtable(service, path, interface)
+/* "adbus/_sdbus/object.pyx":27
+ *         self._register_vtable(service, self.path, self.interface)
+ * 
+ *     def __dealloc__(self):             # <<<<<<<<<<<<<<
+ *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
+ *         PyMem_Free(self._vtable)
+ */
+
+/* Python wrapper */
+static void __pyx_pw_5adbus_6_sdbus_6Object_3__dealloc__(PyObject *__pyx_v_self); /*proto*/
+static void __pyx_pw_5adbus_6_sdbus_6Object_3__dealloc__(PyObject *__pyx_v_self) {
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
+  __pyx_pf_5adbus_6_sdbus_6Object_2__dealloc__(((struct __pyx_obj_5adbus_6_sdbus_Object *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+}
+
+static void __pyx_pf_5adbus_6_sdbus_6Object_2__dealloc__(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self) {
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("__dealloc__", 0);
+
+  /* "adbus/_sdbus/object.pyx":28
+ * 
+ *     def __dealloc__(self):
+ *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)             # <<<<<<<<<<<<<<
+ *         PyMem_Free(self._vtable)
+ *         PyMem_Free(self._userdata)
+ */
+  __pyx_v_self->_slot = sd_bus_slot_unref(__pyx_v_self->_slot);
+
+  /* "adbus/_sdbus/object.pyx":29
+ *     def __dealloc__(self):
+ *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
+ *         PyMem_Free(self._vtable)             # <<<<<<<<<<<<<<
+ *         PyMem_Free(self._userdata)
+ * 
+ */
+  PyMem_Free(__pyx_v_self->_vtable);
+
+  /* "adbus/_sdbus/object.pyx":30
+ *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
+ *         PyMem_Free(self._vtable)
+ *         PyMem_Free(self._userdata)             # <<<<<<<<<<<<<<
+ * 
+ *     def _malloc(self, length):
+ */
+  PyMem_Free(__pyx_v_self->_userdata);
+
+  /* "adbus/_sdbus/object.pyx":27
+ *         self._register_vtable(service, self.path, self.interface)
+ * 
+ *     def __dealloc__(self):             # <<<<<<<<<<<<<<
+ *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
+ *         PyMem_Free(self._vtable)
+ */
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+}
+
+/* "adbus/_sdbus/object.pyx":32
+ *         PyMem_Free(self._userdata)
  * 
  *     def _malloc(self, length):             # <<<<<<<<<<<<<<
  *         self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(
@@ -2797,19 +2570,19 @@ static int __pyx_pf_5adbus_6_sdbus_6Object___cinit__(struct __pyx_obj_5adbus_6_s
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_3_malloc(PyObject *__pyx_v_self, PyObject *__pyx_v_length); /*proto*/
-static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_3_malloc(PyObject *__pyx_v_self, PyObject *__pyx_v_length) {
+static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_5_malloc(PyObject *__pyx_v_self, PyObject *__pyx_v_length); /*proto*/
+static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_5_malloc(PyObject *__pyx_v_self, PyObject *__pyx_v_length) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("_malloc (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_6_sdbus_6Object_2_malloc(((struct __pyx_obj_5adbus_6_sdbus_Object *)__pyx_v_self), ((PyObject *)__pyx_v_length));
+  __pyx_r = __pyx_pf_5adbus_6_sdbus_6Object_4_malloc(((struct __pyx_obj_5adbus_6_sdbus_Object *)__pyx_v_self), ((PyObject *)__pyx_v_length));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_length) {
+static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_malloc(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_length) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -2819,25 +2592,25 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbu
   int __pyx_t_5;
   __Pyx_RefNannySetupContext("_malloc", 0);
 
-  /* "adbus/_sdbus/object.pyx":24
+  /* "adbus/_sdbus/object.pyx":34
  *     def _malloc(self, length):
  *         self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(
  *                 (length+2)*sizeof(_sdbus_h.sd_bus_vtable))             # <<<<<<<<<<<<<<
  *         if not self._vtable:
  *             raise MemoryError("Failed to allocate vtable")
  */
-  __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_length, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyInt_AddObjC(__pyx_v_length, __pyx_int_2, 2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = __Pyx_PyInt_FromSize_t((sizeof(sd_bus_vtable))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyInt_FromSize_t((sizeof(sd_bus_vtable))); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = PyNumber_Multiply(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_3 = PyNumber_Multiply(__pyx_t_1, __pyx_t_2); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-  __pyx_t_4 = __Pyx_PyInt_As_size_t(__pyx_t_3); if (unlikely((__pyx_t_4 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 24, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_size_t(__pyx_t_3); if (unlikely((__pyx_t_4 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 34, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
 
-  /* "adbus/_sdbus/object.pyx":23
+  /* "adbus/_sdbus/object.pyx":33
  * 
  *     def _malloc(self, length):
  *         self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(             # <<<<<<<<<<<<<<
@@ -2846,7 +2619,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbu
  */
   __pyx_v_self->_vtable = ((sd_bus_vtable *)PyMem_Malloc(__pyx_t_4));
 
-  /* "adbus/_sdbus/object.pyx":25
+  /* "adbus/_sdbus/object.pyx":35
  *         self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(
  *                 (length+2)*sizeof(_sdbus_h.sd_bus_vtable))
  *         if not self._vtable:             # <<<<<<<<<<<<<<
@@ -2856,20 +2629,20 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbu
   __pyx_t_5 = ((!(__pyx_v_self->_vtable != 0)) != 0);
   if (__pyx_t_5) {
 
-    /* "adbus/_sdbus/object.pyx":26
+    /* "adbus/_sdbus/object.pyx":36
  *                 (length+2)*sizeof(_sdbus_h.sd_bus_vtable))
  *         if not self._vtable:
  *             raise MemoryError("Failed to allocate vtable")             # <<<<<<<<<<<<<<
  * 
  *         self._userdata = <void **>PyMem_Malloc(length*sizeof(void*))
  */
-    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 26, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-    __PYX_ERR(0, 26, __pyx_L1_error)
+    __PYX_ERR(0, 36, __pyx_L1_error)
 
-    /* "adbus/_sdbus/object.pyx":25
+    /* "adbus/_sdbus/object.pyx":35
  *         self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(
  *                 (length+2)*sizeof(_sdbus_h.sd_bus_vtable))
  *         if not self._vtable:             # <<<<<<<<<<<<<<
@@ -2878,23 +2651,23 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbu
  */
   }
 
-  /* "adbus/_sdbus/object.pyx":28
+  /* "adbus/_sdbus/object.pyx":38
  *             raise MemoryError("Failed to allocate vtable")
  * 
  *         self._userdata = <void **>PyMem_Malloc(length*sizeof(void*))             # <<<<<<<<<<<<<<
  *         if not self._userdata:
  *             raise MemoryError("Failed to allocate userdata")
  */
-  __pyx_t_3 = __Pyx_PyInt_FromSize_t((sizeof(void *))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_FromSize_t((sizeof(void *))); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_2 = PyNumber_Multiply(__pyx_v_length, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_2 = PyNumber_Multiply(__pyx_v_length, __pyx_t_3); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-  __pyx_t_4 = __Pyx_PyInt_As_size_t(__pyx_t_2); if (unlikely((__pyx_t_4 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 28, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyInt_As_size_t(__pyx_t_2); if (unlikely((__pyx_t_4 == (size_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v_self->_userdata = ((void **)PyMem_Malloc(__pyx_t_4));
 
-  /* "adbus/_sdbus/object.pyx":29
+  /* "adbus/_sdbus/object.pyx":39
  * 
  *         self._userdata = <void **>PyMem_Malloc(length*sizeof(void*))
  *         if not self._userdata:             # <<<<<<<<<<<<<<
@@ -2904,20 +2677,20 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbu
   __pyx_t_5 = ((!(__pyx_v_self->_userdata != 0)) != 0);
   if (__pyx_t_5) {
 
-    /* "adbus/_sdbus/object.pyx":30
+    /* "adbus/_sdbus/object.pyx":40
  *         self._userdata = <void **>PyMem_Malloc(length*sizeof(void*))
  *         if not self._userdata:
  *             raise MemoryError("Failed to allocate userdata")             # <<<<<<<<<<<<<<
  * 
  *     def _init_vtable(self, deprectiated, hidden, length):
  */
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 40, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __PYX_ERR(0, 30, __pyx_L1_error)
+    __PYX_ERR(0, 40, __pyx_L1_error)
 
-    /* "adbus/_sdbus/object.pyx":29
+    /* "adbus/_sdbus/object.pyx":39
  * 
  *         self._userdata = <void **>PyMem_Malloc(length*sizeof(void*))
  *         if not self._userdata:             # <<<<<<<<<<<<<<
@@ -2926,8 +2699,8 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbu
  */
   }
 
-  /* "adbus/_sdbus/object.pyx":22
- *         self._register_vtable(service, path, interface)
+  /* "adbus/_sdbus/object.pyx":32
+ *         PyMem_Free(self._userdata)
  * 
  *     def _malloc(self, length):             # <<<<<<<<<<<<<<
  *         self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(
@@ -2949,7 +2722,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbu
   return __pyx_r;
 }
 
-/* "adbus/_sdbus/object.pyx":32
+/* "adbus/_sdbus/object.pyx":42
  *             raise MemoryError("Failed to allocate userdata")
  * 
  *     def _init_vtable(self, deprectiated, hidden, length):             # <<<<<<<<<<<<<<
@@ -2958,8 +2731,8 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_2_malloc(struct __pyx_obj_5adbu
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_5_init_vtable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_5_init_vtable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_7_init_vtable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_7_init_vtable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_deprectiated = 0;
   PyObject *__pyx_v_hidden = 0;
   PyObject *__pyx_v_length = 0;
@@ -2987,16 +2760,16 @@ static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_5_init_vtable(PyObject *__pyx_v
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_hidden)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_init_vtable", 1, 3, 3, 1); __PYX_ERR(0, 32, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_init_vtable", 1, 3, 3, 1); __PYX_ERR(0, 42, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_length)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_init_vtable", 1, 3, 3, 2); __PYX_ERR(0, 32, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_init_vtable", 1, 3, 3, 2); __PYX_ERR(0, 42, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_init_vtable") < 0)) __PYX_ERR(0, 32, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_init_vtable") < 0)) __PYX_ERR(0, 42, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3011,20 +2784,20 @@ static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_5_init_vtable(PyObject *__pyx_v
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_init_vtable", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 32, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_init_vtable", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 42, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("adbus._sdbus.Object._init_vtable", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(((struct __pyx_obj_5adbus_6_sdbus_Object *)__pyx_v_self), __pyx_v_deprectiated, __pyx_v_hidden, __pyx_v_length);
+  __pyx_r = __pyx_pf_5adbus_6_sdbus_6Object_6_init_vtable(((struct __pyx_obj_5adbus_6_sdbus_Object *)__pyx_v_self), __pyx_v_deprectiated, __pyx_v_hidden, __pyx_v_length);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_deprectiated, PyObject *__pyx_v_hidden, PyObject *__pyx_v_length) {
+static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_6_init_vtable(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_deprectiated, PyObject *__pyx_v_hidden, PyObject *__pyx_v_length) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
@@ -3033,7 +2806,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_
   Py_ssize_t __pyx_t_4;
   __Pyx_RefNannySetupContext("_init_vtable", 0);
 
-  /* "adbus/_sdbus/object.pyx":33
+  /* "adbus/_sdbus/object.pyx":43
  * 
  *     def _init_vtable(self, deprectiated, hidden, length):
  *         self._vtable[0].type = _sdbus_h._SD_BUS_VTABLE_START             # <<<<<<<<<<<<<<
@@ -3042,7 +2815,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_
  */
   (__pyx_v_self->_vtable[0]).type = _SD_BUS_VTABLE_START;
 
-  /* "adbus/_sdbus/object.pyx":34
+  /* "adbus/_sdbus/object.pyx":44
  *     def _init_vtable(self, deprectiated, hidden, length):
  *         self._vtable[0].type = _sdbus_h._SD_BUS_VTABLE_START
  *         self._vtable[0].x.start.element_size = sizeof(self._vtable[0])             # <<<<<<<<<<<<<<
@@ -3051,7 +2824,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_
  */
   (__pyx_v_self->_vtable[0]).x.start.element_size = (sizeof((__pyx_v_self->_vtable[0])));
 
-  /* "adbus/_sdbus/object.pyx":35
+  /* "adbus/_sdbus/object.pyx":45
  *         self._vtable[0].type = _sdbus_h._SD_BUS_VTABLE_START
  *         self._vtable[0].x.start.element_size = sizeof(self._vtable[0])
  *         self._vtable[0].flags = 0             # <<<<<<<<<<<<<<
@@ -3060,17 +2833,17 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_
  */
   (__pyx_v_self->_vtable[0]).flags = 0;
 
-  /* "adbus/_sdbus/object.pyx":37
+  /* "adbus/_sdbus/object.pyx":47
  *         self._vtable[0].flags = 0
  * 
  *         if deprectiated:             # <<<<<<<<<<<<<<
  *             self._vtable[0].flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_deprectiated); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 37, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_deprectiated); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 47, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "adbus/_sdbus/object.pyx":38
+    /* "adbus/_sdbus/object.pyx":48
  * 
  *         if deprectiated:
  *             self._vtable[0].flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED             # <<<<<<<<<<<<<<
@@ -3080,7 +2853,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_
     __pyx_t_2 = 0;
     (__pyx_v_self->_vtable[__pyx_t_2]).flags = ((__pyx_v_self->_vtable[__pyx_t_2]).flags | SD_BUS_VTABLE_DEPRECATED);
 
-    /* "adbus/_sdbus/object.pyx":37
+    /* "adbus/_sdbus/object.pyx":47
  *         self._vtable[0].flags = 0
  * 
  *         if deprectiated:             # <<<<<<<<<<<<<<
@@ -3089,17 +2862,17 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_
  */
   }
 
-  /* "adbus/_sdbus/object.pyx":40
+  /* "adbus/_sdbus/object.pyx":50
  *             self._vtable[0].flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED
  * 
  *         if hidden:             # <<<<<<<<<<<<<<
  *             self._vtable[0].flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_hidden); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_hidden); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(0, 50, __pyx_L1_error)
   if (__pyx_t_1) {
 
-    /* "adbus/_sdbus/object.pyx":41
+    /* "adbus/_sdbus/object.pyx":51
  * 
  *         if hidden:
  *             self._vtable[0].flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN             # <<<<<<<<<<<<<<
@@ -3109,7 +2882,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_
     __pyx_t_2 = 0;
     (__pyx_v_self->_vtable[__pyx_t_2]).flags = ((__pyx_v_self->_vtable[__pyx_t_2]).flags | SD_BUS_VTABLE_HIDDEN);
 
-    /* "adbus/_sdbus/object.pyx":40
+    /* "adbus/_sdbus/object.pyx":50
  *             self._vtable[0].flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED
  * 
  *         if hidden:             # <<<<<<<<<<<<<<
@@ -3118,33 +2891,33 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_
  */
   }
 
-  /* "adbus/_sdbus/object.pyx":43
+  /* "adbus/_sdbus/object.pyx":53
  *             self._vtable[0].flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN
  * 
  *         self._vtable[length+1].type = _sdbus_h._SD_BUS_VTABLE_END             # <<<<<<<<<<<<<<
  *         self._vtable[length+1].flags = 0
  * 
  */
-  __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_v_length, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_v_length, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyIndex_AsSsize_t(__pyx_t_3); if (unlikely((__pyx_t_4 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 43, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyIndex_AsSsize_t(__pyx_t_3); if (unlikely((__pyx_t_4 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   (__pyx_v_self->_vtable[__pyx_t_4]).type = _SD_BUS_VTABLE_END;
 
-  /* "adbus/_sdbus/object.pyx":44
+  /* "adbus/_sdbus/object.pyx":54
  * 
  *         self._vtable[length+1].type = _sdbus_h._SD_BUS_VTABLE_END
  *         self._vtable[length+1].flags = 0             # <<<<<<<<<<<<<<
  * 
  *     def _register_vtable(self, service, path, interface):
  */
-  __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_v_length, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_AddObjC(__pyx_v_length, __pyx_int_1, 1, 0); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_4 = __Pyx_PyIndex_AsSsize_t(__pyx_t_3); if (unlikely((__pyx_t_4 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 44, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyIndex_AsSsize_t(__pyx_t_3); if (unlikely((__pyx_t_4 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(0, 54, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   (__pyx_v_self->_vtable[__pyx_t_4]).flags = 0;
 
-  /* "adbus/_sdbus/object.pyx":32
+  /* "adbus/_sdbus/object.pyx":42
  *             raise MemoryError("Failed to allocate userdata")
  * 
  *     def _init_vtable(self, deprectiated, hidden, length):             # <<<<<<<<<<<<<<
@@ -3165,17 +2938,17 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_4_init_vtable(struct __pyx_obj_
   return __pyx_r;
 }
 
-/* "adbus/_sdbus/object.pyx":46
+/* "adbus/_sdbus/object.pyx":56
  *         self._vtable[length+1].flags = 0
  * 
  *     def _register_vtable(self, service, path, interface):             # <<<<<<<<<<<<<<
- *         _ = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
+ *         e = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
  *                 &self._slot, path, interface, self._vtable, self._userdata)
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_7_register_vtable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
-static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_7_register_vtable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
+static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_9_register_vtable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds); /*proto*/
+static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_9_register_vtable(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_service = 0;
   PyObject *__pyx_v_path = 0;
   PyObject *__pyx_v_interface = 0;
@@ -3203,16 +2976,16 @@ static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_7_register_vtable(PyObject *__p
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_path)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_register_vtable", 1, 3, 3, 1); __PYX_ERR(0, 46, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_register_vtable", 1, 3, 3, 1); __PYX_ERR(0, 56, __pyx_L3_error)
         }
         case  2:
         if (likely((values[2] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_interface)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("_register_vtable", 1, 3, 3, 2); __PYX_ERR(0, 46, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("_register_vtable", 1, 3, 3, 2); __PYX_ERR(0, 56, __pyx_L3_error)
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_register_vtable") < 0)) __PYX_ERR(0, 46, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "_register_vtable") < 0)) __PYX_ERR(0, 56, __pyx_L3_error)
       }
     } else if (PyTuple_GET_SIZE(__pyx_args) != 3) {
       goto __pyx_L5_argtuple_error;
@@ -3227,21 +3000,21 @@ static PyObject *__pyx_pw_5adbus_6_sdbus_6Object_7_register_vtable(PyObject *__p
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("_register_vtable", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 46, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("_register_vtable", 1, 3, 3, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(0, 56, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("adbus._sdbus.Object._register_vtable", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
   return NULL;
   __pyx_L4_argument_unpacking_done:;
-  __pyx_r = __pyx_pf_5adbus_6_sdbus_6Object_6_register_vtable(((struct __pyx_obj_5adbus_6_sdbus_Object *)__pyx_v_self), __pyx_v_service, __pyx_v_path, __pyx_v_interface);
+  __pyx_r = __pyx_pf_5adbus_6_sdbus_6Object_8_register_vtable(((struct __pyx_obj_5adbus_6_sdbus_Object *)__pyx_v_self), __pyx_v_service, __pyx_v_path, __pyx_v_interface);
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_6_register_vtable(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_service, PyObject *__pyx_v_path, PyObject *__pyx_v_interface) {
-  PyObject *__pyx_v__ = NULL;
+static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_8_register_vtable(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self, PyObject *__pyx_v_service, PyObject *__pyx_v_path, PyObject *__pyx_v_interface) {
+  PyObject *__pyx_v_e = NULL;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   char const *__pyx_t_1;
@@ -3252,87 +3025,86 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_6_register_vtable(struct __pyx_
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("_register_vtable", 0);
 
-  /* "adbus/_sdbus/object.pyx":48
+  /* "adbus/_sdbus/object.pyx":58
  *     def _register_vtable(self, service, path, interface):
- *         _ = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
+ *         e = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
  *                 &self._slot, path, interface, self._vtable, self._userdata)             # <<<<<<<<<<<<<<
- *         if _ < 0:
- *             raise SdbusError(f"Failed to register vtable: {errorcode[-_]}")
+ *         if e < 0:
+ *             raise SdbusError(f"Failed to register vtable: {errorcode[-e]}")
  */
-  __pyx_t_1 = __Pyx_PyObject_AsString(__pyx_v_path); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 48, __pyx_L1_error)
-  __pyx_t_2 = __Pyx_PyObject_AsString(__pyx_v_interface); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 48, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_PyObject_AsString(__pyx_v_path); if (unlikely((!__pyx_t_1) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_PyObject_AsString(__pyx_v_interface); if (unlikely((!__pyx_t_2) && PyErr_Occurred())) __PYX_ERR(0, 58, __pyx_L1_error)
 
-  /* "adbus/_sdbus/object.pyx":47
+  /* "adbus/_sdbus/object.pyx":57
  * 
  *     def _register_vtable(self, service, path, interface):
- *         _ = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,             # <<<<<<<<<<<<<<
+ *         e = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,             # <<<<<<<<<<<<<<
  *                 &self._slot, path, interface, self._vtable, self._userdata)
- *         if _ < 0:
+ *         if e < 0:
  */
-  __pyx_t_3 = __Pyx_PyInt_From_int(sd_bus_add_object_vtable(((struct __pyx_obj_5adbus_6_sdbus_Service *)__pyx_v_service)->bus, (&__pyx_v_self->_slot), __pyx_t_1, __pyx_t_2, __pyx_v_self->_vtable, __pyx_v_self->_userdata)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 47, __pyx_L1_error)
+  __pyx_t_3 = __Pyx_PyInt_From_int(sd_bus_add_object_vtable(((struct __pyx_obj_5adbus_6_sdbus_Service *)__pyx_v_service)->bus, (&__pyx_v_self->_slot), __pyx_t_1, __pyx_t_2, __pyx_v_self->_vtable, __pyx_v_self->_userdata)); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_v__ = __pyx_t_3;
+  __pyx_v_e = __pyx_t_3;
   __pyx_t_3 = 0;
 
-  /* "adbus/_sdbus/object.pyx":49
- *         _ = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
+  /* "adbus/_sdbus/object.pyx":59
+ *         e = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
  *                 &self._slot, path, interface, self._vtable, self._userdata)
- *         if _ < 0:             # <<<<<<<<<<<<<<
- *             raise SdbusError(f"Failed to register vtable: {errorcode[-_]}")
+ *         if e < 0:             # <<<<<<<<<<<<<<
+ *             raise SdbusError(f"Failed to register vtable: {errorcode[-e]}")
  * 
  */
-  __pyx_t_3 = PyObject_RichCompare(__pyx_v__, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 49, __pyx_L1_error)
-  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 49, __pyx_L1_error)
+  __pyx_t_3 = PyObject_RichCompare(__pyx_v_e, __pyx_int_0, Py_LT); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 59, __pyx_L1_error)
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_3); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 59, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   if (__pyx_t_4) {
 
-    /* "adbus/_sdbus/object.pyx":50
+    /* "adbus/_sdbus/object.pyx":60
  *                 &self._slot, path, interface, self._vtable, self._userdata)
- *         if _ < 0:
- *             raise SdbusError(f"Failed to register vtable: {errorcode[-_]}")             # <<<<<<<<<<<<<<
+ *         if e < 0:
+ *             raise SdbusError(f"Failed to register vtable: {errorcode[-e]}")             # <<<<<<<<<<<<<<
  * 
- *     def __dealloc__(self):
  */
-    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_errorcode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_3 = __Pyx_GetModuleGlobalName(__pyx_n_s_errorcode); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = PyNumber_Negative(__pyx_v__); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_5 = PyNumber_Negative(__pyx_v_e); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_6 = PyObject_GetItem(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_6 = PyObject_GetItem(__pyx_t_3, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_5 = __Pyx_PyObject_FormatSimple(__pyx_t_6, __pyx_empty_unicode); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Failed_to_register_vtable, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyUnicode_Concat(__pyx_kp_u_Failed_to_register_vtable, __pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_5 = PyTuple_New(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_GIVEREF(__pyx_t_6);
     PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_6);
     __pyx_t_6 = 0;
-    __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_SdbusError), __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 50, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyObject_Call(((PyObject *)__pyx_ptype_5adbus_6_sdbus_SdbusError), __pyx_t_5, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 60, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_Raise(__pyx_t_6, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-    __PYX_ERR(0, 50, __pyx_L1_error)
+    __PYX_ERR(0, 60, __pyx_L1_error)
 
-    /* "adbus/_sdbus/object.pyx":49
- *         _ = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
+    /* "adbus/_sdbus/object.pyx":59
+ *         e = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
  *                 &self._slot, path, interface, self._vtable, self._userdata)
- *         if _ < 0:             # <<<<<<<<<<<<<<
- *             raise SdbusError(f"Failed to register vtable: {errorcode[-_]}")
+ *         if e < 0:             # <<<<<<<<<<<<<<
+ *             raise SdbusError(f"Failed to register vtable: {errorcode[-e]}")
  * 
  */
   }
 
-  /* "adbus/_sdbus/object.pyx":46
+  /* "adbus/_sdbus/object.pyx":56
  *         self._vtable[length+1].flags = 0
  * 
  *     def _register_vtable(self, service, path, interface):             # <<<<<<<<<<<<<<
- *         _ = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
+ *         e = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
  *                 &self._slot, path, interface, self._vtable, self._userdata)
  */
 
@@ -3346,69 +3118,10 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_6Object_6_register_vtable(struct __pyx_
   __Pyx_AddTraceback("adbus._sdbus.Object._register_vtable", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
-  __Pyx_XDECREF(__pyx_v__);
+  __Pyx_XDECREF(__pyx_v_e);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
-}
-
-/* "adbus/_sdbus/object.pyx":52
- *             raise SdbusError(f"Failed to register vtable: {errorcode[-_]}")
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
- *         PyMem_Free(self._vtable)
- */
-
-/* Python wrapper */
-static void __pyx_pw_5adbus_6_sdbus_6Object_9__dealloc__(PyObject *__pyx_v_self); /*proto*/
-static void __pyx_pw_5adbus_6_sdbus_6Object_9__dealloc__(PyObject *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__dealloc__ (wrapper)", 0);
-  __pyx_pf_5adbus_6_sdbus_6Object_8__dealloc__(((struct __pyx_obj_5adbus_6_sdbus_Object *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-}
-
-static void __pyx_pf_5adbus_6_sdbus_6Object_8__dealloc__(struct __pyx_obj_5adbus_6_sdbus_Object *__pyx_v_self) {
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("__dealloc__", 0);
-
-  /* "adbus/_sdbus/object.pyx":53
- * 
- *     def __dealloc__(self):
- *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)             # <<<<<<<<<<<<<<
- *         PyMem_Free(self._vtable)
- *         PyMem_Free(self._userdata)
- */
-  __pyx_v_self->_slot = sd_bus_slot_unref(__pyx_v_self->_slot);
-
-  /* "adbus/_sdbus/object.pyx":54
- *     def __dealloc__(self):
- *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
- *         PyMem_Free(self._vtable)             # <<<<<<<<<<<<<<
- *         PyMem_Free(self._userdata)
- */
-  PyMem_Free(__pyx_v_self->_vtable);
-
-  /* "adbus/_sdbus/object.pyx":55
- *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
- *         PyMem_Free(self._vtable)
- *         PyMem_Free(self._userdata)             # <<<<<<<<<<<<<<
- */
-  PyMem_Free(__pyx_v_self->_userdata);
-
-  /* "adbus/_sdbus/object.pyx":52
- *             raise SdbusError(f"Failed to register vtable: {errorcode[-_]}")
- * 
- *     def __dealloc__(self):             # <<<<<<<<<<<<<<
- *         self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
- *         PyMem_Free(self._vtable)
- */
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
 }
 
 /* "adbus/_sdbus/method.pyx":3
@@ -3432,7 +3145,7 @@ static int __pyx_f_5adbus_6_sdbus_method_message_handler(sd_bus_message *__pyx_v
  * cdef int method_message_handler(_sdbus_h.sd_bus_message *m,
  *         void *userdata, _sdbus_h.sd_bus_error *e):
  *     cdef void *callback = (<void**>userdata)[0]             # <<<<<<<<<<<<<<
- *     args = message_read(m)
+ *     args = Message.args(m)
  *     (<object>callback)(*args)
  */
   __pyx_v_callback = (((void **)__pyx_v_userdata)[0]);
@@ -3440,18 +3153,18 @@ static int __pyx_f_5adbus_6_sdbus_method_message_handler(sd_bus_message *__pyx_v
   /* "adbus/_sdbus/method.pyx":6
  *         void *userdata, _sdbus_h.sd_bus_error *e):
  *     cdef void *callback = (<void**>userdata)[0]
- *     args = message_read(m)             # <<<<<<<<<<<<<<
+ *     args = Message.args(m)             # <<<<<<<<<<<<<<
  *     (<object>callback)(*args)
  *     return 0
  */
-  __pyx_t_1 = __pyx_f_5adbus_6_sdbus_message_read(__pyx_v_m); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 6, __pyx_L1_error)
+  __pyx_t_1 = __pyx_f_5adbus_6_sdbus_7Message_args(__pyx_v_m); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_args = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
 
   /* "adbus/_sdbus/method.pyx":7
  *     cdef void *callback = (<void**>userdata)[0]
- *     args = message_read(m)
+ *     args = Message.args(m)
  *     (<object>callback)(*args)             # <<<<<<<<<<<<<<
  *     return 0
  * 
@@ -3464,7 +3177,7 @@ static int __pyx_f_5adbus_6_sdbus_method_message_handler(sd_bus_message *__pyx_v
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
 
   /* "adbus/_sdbus/method.pyx":8
- *     args = message_read(m)
+ *     args = Message.args(m)
  *     (<object>callback)(*args)
  *     return 0             # <<<<<<<<<<<<<<
  * 
@@ -3493,10 +3206,10 @@ static int __pyx_f_5adbus_6_sdbus_method_message_handler(sd_bus_message *__pyx_v
   return __pyx_r;
 }
 
-/* "adbus/_sdbus/method.pyx":16
- *     cdef void *userdata
+/* "adbus/_sdbus/method.pyx":19
+ *     cdef bytes return_type
  * 
- *     def __cinit__(self, name, callback, arg_types=b'', return_type=b'',             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, name, callback, arg_types='', return_type='',             # <<<<<<<<<<<<<<
  *             deprectiated=False, hidden=False, unprivledged=False):
  * 
  */
@@ -3517,15 +3230,15 @@ static int __pyx_pw_5adbus_6_sdbus_6Method_1__cinit__(PyObject *__pyx_v_self, Py
   {
     static PyObject **__pyx_pyargnames[] = {&__pyx_n_s_name,&__pyx_n_s_callback,&__pyx_n_s_arg_types,&__pyx_n_s_return_type,&__pyx_n_s_deprectiated,&__pyx_n_s_hidden,&__pyx_n_s_unprivledged,0};
     PyObject* values[7] = {0,0,0,0,0,0,0};
-    values[2] = ((PyObject *)__pyx_kp_b__7);
-    values[3] = ((PyObject *)__pyx_kp_b__7);
+    values[2] = ((PyObject *)__pyx_kp_s__6);
+    values[3] = ((PyObject *)__pyx_kp_s__6);
 
-    /* "adbus/_sdbus/method.pyx":17
+    /* "adbus/_sdbus/method.pyx":20
  * 
- *     def __cinit__(self, name, callback, arg_types=b'', return_type=b'',
+ *     def __cinit__(self, name, callback, arg_types='', return_type='',
  *             deprectiated=False, hidden=False, unprivledged=False):             # <<<<<<<<<<<<<<
  * 
- *         self.type = _sdbus_h._SD_BUS_VTABLE_METHOD
+ *         self.name = name.encode()
  */
     values[4] = ((PyObject *)Py_False);
     values[5] = ((PyObject *)Py_False);
@@ -3552,7 +3265,7 @@ static int __pyx_pw_5adbus_6_sdbus_6Method_1__cinit__(PyObject *__pyx_v_self, Py
         case  1:
         if (likely((values[1] = PyDict_GetItem(__pyx_kwds, __pyx_n_s_callback)) != 0)) kw_args--;
         else {
-          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 7, 1); __PYX_ERR(3, 16, __pyx_L3_error)
+          __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 7, 1); __PYX_ERR(3, 19, __pyx_L3_error)
         }
         case  2:
         if (kw_args > 0) {
@@ -3581,7 +3294,7 @@ static int __pyx_pw_5adbus_6_sdbus_6Method_1__cinit__(PyObject *__pyx_v_self, Py
         }
       }
       if (unlikely(kw_args > 0)) {
-        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(3, 16, __pyx_L3_error)
+        if (unlikely(__Pyx_ParseOptionalKeywords(__pyx_kwds, __pyx_pyargnames, 0, values, pos_args, "__cinit__") < 0)) __PYX_ERR(3, 19, __pyx_L3_error)
       }
     } else {
       switch (PyTuple_GET_SIZE(__pyx_args)) {
@@ -3606,7 +3319,7 @@ static int __pyx_pw_5adbus_6_sdbus_6Method_1__cinit__(PyObject *__pyx_v_self, Py
   }
   goto __pyx_L4_argument_unpacking_done;
   __pyx_L5_argtuple_error:;
-  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(3, 16, __pyx_L3_error)
+  __Pyx_RaiseArgtupleInvalid("__cinit__", 0, 2, 7, PyTuple_GET_SIZE(__pyx_args)); __PYX_ERR(3, 19, __pyx_L3_error)
   __pyx_L3_error:;
   __Pyx_AddTraceback("adbus._sdbus.Method.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __Pyx_RefNannyFinishContext();
@@ -3614,10 +3327,10 @@ static int __pyx_pw_5adbus_6_sdbus_6Method_1__cinit__(PyObject *__pyx_v_self, Py
   __pyx_L4_argument_unpacking_done:;
   __pyx_r = __pyx_pf_5adbus_6_sdbus_6Method___cinit__(((struct __pyx_obj_5adbus_6_sdbus_Method *)__pyx_v_self), __pyx_v_name, __pyx_v_callback, __pyx_v_arg_types, __pyx_v_return_type, __pyx_v_deprectiated, __pyx_v_hidden, __pyx_v_unprivledged);
 
-  /* "adbus/_sdbus/method.pyx":16
- *     cdef void *userdata
+  /* "adbus/_sdbus/method.pyx":19
+ *     cdef bytes return_type
  * 
- *     def __cinit__(self, name, callback, arg_types=b'', return_type=b'',             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, name, callback, arg_types='', return_type='',             # <<<<<<<<<<<<<<
  *             deprectiated=False, hidden=False, unprivledged=False):
  * 
  */
@@ -3630,15 +3343,120 @@ static int __pyx_pw_5adbus_6_sdbus_6Method_1__cinit__(PyObject *__pyx_v_self, Py
 static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_sdbus_Method *__pyx_v_self, PyObject *__pyx_v_name, PyObject *__pyx_v_callback, PyObject *__pyx_v_arg_types, PyObject *__pyx_v_return_type, PyObject *__pyx_v_deprectiated, PyObject *__pyx_v_hidden, PyObject *__pyx_v_unprivledged) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
-  int __pyx_t_1;
-  int __pyx_t_2;
-  char const *__pyx_t_3;
-  char const *__pyx_t_4;
-  char const *__pyx_t_5;
+  PyObject *__pyx_t_1 = NULL;
+  PyObject *__pyx_t_2 = NULL;
+  PyObject *__pyx_t_3 = NULL;
+  int __pyx_t_4;
+  int __pyx_t_5;
+  char const *__pyx_t_6;
+  char const *__pyx_t_7;
+  char const *__pyx_t_8;
   __Pyx_RefNannySetupContext("__cinit__", 0);
 
-  /* "adbus/_sdbus/method.pyx":19
+  /* "adbus/_sdbus/method.pyx":22
  *             deprectiated=False, hidden=False, unprivledged=False):
+ * 
+ *         self.name = name.encode()             # <<<<<<<<<<<<<<
+ *         self.arg_types = arg_types.encode()
+ *         self.return_type = return_type.encode()
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_name, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 22, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_3) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 22, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 22, __pyx_L1_error)
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!(likely(PyBytes_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(3, 22, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->name);
+  __Pyx_DECREF(__pyx_v_self->name);
+  __pyx_v_self->name = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "adbus/_sdbus/method.pyx":23
+ * 
+ *         self.name = name.encode()
+ *         self.arg_types = arg_types.encode()             # <<<<<<<<<<<<<<
+ *         self.return_type = return_type.encode()
+ * 
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_arg_types, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 23, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_3) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 23, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 23, __pyx_L1_error)
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!(likely(PyBytes_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(3, 23, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->arg_types);
+  __Pyx_DECREF(__pyx_v_self->arg_types);
+  __pyx_v_self->arg_types = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "adbus/_sdbus/method.pyx":24
+ *         self.name = name.encode()
+ *         self.arg_types = arg_types.encode()
+ *         self.return_type = return_type.encode()             # <<<<<<<<<<<<<<
+ * 
+ *         self.type = _sdbus_h._SD_BUS_VTABLE_METHOD
+ */
+  __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_return_type, __pyx_n_s_encode); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 24, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_2);
+  __pyx_t_3 = NULL;
+  if (CYTHON_UNPACK_METHODS && likely(PyMethod_Check(__pyx_t_2))) {
+    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_3)) {
+      PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
+      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(function);
+      __Pyx_DECREF_SET(__pyx_t_2, function);
+    }
+  }
+  if (__pyx_t_3) {
+    __pyx_t_1 = __Pyx_PyObject_CallOneArg(__pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 24, __pyx_L1_error)
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
+  } else {
+    __pyx_t_1 = __Pyx_PyObject_CallNoArg(__pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 24, __pyx_L1_error)
+  }
+  __Pyx_GOTREF(__pyx_t_1);
+  __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
+  if (!(likely(PyBytes_CheckExact(__pyx_t_1))||((__pyx_t_1) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_1)->tp_name), 0))) __PYX_ERR(3, 24, __pyx_L1_error)
+  __Pyx_GIVEREF(__pyx_t_1);
+  __Pyx_GOTREF(__pyx_v_self->return_type);
+  __Pyx_DECREF(__pyx_v_self->return_type);
+  __pyx_v_self->return_type = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
+
+  /* "adbus/_sdbus/method.pyx":26
+ *         self.return_type = return_type.encode()
  * 
  *         self.type = _sdbus_h._SD_BUS_VTABLE_METHOD             # <<<<<<<<<<<<<<
  * 
@@ -3646,7 +3464,7 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
   __pyx_v_self->type = _SD_BUS_VTABLE_METHOD;
 
-  /* "adbus/_sdbus/method.pyx":21
+  /* "adbus/_sdbus/method.pyx":28
  *         self.type = _sdbus_h._SD_BUS_VTABLE_METHOD
  * 
  *         self.flags = 0             # <<<<<<<<<<<<<<
@@ -3655,18 +3473,18 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
   __pyx_v_self->flags = 0;
 
-  /* "adbus/_sdbus/method.pyx":22
+  /* "adbus/_sdbus/method.pyx":29
  * 
  *         self.flags = 0
  *         if not return_type:             # <<<<<<<<<<<<<<
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_METHOD_NO_REPLY
  * 
  */
-  __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_return_type); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(3, 22, __pyx_L1_error)
-  __pyx_t_2 = ((!__pyx_t_1) != 0);
-  if (__pyx_t_2) {
+  __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_v_return_type); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(3, 29, __pyx_L1_error)
+  __pyx_t_5 = ((!__pyx_t_4) != 0);
+  if (__pyx_t_5) {
 
-    /* "adbus/_sdbus/method.pyx":23
+    /* "adbus/_sdbus/method.pyx":30
  *         self.flags = 0
  *         if not return_type:
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_METHOD_NO_REPLY             # <<<<<<<<<<<<<<
@@ -3675,7 +3493,7 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
     __pyx_v_self->flags = (__pyx_v_self->flags | SD_BUS_VTABLE_METHOD_NO_REPLY);
 
-    /* "adbus/_sdbus/method.pyx":22
+    /* "adbus/_sdbus/method.pyx":29
  * 
  *         self.flags = 0
  *         if not return_type:             # <<<<<<<<<<<<<<
@@ -3684,17 +3502,17 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
   }
 
-  /* "adbus/_sdbus/method.pyx":25
+  /* "adbus/_sdbus/method.pyx":32
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_METHOD_NO_REPLY
  * 
  *         if deprectiated:             # <<<<<<<<<<<<<<
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_deprectiated); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(3, 25, __pyx_L1_error)
-  if (__pyx_t_2) {
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_deprectiated); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(3, 32, __pyx_L1_error)
+  if (__pyx_t_5) {
 
-    /* "adbus/_sdbus/method.pyx":26
+    /* "adbus/_sdbus/method.pyx":33
  * 
  *         if deprectiated:
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED             # <<<<<<<<<<<<<<
@@ -3703,7 +3521,7 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
     __pyx_v_self->flags = (__pyx_v_self->flags | SD_BUS_VTABLE_DEPRECATED);
 
-    /* "adbus/_sdbus/method.pyx":25
+    /* "adbus/_sdbus/method.pyx":32
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_METHOD_NO_REPLY
  * 
  *         if deprectiated:             # <<<<<<<<<<<<<<
@@ -3712,17 +3530,17 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
   }
 
-  /* "adbus/_sdbus/method.pyx":28
+  /* "adbus/_sdbus/method.pyx":35
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED
  * 
  *         if hidden:             # <<<<<<<<<<<<<<
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_hidden); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(3, 28, __pyx_L1_error)
-  if (__pyx_t_2) {
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_hidden); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(3, 35, __pyx_L1_error)
+  if (__pyx_t_5) {
 
-    /* "adbus/_sdbus/method.pyx":29
+    /* "adbus/_sdbus/method.pyx":36
  * 
  *         if hidden:
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN             # <<<<<<<<<<<<<<
@@ -3731,7 +3549,7 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
     __pyx_v_self->flags = (__pyx_v_self->flags | SD_BUS_VTABLE_HIDDEN);
 
-    /* "adbus/_sdbus/method.pyx":28
+    /* "adbus/_sdbus/method.pyx":35
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED
  * 
  *         if hidden:             # <<<<<<<<<<<<<<
@@ -3740,26 +3558,26 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
   }
 
-  /* "adbus/_sdbus/method.pyx":31
+  /* "adbus/_sdbus/method.pyx":38
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN
  * 
  *         if unprivledged:             # <<<<<<<<<<<<<<
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_UNPRIVILEGED
  * 
  */
-  __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_unprivledged); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(3, 31, __pyx_L1_error)
-  if (__pyx_t_2) {
+  __pyx_t_5 = __Pyx_PyObject_IsTrue(__pyx_v_unprivledged); if (unlikely(__pyx_t_5 < 0)) __PYX_ERR(3, 38, __pyx_L1_error)
+  if (__pyx_t_5) {
 
-    /* "adbus/_sdbus/method.pyx":32
+    /* "adbus/_sdbus/method.pyx":39
  * 
  *         if unprivledged:
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_UNPRIVILEGED             # <<<<<<<<<<<<<<
  * 
- *         self.x.member = name
+ *         self.x.member = self.name
  */
     __pyx_v_self->flags = (__pyx_v_self->flags | SD_BUS_VTABLE_UNPRIVILEGED);
 
-    /* "adbus/_sdbus/method.pyx":31
+    /* "adbus/_sdbus/method.pyx":38
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN
  * 
  *         if unprivledged:             # <<<<<<<<<<<<<<
@@ -3768,47 +3586,47 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
   }
 
-  /* "adbus/_sdbus/method.pyx":34
+  /* "adbus/_sdbus/method.pyx":41
  *             self.flags |= _sdbus_h.SD_BUS_VTABLE_UNPRIVILEGED
  * 
- *         self.x.member = name             # <<<<<<<<<<<<<<
+ *         self.x.member = self.name             # <<<<<<<<<<<<<<
  *         self.x.handler = method_message_handler
- *         self.x.signature = arg_types
+ *         self.x.signature = self.arg_types
  */
-  __pyx_t_3 = __Pyx_PyObject_AsString(__pyx_v_name); if (unlikely((!__pyx_t_3) && PyErr_Occurred())) __PYX_ERR(3, 34, __pyx_L1_error)
-  __pyx_v_self->x.member = __pyx_t_3;
+  __pyx_t_6 = __Pyx_PyObject_AsString(__pyx_v_self->name); if (unlikely((!__pyx_t_6) && PyErr_Occurred())) __PYX_ERR(3, 41, __pyx_L1_error)
+  __pyx_v_self->x.member = __pyx_t_6;
 
-  /* "adbus/_sdbus/method.pyx":35
+  /* "adbus/_sdbus/method.pyx":42
  * 
- *         self.x.member = name
+ *         self.x.member = self.name
  *         self.x.handler = method_message_handler             # <<<<<<<<<<<<<<
- *         self.x.signature = arg_types
- *         self.x.result = return_type
+ *         self.x.signature = self.arg_types
+ *         self.x.result = self.return_type
  */
   __pyx_v_self->x.handler = __pyx_f_5adbus_6_sdbus_method_message_handler;
 
-  /* "adbus/_sdbus/method.pyx":36
- *         self.x.member = name
+  /* "adbus/_sdbus/method.pyx":43
+ *         self.x.member = self.name
  *         self.x.handler = method_message_handler
- *         self.x.signature = arg_types             # <<<<<<<<<<<<<<
- *         self.x.result = return_type
+ *         self.x.signature = self.arg_types             # <<<<<<<<<<<<<<
+ *         self.x.result = self.return_type
  * 
  */
-  __pyx_t_4 = __Pyx_PyObject_AsString(__pyx_v_arg_types); if (unlikely((!__pyx_t_4) && PyErr_Occurred())) __PYX_ERR(3, 36, __pyx_L1_error)
-  __pyx_v_self->x.signature = __pyx_t_4;
+  __pyx_t_7 = __Pyx_PyObject_AsString(__pyx_v_self->arg_types); if (unlikely((!__pyx_t_7) && PyErr_Occurred())) __PYX_ERR(3, 43, __pyx_L1_error)
+  __pyx_v_self->x.signature = __pyx_t_7;
 
-  /* "adbus/_sdbus/method.pyx":37
+  /* "adbus/_sdbus/method.pyx":44
  *         self.x.handler = method_message_handler
- *         self.x.signature = arg_types
- *         self.x.result = return_type             # <<<<<<<<<<<<<<
+ *         self.x.signature = self.arg_types
+ *         self.x.result = self.return_type             # <<<<<<<<<<<<<<
  * 
  *         self.userdata = <void *>callback
  */
-  __pyx_t_5 = __Pyx_PyObject_AsString(__pyx_v_return_type); if (unlikely((!__pyx_t_5) && PyErr_Occurred())) __PYX_ERR(3, 37, __pyx_L1_error)
-  __pyx_v_self->x.result = __pyx_t_5;
+  __pyx_t_8 = __Pyx_PyObject_AsString(__pyx_v_self->return_type); if (unlikely((!__pyx_t_8) && PyErr_Occurred())) __PYX_ERR(3, 44, __pyx_L1_error)
+  __pyx_v_self->x.result = __pyx_t_8;
 
-  /* "adbus/_sdbus/method.pyx":39
- *         self.x.result = return_type
+  /* "adbus/_sdbus/method.pyx":46
+ *         self.x.result = self.return_type
  * 
  *         self.userdata = <void *>callback             # <<<<<<<<<<<<<<
  * 
@@ -3816,10 +3634,10 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
  */
   __pyx_v_self->userdata = ((void *)__pyx_v_callback);
 
-  /* "adbus/_sdbus/method.pyx":16
- *     cdef void *userdata
+  /* "adbus/_sdbus/method.pyx":19
+ *     cdef bytes return_type
  * 
- *     def __cinit__(self, name, callback, arg_types=b'', return_type=b'',             # <<<<<<<<<<<<<<
+ *     def __cinit__(self, name, callback, arg_types='', return_type='',             # <<<<<<<<<<<<<<
  *             deprectiated=False, hidden=False, unprivledged=False):
  * 
  */
@@ -3828,6 +3646,9 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_XDECREF(__pyx_t_2);
+  __Pyx_XDECREF(__pyx_t_3);
   __Pyx_AddTraceback("adbus._sdbus.Method.__cinit__", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = -1;
   __pyx_L0:;
@@ -3835,7 +3656,7 @@ static int __pyx_pf_5adbus_6_sdbus_6Method___cinit__(struct __pyx_obj_5adbus_6_s
   return __pyx_r;
 }
 
-/* "adbus/_sdbus/method.pyx":41
+/* "adbus/_sdbus/method.pyx":48
  *         self.userdata = <void *>callback
  * 
  *     cdef populate_vtable(self, _sdbus_h.sd_bus_vtable *vtable):             # <<<<<<<<<<<<<<
@@ -3850,7 +3671,7 @@ static PyObject *__pyx_f_5adbus_6_sdbus_6Method_populate_vtable(struct __pyx_obj
   uint64_t __pyx_t_2;
   __Pyx_RefNannySetupContext("populate_vtable", 0);
 
-  /* "adbus/_sdbus/method.pyx":42
+  /* "adbus/_sdbus/method.pyx":49
  * 
  *     cdef populate_vtable(self, _sdbus_h.sd_bus_vtable *vtable):
  *         vtable.type = self.type             # <<<<<<<<<<<<<<
@@ -3860,7 +3681,7 @@ static PyObject *__pyx_f_5adbus_6_sdbus_6Method_populate_vtable(struct __pyx_obj
   __pyx_t_1 = __pyx_v_self->type;
   __pyx_v_vtable->type = __pyx_t_1;
 
-  /* "adbus/_sdbus/method.pyx":43
+  /* "adbus/_sdbus/method.pyx":50
  *     cdef populate_vtable(self, _sdbus_h.sd_bus_vtable *vtable):
  *         vtable.type = self.type
  *         vtable.flags = self.flags             # <<<<<<<<<<<<<<
@@ -3869,14 +3690,14 @@ static PyObject *__pyx_f_5adbus_6_sdbus_6Method_populate_vtable(struct __pyx_obj
   __pyx_t_2 = __pyx_v_self->flags;
   __pyx_v_vtable->flags = __pyx_t_2;
 
-  /* "adbus/_sdbus/method.pyx":44
+  /* "adbus/_sdbus/method.pyx":51
  *         vtable.type = self.type
  *         vtable.flags = self.flags
  *         memcpy(&vtable.x, &self.x, sizeof(self.x))             # <<<<<<<<<<<<<<
  */
   memcpy((&__pyx_v_vtable->x), (&__pyx_v_self->x), (sizeof(__pyx_v_self->x)));
 
-  /* "adbus/_sdbus/method.pyx":41
+  /* "adbus/_sdbus/method.pyx":48
  *         self.userdata = <void *>callback
  * 
  *     cdef populate_vtable(self, _sdbus_h.sd_bus_vtable *vtable):             # <<<<<<<<<<<<<<
@@ -4062,8 +3883,10 @@ static PyTypeObject __pyx_type_5adbus_6_sdbus_SdbusError = {
   0, /*tp_finalize*/
   #endif
 };
+static struct __pyx_vtabstruct_5adbus_6_sdbus_Message __pyx_vtable_5adbus_6_sdbus_Message;
 
-static PyObject *__pyx_tp_new_5adbus_6_sdbus_Service(PyTypeObject *t, PyObject *a, PyObject *k) {
+static PyObject *__pyx_tp_new_5adbus_6_sdbus_Message(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
+  struct __pyx_obj_5adbus_6_sdbus_Message *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -4071,6 +3894,89 @@ static PyObject *__pyx_tp_new_5adbus_6_sdbus_Service(PyTypeObject *t, PyObject *
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_5adbus_6_sdbus_Message *)o);
+  p->__pyx_vtab = __pyx_vtabptr_5adbus_6_sdbus_Message;
+  return o;
+}
+
+static void __pyx_tp_dealloc_5adbus_6_sdbus_Message(PyObject *o) {
+  #if PY_VERSION_HEX >= 0x030400a1
+  if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
+    if (PyObject_CallFinalizerFromDealloc(o)) return;
+  }
+  #endif
+  (*Py_TYPE(o)->tp_free)(o);
+}
+
+static PyTypeObject __pyx_type_5adbus_6_sdbus_Message = {
+  PyVarObject_HEAD_INIT(0, 0)
+  "adbus._sdbus.Message", /*tp_name*/
+  sizeof(struct __pyx_obj_5adbus_6_sdbus_Message), /*tp_basicsize*/
+  0, /*tp_itemsize*/
+  __pyx_tp_dealloc_5adbus_6_sdbus_Message, /*tp_dealloc*/
+  0, /*tp_print*/
+  0, /*tp_getattr*/
+  0, /*tp_setattr*/
+  #if PY_MAJOR_VERSION < 3
+  0, /*tp_compare*/
+  #endif
+  #if PY_MAJOR_VERSION >= 3
+  0, /*tp_as_async*/
+  #endif
+  0, /*tp_repr*/
+  0, /*tp_as_number*/
+  0, /*tp_as_sequence*/
+  0, /*tp_as_mapping*/
+  0, /*tp_hash*/
+  0, /*tp_call*/
+  0, /*tp_str*/
+  0, /*tp_getattro*/
+  0, /*tp_setattro*/
+  0, /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_BASETYPE, /*tp_flags*/
+  0, /*tp_doc*/
+  0, /*tp_traverse*/
+  0, /*tp_clear*/
+  0, /*tp_richcompare*/
+  0, /*tp_weaklistoffset*/
+  0, /*tp_iter*/
+  0, /*tp_iternext*/
+  0, /*tp_methods*/
+  0, /*tp_members*/
+  0, /*tp_getset*/
+  0, /*tp_base*/
+  0, /*tp_dict*/
+  0, /*tp_descr_get*/
+  0, /*tp_descr_set*/
+  0, /*tp_dictoffset*/
+  0, /*tp_init*/
+  0, /*tp_alloc*/
+  __pyx_tp_new_5adbus_6_sdbus_Message, /*tp_new*/
+  0, /*tp_free*/
+  0, /*tp_is_gc*/
+  0, /*tp_bases*/
+  0, /*tp_mro*/
+  0, /*tp_cache*/
+  0, /*tp_subclasses*/
+  0, /*tp_weaklist*/
+  0, /*tp_del*/
+  0, /*tp_version_tag*/
+  #if PY_VERSION_HEX >= 0x030400a1
+  0, /*tp_finalize*/
+  #endif
+};
+
+static PyObject *__pyx_tp_new_5adbus_6_sdbus_Service(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5adbus_6_sdbus_Service *p;
+  PyObject *o;
+  if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
+    o = (*t->tp_alloc)(t, 0);
+  } else {
+    o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
+  }
+  if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_5adbus_6_sdbus_Service *)o);
+  p->name = ((PyObject*)Py_None); Py_INCREF(Py_None);
   if (unlikely(__pyx_pw_5adbus_6_sdbus_7Service_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
@@ -4079,6 +3985,7 @@ static PyObject *__pyx_tp_new_5adbus_6_sdbus_Service(PyTypeObject *t, PyObject *
 }
 
 static void __pyx_tp_dealloc_5adbus_6_sdbus_Service(PyObject *o) {
+  struct __pyx_obj_5adbus_6_sdbus_Service *p = (struct __pyx_obj_5adbus_6_sdbus_Service *)o;
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -4092,13 +3999,13 @@ static void __pyx_tp_dealloc_5adbus_6_sdbus_Service(PyObject *o) {
     --Py_REFCNT(o);
     PyErr_Restore(etype, eval, etb);
   }
+  Py_CLEAR(p->name);
   (*Py_TYPE(o)->tp_free)(o);
 }
 
 static PyMethodDef __pyx_methods_5adbus_6_sdbus_Service[] = {
-  {"process", (PyCFunction)__pyx_pw_5adbus_6_sdbus_7Service_5process, METH_NOARGS, 0},
-  {"_bus_wait", (PyCFunction)__pyx_pw_5adbus_6_sdbus_7Service_8_bus_wait, METH_NOARGS, 0},
-  {"_bus_process", (PyCFunction)__pyx_pw_5adbus_6_sdbus_7Service_10_bus_process, METH_NOARGS, 0},
+  {"bus_wait", (PyCFunction)__pyx_pw_5adbus_6_sdbus_7Service_5bus_wait, METH_NOARGS, 0},
+  {"bus_process", (PyCFunction)__pyx_pw_5adbus_6_sdbus_7Service_7bus_process, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
@@ -4161,6 +4068,7 @@ static PyTypeObject __pyx_type_5adbus_6_sdbus_Service = {
 };
 
 static PyObject *__pyx_tp_new_5adbus_6_sdbus_Object(PyTypeObject *t, PyObject *a, PyObject *k) {
+  struct __pyx_obj_5adbus_6_sdbus_Object *p;
   PyObject *o;
   if (likely((t->tp_flags & Py_TPFLAGS_IS_ABSTRACT) == 0)) {
     o = (*t->tp_alloc)(t, 0);
@@ -4168,6 +4076,9 @@ static PyObject *__pyx_tp_new_5adbus_6_sdbus_Object(PyTypeObject *t, PyObject *a
     o = (PyObject *) PyBaseObject_Type.tp_new(t, __pyx_empty_tuple, 0);
   }
   if (unlikely(!o)) return 0;
+  p = ((struct __pyx_obj_5adbus_6_sdbus_Object *)o);
+  p->path = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->interface = ((PyObject*)Py_None); Py_INCREF(Py_None);
   if (unlikely(__pyx_pw_5adbus_6_sdbus_6Object_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
@@ -4176,6 +4087,7 @@ static PyObject *__pyx_tp_new_5adbus_6_sdbus_Object(PyTypeObject *t, PyObject *a
 }
 
 static void __pyx_tp_dealloc_5adbus_6_sdbus_Object(PyObject *o) {
+  struct __pyx_obj_5adbus_6_sdbus_Object *p = (struct __pyx_obj_5adbus_6_sdbus_Object *)o;
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
@@ -4185,17 +4097,19 @@ static void __pyx_tp_dealloc_5adbus_6_sdbus_Object(PyObject *o) {
     PyObject *etype, *eval, *etb;
     PyErr_Fetch(&etype, &eval, &etb);
     ++Py_REFCNT(o);
-    __pyx_pw_5adbus_6_sdbus_6Object_9__dealloc__(o);
+    __pyx_pw_5adbus_6_sdbus_6Object_3__dealloc__(o);
     --Py_REFCNT(o);
     PyErr_Restore(etype, eval, etb);
   }
+  Py_CLEAR(p->path);
+  Py_CLEAR(p->interface);
   (*Py_TYPE(o)->tp_free)(o);
 }
 
 static PyMethodDef __pyx_methods_5adbus_6_sdbus_Object[] = {
-  {"_malloc", (PyCFunction)__pyx_pw_5adbus_6_sdbus_6Object_3_malloc, METH_O, 0},
-  {"_init_vtable", (PyCFunction)__pyx_pw_5adbus_6_sdbus_6Object_5_init_vtable, METH_VARARGS|METH_KEYWORDS, 0},
-  {"_register_vtable", (PyCFunction)__pyx_pw_5adbus_6_sdbus_6Object_7_register_vtable, METH_VARARGS|METH_KEYWORDS, 0},
+  {"_malloc", (PyCFunction)__pyx_pw_5adbus_6_sdbus_6Object_5_malloc, METH_O, 0},
+  {"_init_vtable", (PyCFunction)__pyx_pw_5adbus_6_sdbus_6Object_7_init_vtable, METH_VARARGS|METH_KEYWORDS, 0},
+  {"_register_vtable", (PyCFunction)__pyx_pw_5adbus_6_sdbus_6Object_9_register_vtable, METH_VARARGS|METH_KEYWORDS, 0},
   {0, 0, 0, 0}
 };
 
@@ -4269,6 +4183,9 @@ static PyObject *__pyx_tp_new_5adbus_6_sdbus_Method(PyTypeObject *t, PyObject *a
   if (unlikely(!o)) return 0;
   p = ((struct __pyx_obj_5adbus_6_sdbus_Method *)o);
   p->__pyx_vtab = __pyx_vtabptr_5adbus_6_sdbus_Method;
+  p->name = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->arg_types = ((PyObject*)Py_None); Py_INCREF(Py_None);
+  p->return_type = ((PyObject*)Py_None); Py_INCREF(Py_None);
   if (unlikely(__pyx_pw_5adbus_6_sdbus_6Method_1__cinit__(o, a, k) < 0)) goto bad;
   return o;
   bad:
@@ -4277,11 +4194,15 @@ static PyObject *__pyx_tp_new_5adbus_6_sdbus_Method(PyTypeObject *t, PyObject *a
 }
 
 static void __pyx_tp_dealloc_5adbus_6_sdbus_Method(PyObject *o) {
+  struct __pyx_obj_5adbus_6_sdbus_Method *p = (struct __pyx_obj_5adbus_6_sdbus_Method *)o;
   #if PY_VERSION_HEX >= 0x030400a1
   if (unlikely(Py_TYPE(o)->tp_finalize) && (!PyType_IS_GC(Py_TYPE(o)) || !_PyGC_FINALIZED(o))) {
     if (PyObject_CallFinalizerFromDealloc(o)) return;
   }
   #endif
+  Py_CLEAR(p->name);
+  Py_CLEAR(p->arg_types);
+  Py_CLEAR(p->return_type);
   (*Py_TYPE(o)->tp_free)(o);
 }
 
@@ -4347,124 +4268,6 @@ static PyTypeObject __pyx_type_5adbus_6_sdbus_Method = {
   #endif
 };
 
-static struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *__pyx_freelist_5adbus_6_sdbus___pyx_scope_struct__process[8];
-static int __pyx_freecount_5adbus_6_sdbus___pyx_scope_struct__process = 0;
-
-static PyObject *__pyx_tp_new_5adbus_6_sdbus___pyx_scope_struct__process(PyTypeObject *t, CYTHON_UNUSED PyObject *a, CYTHON_UNUSED PyObject *k) {
-  PyObject *o;
-  if (CYTHON_COMPILING_IN_CPYTHON && likely((__pyx_freecount_5adbus_6_sdbus___pyx_scope_struct__process > 0) & (t->tp_basicsize == sizeof(struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process)))) {
-    o = (PyObject*)__pyx_freelist_5adbus_6_sdbus___pyx_scope_struct__process[--__pyx_freecount_5adbus_6_sdbus___pyx_scope_struct__process];
-    memset(o, 0, sizeof(struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process));
-    (void) PyObject_INIT(o, t);
-    PyObject_GC_Track(o);
-  } else {
-    o = (*t->tp_alloc)(t, 0);
-    if (unlikely(!o)) return 0;
-  }
-  return o;
-}
-
-static void __pyx_tp_dealloc_5adbus_6_sdbus___pyx_scope_struct__process(PyObject *o) {
-  struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *p = (struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *)o;
-  PyObject_GC_UnTrack(o);
-  Py_CLEAR(p->__pyx_v_loop);
-  Py_CLEAR(p->__pyx_v_pool);
-  Py_CLEAR(p->__pyx_v_self);
-  if (CYTHON_COMPILING_IN_CPYTHON && ((__pyx_freecount_5adbus_6_sdbus___pyx_scope_struct__process < 8) & (Py_TYPE(o)->tp_basicsize == sizeof(struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process)))) {
-    __pyx_freelist_5adbus_6_sdbus___pyx_scope_struct__process[__pyx_freecount_5adbus_6_sdbus___pyx_scope_struct__process++] = ((struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *)o);
-  } else {
-    (*Py_TYPE(o)->tp_free)(o);
-  }
-}
-
-static int __pyx_tp_traverse_5adbus_6_sdbus___pyx_scope_struct__process(PyObject *o, visitproc v, void *a) {
-  int e;
-  struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *p = (struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *)o;
-  if (p->__pyx_v_loop) {
-    e = (*v)(p->__pyx_v_loop, a); if (e) return e;
-  }
-  if (p->__pyx_v_pool) {
-    e = (*v)(p->__pyx_v_pool, a); if (e) return e;
-  }
-  if (p->__pyx_v_self) {
-    e = (*v)(((PyObject*)p->__pyx_v_self), a); if (e) return e;
-  }
-  return 0;
-}
-
-static int __pyx_tp_clear_5adbus_6_sdbus___pyx_scope_struct__process(PyObject *o) {
-  PyObject* tmp;
-  struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *p = (struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process *)o;
-  tmp = ((PyObject*)p->__pyx_v_loop);
-  p->__pyx_v_loop = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_pool);
-  p->__pyx_v_pool = Py_None; Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  tmp = ((PyObject*)p->__pyx_v_self);
-  p->__pyx_v_self = ((struct __pyx_obj_5adbus_6_sdbus_Service *)Py_None); Py_INCREF(Py_None);
-  Py_XDECREF(tmp);
-  return 0;
-}
-
-static PyTypeObject __pyx_type_5adbus_6_sdbus___pyx_scope_struct__process = {
-  PyVarObject_HEAD_INIT(0, 0)
-  "adbus._sdbus.__pyx_scope_struct__process", /*tp_name*/
-  sizeof(struct __pyx_obj_5adbus_6_sdbus___pyx_scope_struct__process), /*tp_basicsize*/
-  0, /*tp_itemsize*/
-  __pyx_tp_dealloc_5adbus_6_sdbus___pyx_scope_struct__process, /*tp_dealloc*/
-  0, /*tp_print*/
-  0, /*tp_getattr*/
-  0, /*tp_setattr*/
-  #if PY_MAJOR_VERSION < 3
-  0, /*tp_compare*/
-  #endif
-  #if PY_MAJOR_VERSION >= 3
-  0, /*tp_as_async*/
-  #endif
-  0, /*tp_repr*/
-  0, /*tp_as_number*/
-  0, /*tp_as_sequence*/
-  0, /*tp_as_mapping*/
-  0, /*tp_hash*/
-  0, /*tp_call*/
-  0, /*tp_str*/
-  0, /*tp_getattro*/
-  0, /*tp_setattro*/
-  0, /*tp_as_buffer*/
-  Py_TPFLAGS_DEFAULT|Py_TPFLAGS_HAVE_VERSION_TAG|Py_TPFLAGS_CHECKTYPES|Py_TPFLAGS_HAVE_NEWBUFFER|Py_TPFLAGS_HAVE_GC, /*tp_flags*/
-  0, /*tp_doc*/
-  __pyx_tp_traverse_5adbus_6_sdbus___pyx_scope_struct__process, /*tp_traverse*/
-  __pyx_tp_clear_5adbus_6_sdbus___pyx_scope_struct__process, /*tp_clear*/
-  0, /*tp_richcompare*/
-  0, /*tp_weaklistoffset*/
-  0, /*tp_iter*/
-  0, /*tp_iternext*/
-  0, /*tp_methods*/
-  0, /*tp_members*/
-  0, /*tp_getset*/
-  0, /*tp_base*/
-  0, /*tp_dict*/
-  0, /*tp_descr_get*/
-  0, /*tp_descr_set*/
-  0, /*tp_dictoffset*/
-  0, /*tp_init*/
-  0, /*tp_alloc*/
-  __pyx_tp_new_5adbus_6_sdbus___pyx_scope_struct__process, /*tp_new*/
-  0, /*tp_free*/
-  0, /*tp_is_gc*/
-  0, /*tp_bases*/
-  0, /*tp_mro*/
-  0, /*tp_cache*/
-  0, /*tp_subclasses*/
-  0, /*tp_weaklist*/
-  0, /*tp_del*/
-  0, /*tp_version_tag*/
-  #if PY_VERSION_HEX >= 0x030400a1
-  0, /*tp_finalize*/
-  #endif
-};
-
 static PyMethodDef __pyx_methods[] = {
   {0, 0, 0, 0}
 };
@@ -4499,23 +4302,17 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_MemoryError, __pyx_k_MemoryError, sizeof(__pyx_k_MemoryError), 0, 0, 1, 1},
   {&__pyx_kp_s_NULL_Message, __pyx_k_NULL_Message, sizeof(__pyx_k_NULL_Message), 0, 0, 1, 0},
   {&__pyx_n_s_Processing, __pyx_k_Processing, sizeof(__pyx_k_Processing), 0, 0, 1, 1},
-  {&__pyx_n_s_Service_process, __pyx_k_Service_process, sizeof(__pyx_k_Service_process), 0, 0, 1, 1},
   {&__pyx_n_s_ThreadPoolExecutor, __pyx_k_ThreadPoolExecutor, sizeof(__pyx_k_ThreadPoolExecutor), 0, 0, 1, 1},
   {&__pyx_n_s_Waiting, __pyx_k_Waiting, sizeof(__pyx_k_Waiting), 0, 0, 1, 1},
-  {&__pyx_kp_b__7, __pyx_k__7, sizeof(__pyx_k__7), 0, 0, 0, 0},
-  {&__pyx_n_s_adbus__sdbus, __pyx_k_adbus__sdbus, sizeof(__pyx_k_adbus__sdbus), 0, 0, 1, 1},
+  {&__pyx_kp_s__6, __pyx_k__6, sizeof(__pyx_k__6), 0, 0, 1, 0},
   {&__pyx_n_s_arg_types, __pyx_k_arg_types, sizeof(__pyx_k_arg_types), 0, 0, 1, 1},
-  {&__pyx_n_s_args, __pyx_k_args, sizeof(__pyx_k_args), 0, 0, 1, 1},
   {&__pyx_n_s_asyncio, __pyx_k_asyncio, sizeof(__pyx_k_asyncio), 0, 0, 1, 1},
   {&__pyx_n_s_asyncio_coroutines, __pyx_k_asyncio_coroutines, sizeof(__pyx_k_asyncio_coroutines), 0, 0, 1, 1},
   {&__pyx_n_s_asyncio_tasks, __pyx_k_asyncio_tasks, sizeof(__pyx_k_asyncio_tasks), 0, 0, 1, 1},
-  {&__pyx_n_s_await, __pyx_k_await, sizeof(__pyx_k_await), 0, 0, 1, 1},
-  {&__pyx_n_s_bus_process, __pyx_k_bus_process, sizeof(__pyx_k_bus_process), 0, 0, 1, 1},
-  {&__pyx_n_s_bus_wait, __pyx_k_bus_wait, sizeof(__pyx_k_bus_wait), 0, 0, 1, 1},
   {&__pyx_n_s_callback, __pyx_k_callback, sizeof(__pyx_k_callback), 0, 0, 1, 1},
-  {&__pyx_n_s_close, __pyx_k_close, sizeof(__pyx_k_close), 0, 0, 1, 1},
   {&__pyx_n_s_concurrent_futures, __pyx_k_concurrent_futures, sizeof(__pyx_k_concurrent_futures), 0, 0, 1, 1},
   {&__pyx_n_s_deprectiated, __pyx_k_deprectiated, sizeof(__pyx_k_deprectiated), 0, 0, 1, 1},
+  {&__pyx_n_s_encode, __pyx_k_encode, sizeof(__pyx_k_encode), 0, 0, 1, 1},
   {&__pyx_n_s_end, __pyx_k_end, sizeof(__pyx_k_end), 0, 0, 1, 1},
   {&__pyx_n_s_enumerate, __pyx_k_enumerate, sizeof(__pyx_k_enumerate), 0, 0, 1, 1},
   {&__pyx_n_s_errno, __pyx_k_errno, sizeof(__pyx_k_errno), 0, 0, 1, 1},
@@ -4533,24 +4330,20 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_name, __pyx_k_name, sizeof(__pyx_k_name), 0, 0, 1, 1},
   {&__pyx_n_s_path, __pyx_k_path, sizeof(__pyx_k_path), 0, 0, 1, 1},
   {&__pyx_n_s_print, __pyx_k_print, sizeof(__pyx_k_print), 0, 0, 1, 1},
-  {&__pyx_n_s_process, __pyx_k_process, sizeof(__pyx_k_process), 0, 0, 1, 1},
   {&__pyx_n_s_pyx_vtable, __pyx_k_pyx_vtable, sizeof(__pyx_k_pyx_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_register_vtable, __pyx_k_register_vtable, sizeof(__pyx_k_register_vtable), 0, 0, 1, 1},
   {&__pyx_n_s_return_type, __pyx_k_return_type, sizeof(__pyx_k_return_type), 0, 0, 1, 1},
-  {&__pyx_n_s_run_in_executor, __pyx_k_run_in_executor, sizeof(__pyx_k_run_in_executor), 0, 0, 1, 1},
-  {&__pyx_n_s_send, __pyx_k_send, sizeof(__pyx_k_send), 0, 0, 1, 1},
   {&__pyx_n_s_service, __pyx_k_service, sizeof(__pyx_k_service), 0, 0, 1, 1},
   {&__pyx_n_s_system, __pyx_k_system, sizeof(__pyx_k_system), 0, 0, 1, 1},
   {&__pyx_n_s_test, __pyx_k_test, sizeof(__pyx_k_test), 0, 0, 1, 1},
   {&__pyx_n_b_tester, __pyx_k_tester, sizeof(__pyx_k_tester), 0, 0, 0, 1},
-  {&__pyx_n_s_throw, __pyx_k_throw, sizeof(__pyx_k_throw), 0, 0, 1, 1},
   {&__pyx_n_s_unprivledged, __pyx_k_unprivledged, sizeof(__pyx_k_unprivledged), 0, 0, 1, 1},
   {&__pyx_n_s_vtable, __pyx_k_vtable, sizeof(__pyx_k_vtable), 0, 0, 1, 1},
   {0, 0, 0, 0, 0, 0, 0}
 };
 static int __Pyx_InitCachedBuiltins(void) {
-  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 14, __pyx_L1_error)
-  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 26, __pyx_L1_error)
+  __pyx_builtin_enumerate = __Pyx_GetBuiltinName(__pyx_n_s_enumerate); if (!__pyx_builtin_enumerate) __PYX_ERR(0, 19, __pyx_L1_error)
+  __pyx_builtin_MemoryError = __Pyx_GetBuiltinName(__pyx_n_s_MemoryError); if (!__pyx_builtin_MemoryError) __PYX_ERR(0, 36, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -4560,71 +4353,60 @@ static int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
 
-  /* "adbus/_sdbus/message.pyx":10
+  /* "adbus/_sdbus/message.pyx":13
  * 
- *     if types == NULL:
- *         raise SdbusError("NULL Message")             # <<<<<<<<<<<<<<
+ *         if types == NULL:
+ *             raise SdbusError("NULL Message")             # <<<<<<<<<<<<<<
  * 
- *     print(f"Data Types {types}")
+ *         print(f"Data Types {types}")
  */
-  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_NULL_Message); if (unlikely(!__pyx_tuple_)) __PYX_ERR(1, 10, __pyx_L1_error)
+  __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_NULL_Message); if (unlikely(!__pyx_tuple_)) __PYX_ERR(1, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
 
-  /* "adbus/_sdbus/service.pyx":22
+  /* "adbus/_sdbus/service.pyx":13
  *         if system:
  *             if _sdbus_h.sd_bus_open_system(&self.bus) < 0:
  *                 raise BusError("Failed to connect to Bus")             # <<<<<<<<<<<<<<
  * 
  *         else:
  */
-  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_Failed_to_connect_to_Bus); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(2, 22, __pyx_L1_error)
+  __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_Failed_to_connect_to_Bus); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(2, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
 
-  /* "adbus/_sdbus/service.pyx":26
+  /* "adbus/_sdbus/service.pyx":17
  *         else:
  *             if _sdbus_h.sd_bus_open_user(&self.bus) < 0:
  *                 raise BusError("Failed to connect to Bus")             # <<<<<<<<<<<<<<
  * 
- *         if _sdbus_h.sd_bus_request_name(self.bus, name, 0) < 0:
+ *         if _sdbus_h.sd_bus_request_name(self.bus, self.name, 0) < 0:
  */
-  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_Failed_to_connect_to_Bus); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(2, 26, __pyx_L1_error)
+  __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_Failed_to_connect_to_Bus); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(2, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
 
-  /* "adbus/_sdbus/service.pyx":36
- *     async def process(self):
- *         loop = get_event_loop()
- *         pool = ThreadPoolExecutor(5)             # <<<<<<<<<<<<<<
- *         while True:
- *             await loop.run_in_executor(pool, self._bus_process)
- */
-  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_int_5); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(2, 36, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__4);
-  __Pyx_GIVEREF(__pyx_tuple__4);
-
-  /* "adbus/_sdbus/object.pyx":26
+  /* "adbus/_sdbus/object.pyx":36
  *                 (length+2)*sizeof(_sdbus_h.sd_bus_vtable))
  *         if not self._vtable:
  *             raise MemoryError("Failed to allocate vtable")             # <<<<<<<<<<<<<<
  * 
  *         self._userdata = <void **>PyMem_Malloc(length*sizeof(void*))
  */
-  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_Failed_to_allocate_vtable); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 26, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__5);
-  __Pyx_GIVEREF(__pyx_tuple__5);
+  __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Failed_to_allocate_vtable); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 36, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__4);
+  __Pyx_GIVEREF(__pyx_tuple__4);
 
-  /* "adbus/_sdbus/object.pyx":30
+  /* "adbus/_sdbus/object.pyx":40
  *         self._userdata = <void **>PyMem_Malloc(length*sizeof(void*))
  *         if not self._userdata:
  *             raise MemoryError("Failed to allocate userdata")             # <<<<<<<<<<<<<<
  * 
  *     def _init_vtable(self, deprectiated, hidden, length):
  */
-  __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_s_Failed_to_allocate_userdata); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(0, 30, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_tuple__6);
-  __Pyx_GIVEREF(__pyx_tuple__6);
+  __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_s_Failed_to_allocate_userdata); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(0, 40, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_tuple__5);
+  __Pyx_GIVEREF(__pyx_tuple__5);
   __Pyx_RefNannyFinishContext();
   return 0;
   __pyx_L1_error:;
@@ -4637,7 +4419,6 @@ static int __Pyx_InitGlobals(void) {
   __pyx_int_0 = PyInt_FromLong(0); if (unlikely(!__pyx_int_0)) __PYX_ERR(4, 1, __pyx_L1_error)
   __pyx_int_1 = PyInt_FromLong(1); if (unlikely(!__pyx_int_1)) __PYX_ERR(4, 1, __pyx_L1_error)
   __pyx_int_2 = PyInt_FromLong(2); if (unlikely(!__pyx_int_2)) __PYX_ERR(4, 1, __pyx_L1_error)
-  __pyx_int_5 = PyInt_FromLong(5); if (unlikely(!__pyx_int_5)) __PYX_ERR(4, 1, __pyx_L1_error)
   return 0;
   __pyx_L1_error:;
   return -1;
@@ -4729,18 +4510,25 @@ PyMODINIT_FUNC PyInit__sdbus(void)
   /*--- Function export code ---*/
   /*--- Type init code ---*/
   __pyx_type_5adbus_6_sdbus_BusError.tp_base = (&((PyTypeObject*)PyExc_Exception)[0]);
-  if (PyType_Ready(&__pyx_type_5adbus_6_sdbus_BusError) < 0) __PYX_ERR(4, 14, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5adbus_6_sdbus_BusError) < 0) __PYX_ERR(4, 15, __pyx_L1_error)
   __pyx_type_5adbus_6_sdbus_BusError.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "BusError", (PyObject *)&__pyx_type_5adbus_6_sdbus_BusError) < 0) __PYX_ERR(4, 14, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "BusError", (PyObject *)&__pyx_type_5adbus_6_sdbus_BusError) < 0) __PYX_ERR(4, 15, __pyx_L1_error)
   __pyx_ptype_5adbus_6_sdbus_BusError = &__pyx_type_5adbus_6_sdbus_BusError;
   __pyx_type_5adbus_6_sdbus_SdbusError.tp_base = (&((PyTypeObject*)PyExc_Exception)[0]);
-  if (PyType_Ready(&__pyx_type_5adbus_6_sdbus_SdbusError) < 0) __PYX_ERR(4, 18, __pyx_L1_error)
+  if (PyType_Ready(&__pyx_type_5adbus_6_sdbus_SdbusError) < 0) __PYX_ERR(4, 19, __pyx_L1_error)
   __pyx_type_5adbus_6_sdbus_SdbusError.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "SdbusError", (PyObject *)&__pyx_type_5adbus_6_sdbus_SdbusError) < 0) __PYX_ERR(4, 18, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "SdbusError", (PyObject *)&__pyx_type_5adbus_6_sdbus_SdbusError) < 0) __PYX_ERR(4, 19, __pyx_L1_error)
   __pyx_ptype_5adbus_6_sdbus_SdbusError = &__pyx_type_5adbus_6_sdbus_SdbusError;
-  if (PyType_Ready(&__pyx_type_5adbus_6_sdbus_Service) < 0) __PYX_ERR(2, 15, __pyx_L1_error)
+  __pyx_vtabptr_5adbus_6_sdbus_Message = &__pyx_vtable_5adbus_6_sdbus_Message;
+  __pyx_vtable_5adbus_6_sdbus_Message.args = (PyObject *(*)(sd_bus_message *))__pyx_f_5adbus_6_sdbus_7Message_args;
+  if (PyType_Ready(&__pyx_type_5adbus_6_sdbus_Message) < 0) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_type_5adbus_6_sdbus_Message.tp_print = 0;
+  if (__Pyx_SetVtable(__pyx_type_5adbus_6_sdbus_Message.tp_dict, __pyx_vtabptr_5adbus_6_sdbus_Message) < 0) __PYX_ERR(1, 3, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Message", (PyObject *)&__pyx_type_5adbus_6_sdbus_Message) < 0) __PYX_ERR(1, 3, __pyx_L1_error)
+  __pyx_ptype_5adbus_6_sdbus_Message = &__pyx_type_5adbus_6_sdbus_Message;
+  if (PyType_Ready(&__pyx_type_5adbus_6_sdbus_Service) < 0) __PYX_ERR(2, 3, __pyx_L1_error)
   __pyx_type_5adbus_6_sdbus_Service.tp_print = 0;
-  if (PyObject_SetAttrString(__pyx_m, "Service", (PyObject *)&__pyx_type_5adbus_6_sdbus_Service) < 0) __PYX_ERR(2, 15, __pyx_L1_error)
+  if (PyObject_SetAttrString(__pyx_m, "Service", (PyObject *)&__pyx_type_5adbus_6_sdbus_Service) < 0) __PYX_ERR(2, 3, __pyx_L1_error)
   __pyx_ptype_5adbus_6_sdbus_Service = &__pyx_type_5adbus_6_sdbus_Service;
   if (PyType_Ready(&__pyx_type_5adbus_6_sdbus_Object) < 0) __PYX_ERR(0, 3, __pyx_L1_error)
   __pyx_type_5adbus_6_sdbus_Object.tp_print = 0;
@@ -4753,9 +4541,6 @@ PyMODINIT_FUNC PyInit__sdbus(void)
   if (__Pyx_SetVtable(__pyx_type_5adbus_6_sdbus_Method.tp_dict, __pyx_vtabptr_5adbus_6_sdbus_Method) < 0) __PYX_ERR(3, 10, __pyx_L1_error)
   if (PyObject_SetAttrString(__pyx_m, "Method", (PyObject *)&__pyx_type_5adbus_6_sdbus_Method) < 0) __PYX_ERR(3, 10, __pyx_L1_error)
   __pyx_ptype_5adbus_6_sdbus_Method = &__pyx_type_5adbus_6_sdbus_Method;
-  if (PyType_Ready(&__pyx_type_5adbus_6_sdbus___pyx_scope_struct__process) < 0) __PYX_ERR(2, 34, __pyx_L1_error)
-  __pyx_type_5adbus_6_sdbus___pyx_scope_struct__process.tp_print = 0;
-  __pyx_ptype_5adbus_6_sdbus___pyx_scope_struct__process = &__pyx_type_5adbus_6_sdbus___pyx_scope_struct__process;
   /*--- Type import code ---*/
   /*--- Variable import code ---*/
   /*--- Function import code ---*/
@@ -5241,26 +5026,8 @@ bad:
                  (num_expected == 1) ? "" : "s", num_found);
 }
 
-/* GetModuleGlobalName */
-  static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
-    PyObject *result;
-#if !CYTHON_AVOID_BORROWED_REFS
-    result = PyDict_GetItem(__pyx_d, name);
-    if (likely(result)) {
-        Py_INCREF(result);
-    } else {
-#else
-    result = PyObject_GetItem(__pyx_d, name);
-    if (!result) {
-        PyErr_Clear();
-#endif
-        result = __Pyx_GetBuiltinName(name);
-    }
-    return result;
-}
-
 /* PyCFunctionFastCall */
-    #if CYTHON_FAST_PYCCALL
+  #if CYTHON_FAST_PYCCALL
 static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, PyObject **args, Py_ssize_t nargs) {
     PyCFunctionObject *func = (PyCFunctionObject*)func_obj;
     PyCFunction meth = PyCFunction_GET_FUNCTION(func);
@@ -5278,7 +5045,7 @@ static CYTHON_INLINE PyObject * __Pyx_PyCFunction_FastCall(PyObject *func_obj, P
 #endif  // CYTHON_FAST_PYCCALL
 
 /* PyFunctionFastCall */
-    #if CYTHON_FAST_PYCALL
+  #if CYTHON_FAST_PYCALL
 #include "frameobject.h"
 static PyObject* __Pyx_PyFunction_FastCallNoKw(PyCodeObject *co, PyObject **args, Py_ssize_t na,
                                                PyObject *globals) {
@@ -5398,7 +5165,7 @@ done:
 #endif  // CYTHON_FAST_PYCALL
 
 /* PyObjectCallMethO */
-    #if CYTHON_COMPILING_IN_CPYTHON
+  #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject *arg) {
     PyObject *self, *result;
     PyCFunction cfunc;
@@ -5418,7 +5185,7 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallMethO(PyObject *func, PyObject
 #endif
 
 /* PyObjectCallOneArg */
-    #if CYTHON_COMPILING_IN_CPYTHON
+  #if CYTHON_COMPILING_IN_CPYTHON
 static PyObject* __Pyx__PyObject_CallOneArg(PyObject *func, PyObject *arg) {
     PyObject *result;
     PyObject *args = PyTuple_New(1);
@@ -5462,7 +5229,7 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallOneArg(PyObject *func, PyObjec
 #endif
 
 /* PyObjectCallNoArg */
-      #if CYTHON_COMPILING_IN_CPYTHON
+    #if CYTHON_COMPILING_IN_CPYTHON
 static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
 #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(func)) {
@@ -5482,1178 +5249,8 @@ static CYTHON_INLINE PyObject* __Pyx_PyObject_CallNoArg(PyObject *func) {
 }
 #endif
 
-/* FetchCommonType */
-        static PyTypeObject* __Pyx_FetchCommonType(PyTypeObject* type) {
-    PyObject* fake_module;
-    PyTypeObject* cached_type = NULL;
-    fake_module = PyImport_AddModule((char*) "_cython_" CYTHON_ABI);
-    if (!fake_module) return NULL;
-    Py_INCREF(fake_module);
-    cached_type = (PyTypeObject*) PyObject_GetAttrString(fake_module, type->tp_name);
-    if (cached_type) {
-        if (!PyType_Check((PyObject*)cached_type)) {
-            PyErr_Format(PyExc_TypeError,
-                "Shared Cython type %.200s is not a type object",
-                type->tp_name);
-            goto bad;
-        }
-        if (cached_type->tp_basicsize != type->tp_basicsize) {
-            PyErr_Format(PyExc_TypeError,
-                "Shared Cython type %.200s has the wrong size, try recompiling",
-                type->tp_name);
-            goto bad;
-        }
-    } else {
-        if (!PyErr_ExceptionMatches(PyExc_AttributeError)) goto bad;
-        PyErr_Clear();
-        if (PyType_Ready(type) < 0) goto bad;
-        if (PyObject_SetAttrString(fake_module, type->tp_name, (PyObject*) type) < 0)
-            goto bad;
-        Py_INCREF(type);
-        cached_type = type;
-    }
-done:
-    Py_DECREF(fake_module);
-    return cached_type;
-bad:
-    Py_XDECREF(cached_type);
-    cached_type = NULL;
-    goto done;
-}
-
-/* SwapException */
-        #if CYTHON_FAST_THREAD_STATE
-static CYTHON_INLINE void __Pyx__ExceptionSwap(PyThreadState *tstate, PyObject **type, PyObject **value, PyObject **tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    tmp_type = tstate->exc_type;
-    tmp_value = tstate->exc_value;
-    tmp_tb = tstate->exc_traceback;
-    tstate->exc_type = *type;
-    tstate->exc_value = *value;
-    tstate->exc_traceback = *tb;
-    *type = tmp_type;
-    *value = tmp_value;
-    *tb = tmp_tb;
-}
-#else
-static CYTHON_INLINE void __Pyx_ExceptionSwap(PyObject **type, PyObject **value, PyObject **tb) {
-    PyObject *tmp_type, *tmp_value, *tmp_tb;
-    PyErr_GetExcInfo(&tmp_type, &tmp_value, &tmp_tb);
-    PyErr_SetExcInfo(*type, *value, *tb);
-    *type = tmp_type;
-    *value = tmp_value;
-    *tb = tmp_tb;
-}
-#endif
-
-/* PyObjectCallMethod1 */
-        static PyObject* __Pyx_PyObject_CallMethod1(PyObject* obj, PyObject* method_name, PyObject* arg) {
-    PyObject *method, *result = NULL;
-    method = __Pyx_PyObject_GetAttrStr(obj, method_name);
-    if (unlikely(!method)) goto done;
-#if CYTHON_UNPACK_METHODS
-    if (likely(PyMethod_Check(method))) {
-        PyObject *self = PyMethod_GET_SELF(method);
-        if (likely(self)) {
-            PyObject *args;
-            PyObject *function = PyMethod_GET_FUNCTION(method);
-            #if CYTHON_FAST_PYCALL
-            if (PyFunction_Check(function)) {
-                PyObject *args[2] = {self, arg};
-                result = __Pyx_PyFunction_FastCall(function, args, 2);
-                goto done;
-            }
-            #endif
-            #if CYTHON_FAST_PYCCALL
-            if (__Pyx_PyFastCFunction_Check(function)) {
-                PyObject *args[2] = {self, arg};
-                result = __Pyx_PyCFunction_FastCall(function, args, 2);
-                goto done;
-            }
-            #endif
-            args = PyTuple_New(2);
-            if (unlikely(!args)) goto done;
-            Py_INCREF(self);
-            PyTuple_SET_ITEM(args, 0, self);
-            Py_INCREF(arg);
-            PyTuple_SET_ITEM(args, 1, arg);
-            Py_INCREF(function);
-            Py_DECREF(method); method = NULL;
-            result = __Pyx_PyObject_Call(function, args, NULL);
-            Py_DECREF(args);
-            Py_DECREF(function);
-            return result;
-        }
-    }
-#endif
-    result = __Pyx_PyObject_CallOneArg(method, arg);
-done:
-    Py_XDECREF(method);
-    return result;
-}
-
-/* CoroutineBase */
-        #include <structmember.h>
-#include <frameobject.h>
-static PyObject *__Pyx_Coroutine_Send(PyObject *self, PyObject *value);
-static PyObject *__Pyx_Coroutine_Close(PyObject *self);
-static PyObject *__Pyx_Coroutine_Throw(PyObject *gen, PyObject *args);
-#define __Pyx_Coroutine_Undelegate(gen) Py_CLEAR((gen)->yieldfrom)
-#if 1 || PY_VERSION_HEX < 0x030300B0
-static int __Pyx_PyGen_FetchStopIterationValue(PyObject **pvalue) {
-    PyObject *et, *ev, *tb;
-    PyObject *value = NULL;
-    __Pyx_PyThreadState_declare
-    __Pyx_PyThreadState_assign
-    __Pyx_ErrFetch(&et, &ev, &tb);
-    if (!et) {
-        Py_XDECREF(tb);
-        Py_XDECREF(ev);
-        Py_INCREF(Py_None);
-        *pvalue = Py_None;
-        return 0;
-    }
-    if (likely(et == PyExc_StopIteration)) {
-        if (!ev) {
-            Py_INCREF(Py_None);
-            value = Py_None;
-        }
-#if PY_VERSION_HEX >= 0x030300A0
-        else if (Py_TYPE(ev) == (PyTypeObject*)PyExc_StopIteration) {
-            value = ((PyStopIterationObject *)ev)->value;
-            Py_INCREF(value);
-            Py_DECREF(ev);
-        }
-#endif
-        else if (unlikely(PyTuple_Check(ev))) {
-            if (PyTuple_GET_SIZE(ev) >= 1) {
-#if CYTHON_ASSUME_SAFE_MACROS && !CYTHON_AVOID_BORROWED_REFS
-                value = PyTuple_GET_ITEM(ev, 0);
-                Py_INCREF(value);
-#else
-                value = PySequence_ITEM(ev, 0);
-#endif
-            } else {
-                Py_INCREF(Py_None);
-                value = Py_None;
-            }
-            Py_DECREF(ev);
-        }
-        else if (!PyObject_TypeCheck(ev, (PyTypeObject*)PyExc_StopIteration)) {
-            value = ev;
-        }
-        if (likely(value)) {
-            Py_XDECREF(tb);
-            Py_DECREF(et);
-            *pvalue = value;
-            return 0;
-        }
-    } else if (!PyErr_GivenExceptionMatches(et, PyExc_StopIteration)) {
-        __Pyx_ErrRestore(et, ev, tb);
-        return -1;
-    }
-    PyErr_NormalizeException(&et, &ev, &tb);
-    if (unlikely(!PyObject_TypeCheck(ev, (PyTypeObject*)PyExc_StopIteration))) {
-        __Pyx_ErrRestore(et, ev, tb);
-        return -1;
-    }
-    Py_XDECREF(tb);
-    Py_DECREF(et);
-#if PY_VERSION_HEX >= 0x030300A0
-    value = ((PyStopIterationObject *)ev)->value;
-    Py_INCREF(value);
-    Py_DECREF(ev);
-#else
-    {
-        PyObject* args = __Pyx_PyObject_GetAttrStr(ev, __pyx_n_s_args);
-        Py_DECREF(ev);
-        if (likely(args)) {
-            value = PySequence_GetItem(args, 0);
-            Py_DECREF(args);
-        }
-        if (unlikely(!value)) {
-            __Pyx_ErrRestore(NULL, NULL, NULL);
-            Py_INCREF(Py_None);
-            value = Py_None;
-        }
-    }
-#endif
-    *pvalue = value;
-    return 0;
-}
-#endif
-static CYTHON_INLINE
-void __Pyx_Coroutine_ExceptionClear(__pyx_CoroutineObject *self) {
-    PyObject *exc_type = self->exc_type;
-    PyObject *exc_value = self->exc_value;
-    PyObject *exc_traceback = self->exc_traceback;
-    self->exc_type = NULL;
-    self->exc_value = NULL;
-    self->exc_traceback = NULL;
-    Py_XDECREF(exc_type);
-    Py_XDECREF(exc_value);
-    Py_XDECREF(exc_traceback);
-}
-static CYTHON_INLINE
-int __Pyx_Coroutine_CheckRunning(__pyx_CoroutineObject *gen) {
-    if (unlikely(gen->is_running)) {
-        PyErr_SetString(PyExc_ValueError,
-                        "generator already executing");
-        return 1;
-    }
-    return 0;
-}
-static CYTHON_INLINE
-PyObject *__Pyx_Coroutine_SendEx(__pyx_CoroutineObject *self, PyObject *value) {
-    PyObject *retval;
-    __Pyx_PyThreadState_declare
-    assert(!self->is_running);
-    if (unlikely(self->resume_label == 0)) {
-        if (unlikely(value && value != Py_None)) {
-            PyErr_SetString(PyExc_TypeError,
-                            "can't send non-None value to a "
-                            "just-started generator");
-            return NULL;
-        }
-    }
-    if (unlikely(self->resume_label == -1)) {
-        PyErr_SetNone(PyExc_StopIteration);
-        return NULL;
-    }
-    __Pyx_PyThreadState_assign
-    if (value) {
-#if CYTHON_COMPILING_IN_PYPY || CYTHON_COMPILING_IN_PYSTON
-#else
-        if (self->exc_traceback) {
-            PyTracebackObject *tb = (PyTracebackObject *) self->exc_traceback;
-            PyFrameObject *f = tb->tb_frame;
-            Py_XINCREF(__pyx_tstate->frame);
-            assert(f->f_back == NULL);
-            f->f_back = __pyx_tstate->frame;
-        }
-#endif
-        __Pyx_ExceptionSwap(&self->exc_type, &self->exc_value,
-                            &self->exc_traceback);
-    } else {
-        __Pyx_Coroutine_ExceptionClear(self);
-    }
-    self->is_running = 1;
-    retval = self->body((PyObject *) self, value);
-    self->is_running = 0;
-    if (retval) {
-        __Pyx_ExceptionSwap(&self->exc_type, &self->exc_value,
-                            &self->exc_traceback);
-#if CYTHON_COMPILING_IN_PYPY || CYTHON_COMPILING_IN_PYSTON
-#else
-        if (self->exc_traceback) {
-            PyTracebackObject *tb = (PyTracebackObject *) self->exc_traceback;
-            PyFrameObject *f = tb->tb_frame;
-            Py_CLEAR(f->f_back);
-        }
-#endif
-    } else {
-        __Pyx_Coroutine_ExceptionClear(self);
-    }
-    return retval;
-}
-static CYTHON_INLINE
-PyObject *__Pyx_Coroutine_MethodReturn(PyObject *retval) {
-    if (unlikely(!retval && !PyErr_Occurred())) {
-        PyErr_SetNone(PyExc_StopIteration);
-    }
-    return retval;
-}
-static CYTHON_INLINE
-PyObject *__Pyx_Coroutine_FinishDelegation(__pyx_CoroutineObject *gen) {
-    PyObject *ret;
-    PyObject *val = NULL;
-    __Pyx_Coroutine_Undelegate(gen);
-    __Pyx_PyGen_FetchStopIterationValue(&val);
-    ret = __Pyx_Coroutine_SendEx(gen, val);
-    Py_XDECREF(val);
-    return ret;
-}
-static PyObject *__Pyx_Coroutine_Send(PyObject *self, PyObject *value) {
-    PyObject *retval;
-    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject*) self;
-    PyObject *yf = gen->yieldfrom;
-    if (unlikely(__Pyx_Coroutine_CheckRunning(gen)))
-        return NULL;
-    if (yf) {
-        PyObject *ret;
-        gen->is_running = 1;
-        #ifdef __Pyx_Generator_USED
-        if (__Pyx_Generator_CheckExact(yf)) {
-            ret = __Pyx_Coroutine_Send(yf, value);
-        } else
-        #endif
-        #ifdef __Pyx_Coroutine_USED
-        if (__Pyx_Coroutine_CheckExact(yf)) {
-            ret = __Pyx_Coroutine_Send(yf, value);
-        } else
-        #endif
-        {
-            if (value == Py_None)
-                ret = Py_TYPE(yf)->tp_iternext(yf);
-            else
-                ret = __Pyx_PyObject_CallMethod1(yf, __pyx_n_s_send, value);
-        }
-        gen->is_running = 0;
-        if (likely(ret)) {
-            return ret;
-        }
-        retval = __Pyx_Coroutine_FinishDelegation(gen);
-    } else {
-        retval = __Pyx_Coroutine_SendEx(gen, value);
-    }
-    return __Pyx_Coroutine_MethodReturn(retval);
-}
-static int __Pyx_Coroutine_CloseIter(__pyx_CoroutineObject *gen, PyObject *yf) {
-    PyObject *retval = NULL;
-    int err = 0;
-    #ifdef __Pyx_Generator_USED
-    if (__Pyx_Generator_CheckExact(yf)) {
-        retval = __Pyx_Coroutine_Close(yf);
-        if (!retval)
-            return -1;
-    } else
-    #endif
-    #ifdef __Pyx_Coroutine_USED
-    if (__Pyx_Coroutine_CheckExact(yf)) {
-        retval = __Pyx_Coroutine_Close(yf);
-        if (!retval)
-            return -1;
-    } else
-    #endif
-    {
-        PyObject *meth;
-        gen->is_running = 1;
-        meth = __Pyx_PyObject_GetAttrStr(yf, __pyx_n_s_close);
-        if (unlikely(!meth)) {
-            if (!PyErr_ExceptionMatches(PyExc_AttributeError)) {
-                PyErr_WriteUnraisable(yf);
-            }
-            PyErr_Clear();
-        } else {
-            retval = PyObject_CallFunction(meth, NULL);
-            Py_DECREF(meth);
-            if (!retval)
-                err = -1;
-        }
-        gen->is_running = 0;
-    }
-    Py_XDECREF(retval);
-    return err;
-}
-static PyObject *__Pyx_Generator_Next(PyObject *self) {
-    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject*) self;
-    PyObject *yf = gen->yieldfrom;
-    if (unlikely(__Pyx_Coroutine_CheckRunning(gen)))
-        return NULL;
-    if (yf) {
-        PyObject *ret;
-        gen->is_running = 1;
-        #ifdef __Pyx_Generator_USED
-        if (__Pyx_Generator_CheckExact(yf)) {
-            ret = __Pyx_Generator_Next(yf);
-        } else
-        #endif
-            ret = Py_TYPE(yf)->tp_iternext(yf);
-        gen->is_running = 0;
-        if (likely(ret)) {
-            return ret;
-        }
-        return __Pyx_Coroutine_FinishDelegation(gen);
-    }
-    return __Pyx_Coroutine_SendEx(gen, Py_None);
-}
-static PyObject *__Pyx_Coroutine_Close(PyObject *self) {
-    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
-    PyObject *retval, *raised_exception;
-    PyObject *yf = gen->yieldfrom;
-    int err = 0;
-    if (unlikely(__Pyx_Coroutine_CheckRunning(gen)))
-        return NULL;
-    if (yf) {
-        Py_INCREF(yf);
-        err = __Pyx_Coroutine_CloseIter(gen, yf);
-        __Pyx_Coroutine_Undelegate(gen);
-        Py_DECREF(yf);
-    }
-    if (err == 0)
-        PyErr_SetNone(PyExc_GeneratorExit);
-    retval = __Pyx_Coroutine_SendEx(gen, NULL);
-    if (retval) {
-        Py_DECREF(retval);
-        PyErr_SetString(PyExc_RuntimeError,
-                        "generator ignored GeneratorExit");
-        return NULL;
-    }
-    raised_exception = PyErr_Occurred();
-    if (!raised_exception
-        || raised_exception == PyExc_StopIteration
-        || raised_exception == PyExc_GeneratorExit
-        || PyErr_GivenExceptionMatches(raised_exception, PyExc_GeneratorExit)
-        || PyErr_GivenExceptionMatches(raised_exception, PyExc_StopIteration))
-    {
-        if (raised_exception) PyErr_Clear();
-        Py_INCREF(Py_None);
-        return Py_None;
-    }
-    return NULL;
-}
-static PyObject *__Pyx_Coroutine_Throw(PyObject *self, PyObject *args) {
-    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
-    PyObject *typ;
-    PyObject *tb = NULL;
-    PyObject *val = NULL;
-    PyObject *yf = gen->yieldfrom;
-    if (!PyArg_UnpackTuple(args, (char *)"throw", 1, 3, &typ, &val, &tb))
-        return NULL;
-    if (unlikely(__Pyx_Coroutine_CheckRunning(gen)))
-        return NULL;
-    if (yf) {
-        PyObject *ret;
-        Py_INCREF(yf);
-        if (PyErr_GivenExceptionMatches(typ, PyExc_GeneratorExit)) {
-            int err = __Pyx_Coroutine_CloseIter(gen, yf);
-            Py_DECREF(yf);
-            __Pyx_Coroutine_Undelegate(gen);
-            if (err < 0)
-                return __Pyx_Coroutine_MethodReturn(__Pyx_Coroutine_SendEx(gen, NULL));
-            goto throw_here;
-        }
-        gen->is_running = 1;
-        #ifdef __Pyx_Generator_USED
-        if (__Pyx_Generator_CheckExact(yf)) {
-            ret = __Pyx_Coroutine_Throw(yf, args);
-        } else
-        #endif
-        #ifdef __Pyx_Coroutine_USED
-        if (__Pyx_Coroutine_CheckExact(yf)) {
-            ret = __Pyx_Coroutine_Throw(yf, args);
-        } else
-        #endif
-        {
-            PyObject *meth = __Pyx_PyObject_GetAttrStr(yf, __pyx_n_s_throw);
-            if (unlikely(!meth)) {
-                Py_DECREF(yf);
-                if (!PyErr_ExceptionMatches(PyExc_AttributeError)) {
-                    gen->is_running = 0;
-                    return NULL;
-                }
-                PyErr_Clear();
-                __Pyx_Coroutine_Undelegate(gen);
-                gen->is_running = 0;
-                goto throw_here;
-            }
-            ret = PyObject_CallObject(meth, args);
-            Py_DECREF(meth);
-        }
-        gen->is_running = 0;
-        Py_DECREF(yf);
-        if (!ret) {
-            ret = __Pyx_Coroutine_FinishDelegation(gen);
-        }
-        return __Pyx_Coroutine_MethodReturn(ret);
-    }
-throw_here:
-    __Pyx_Raise(typ, val, tb, NULL);
-    return __Pyx_Coroutine_MethodReturn(__Pyx_Coroutine_SendEx(gen, NULL));
-}
-static int __Pyx_Coroutine_traverse(PyObject *self, visitproc visit, void *arg) {
-    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
-    Py_VISIT(gen->closure);
-    Py_VISIT(gen->classobj);
-    Py_VISIT(gen->yieldfrom);
-    Py_VISIT(gen->exc_type);
-    Py_VISIT(gen->exc_value);
-    Py_VISIT(gen->exc_traceback);
-    return 0;
-}
-static int __Pyx_Coroutine_clear(PyObject *self) {
-    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
-    Py_CLEAR(gen->closure);
-    Py_CLEAR(gen->classobj);
-    Py_CLEAR(gen->yieldfrom);
-    Py_CLEAR(gen->exc_type);
-    Py_CLEAR(gen->exc_value);
-    Py_CLEAR(gen->exc_traceback);
-    Py_CLEAR(gen->gi_name);
-    Py_CLEAR(gen->gi_qualname);
-    return 0;
-}
-static void __Pyx_Coroutine_dealloc(PyObject *self) {
-    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
-    PyObject_GC_UnTrack(gen);
-    if (gen->gi_weakreflist != NULL)
-        PyObject_ClearWeakRefs(self);
-    if (gen->resume_label > 0) {
-        PyObject_GC_Track(self);
-#if PY_VERSION_HEX >= 0x030400a1
-        if (PyObject_CallFinalizerFromDealloc(self))
-#else
-        Py_TYPE(gen)->tp_del(self);
-        if (self->ob_refcnt > 0)
-#endif
-        {
-            return;
-        }
-        PyObject_GC_UnTrack(self);
-    }
-    __Pyx_Coroutine_clear(self);
-    PyObject_GC_Del(gen);
-}
-static void __Pyx_Coroutine_del(PyObject *self) {
-    PyObject *res;
-    PyObject *error_type, *error_value, *error_traceback;
-    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
-    __Pyx_PyThreadState_declare
-    if (gen->resume_label <= 0)
-        return ;
-#if PY_VERSION_HEX < 0x030400a1
-    assert(self->ob_refcnt == 0);
-    self->ob_refcnt = 1;
-#endif
-    __Pyx_PyThreadState_assign
-    __Pyx_ErrFetch(&error_type, &error_value, &error_traceback);
-    res = __Pyx_Coroutine_Close(self);
-    if (res == NULL)
-        PyErr_WriteUnraisable(self);
-    else
-        Py_DECREF(res);
-    __Pyx_ErrRestore(error_type, error_value, error_traceback);
-#if PY_VERSION_HEX < 0x030400a1
-    assert(self->ob_refcnt > 0);
-    if (--self->ob_refcnt == 0) {
-        return;
-    }
-    {
-        Py_ssize_t refcnt = self->ob_refcnt;
-        _Py_NewReference(self);
-        self->ob_refcnt = refcnt;
-    }
-#if CYTHON_COMPILING_IN_CPYTHON
-    assert(PyType_IS_GC(self->ob_type) &&
-           _Py_AS_GC(self)->gc.gc_refs != _PyGC_REFS_UNTRACKED);
-    _Py_DEC_REFTOTAL;
-#endif
-#ifdef COUNT_ALLOCS
-    --Py_TYPE(self)->tp_frees;
-    --Py_TYPE(self)->tp_allocs;
-#endif
-#endif
-}
-static PyObject *
-__Pyx_Coroutine_get_name(__pyx_CoroutineObject *self)
-{
-    PyObject *name = self->gi_name;
-    if (unlikely(!name)) name = Py_None;
-    Py_INCREF(name);
-    return name;
-}
-static int
-__Pyx_Coroutine_set_name(__pyx_CoroutineObject *self, PyObject *value)
-{
-    PyObject *tmp;
-#if PY_MAJOR_VERSION >= 3
-    if (unlikely(value == NULL || !PyUnicode_Check(value))) {
-#else
-    if (unlikely(value == NULL || !PyString_Check(value))) {
-#endif
-        PyErr_SetString(PyExc_TypeError,
-                        "__name__ must be set to a string object");
-        return -1;
-    }
-    tmp = self->gi_name;
-    Py_INCREF(value);
-    self->gi_name = value;
-    Py_XDECREF(tmp);
-    return 0;
-}
-static PyObject *
-__Pyx_Coroutine_get_qualname(__pyx_CoroutineObject *self)
-{
-    PyObject *name = self->gi_qualname;
-    if (unlikely(!name)) name = Py_None;
-    Py_INCREF(name);
-    return name;
-}
-static int
-__Pyx_Coroutine_set_qualname(__pyx_CoroutineObject *self, PyObject *value)
-{
-    PyObject *tmp;
-#if PY_MAJOR_VERSION >= 3
-    if (unlikely(value == NULL || !PyUnicode_Check(value))) {
-#else
-    if (unlikely(value == NULL || !PyString_Check(value))) {
-#endif
-        PyErr_SetString(PyExc_TypeError,
-                        "__qualname__ must be set to a string object");
-        return -1;
-    }
-    tmp = self->gi_qualname;
-    Py_INCREF(value);
-    self->gi_qualname = value;
-    Py_XDECREF(tmp);
-    return 0;
-}
-static __pyx_CoroutineObject *__Pyx__Coroutine_New(
-            PyTypeObject* type, __pyx_coroutine_body_t body, PyObject *closure,
-            PyObject *name, PyObject *qualname, PyObject *module_name) {
-    __pyx_CoroutineObject *gen = PyObject_GC_New(__pyx_CoroutineObject, type);
-    if (gen == NULL)
-        return NULL;
-    gen->body = body;
-    gen->closure = closure;
-    Py_XINCREF(closure);
-    gen->is_running = 0;
-    gen->resume_label = 0;
-    gen->classobj = NULL;
-    gen->yieldfrom = NULL;
-    gen->exc_type = NULL;
-    gen->exc_value = NULL;
-    gen->exc_traceback = NULL;
-    gen->gi_weakreflist = NULL;
-    Py_XINCREF(qualname);
-    gen->gi_qualname = qualname;
-    Py_XINCREF(name);
-    gen->gi_name = name;
-    Py_XINCREF(module_name);
-    gen->gi_modulename = module_name;
-    PyObject_GC_Track(gen);
-    return gen;
-}
-
-/* PatchModuleWithCoroutine */
-            static PyObject* __Pyx_Coroutine_patch_module(PyObject* module, const char* py_code) {
-#if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
-    int result;
-    PyObject *globals, *result_obj;
-    globals = PyDict_New();  if (unlikely(!globals)) goto ignore;
-    result = PyDict_SetItemString(globals, "_cython_coroutine_type",
-    #ifdef __Pyx_Coroutine_USED
-        (PyObject*)__pyx_CoroutineType);
-    #else
-        Py_None);
-    #endif
-    if (unlikely(result < 0)) goto ignore;
-    result = PyDict_SetItemString(globals, "_cython_generator_type",
-    #ifdef __Pyx_Generator_USED
-        (PyObject*)__pyx_GeneratorType);
-    #else
-        Py_None);
-    #endif
-    if (unlikely(result < 0)) goto ignore;
-    if (unlikely(PyDict_SetItemString(globals, "_module", module) < 0)) goto ignore;
-    if (unlikely(PyDict_SetItemString(globals, "__builtins__", __pyx_b) < 0)) goto ignore;
-    result_obj = PyRun_String(py_code, Py_file_input, globals, globals);
-    if (unlikely(!result_obj)) goto ignore;
-    Py_DECREF(result_obj);
-    Py_DECREF(globals);
-    return module;
-ignore:
-    Py_XDECREF(globals);
-    PyErr_WriteUnraisable(module);
-    if (unlikely(PyErr_WarnEx(PyExc_RuntimeWarning, "Cython module failed to patch module with custom type", 1) < 0)) {
-        Py_DECREF(module);
-        module = NULL;
-    }
-#else
-    py_code++;
-#endif
-    return module;
-}
-
-/* PatchGeneratorABC */
-            #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
-static PyObject* __Pyx_patch_abc_module(PyObject *module);
-static PyObject* __Pyx_patch_abc_module(PyObject *module) {
-    module = __Pyx_Coroutine_patch_module(
-        module, ""
-"if _cython_generator_type is not None:\n"
-"    try: Generator = _module.Generator\n"
-"    except AttributeError: pass\n"
-"    else: Generator.register(_cython_generator_type)\n"
-"if _cython_coroutine_type is not None:\n"
-"    try: Coroutine = _module.Coroutine\n"
-"    except AttributeError: pass\n"
-"    else: Coroutine.register(_cython_coroutine_type)\n"
-    );
-    return module;
-}
-#endif
-static int __Pyx_patch_abc(void) {
-#if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
-    static int abc_patched = 0;
-    if (!abc_patched) {
-        PyObject *module;
-        module = PyImport_ImportModule((PY_VERSION_HEX >= 0x03030000) ? "collections.abc" : "collections");
-        if (!module) {
-            PyErr_WriteUnraisable(NULL);
-            if (unlikely(PyErr_WarnEx(PyExc_RuntimeWarning,
-                    ((PY_VERSION_HEX >= 0x03030000) ?
-                        "Cython module failed to register with collections.abc module" :
-                        "Cython module failed to register with collections module"), 1) < 0)) {
-                return -1;
-            }
-        } else {
-            module = __Pyx_patch_abc_module(module);
-            abc_patched = 1;
-            if (unlikely(!module))
-                return -1;
-            Py_DECREF(module);
-        }
-        module = PyImport_ImportModule("backports_abc");
-        if (module) {
-            module = __Pyx_patch_abc_module(module);
-            Py_XDECREF(module);
-        }
-        if (!module) {
-            PyErr_Clear();
-        }
-    }
-#else
-    if (0) __Pyx_Coroutine_patch_module(NULL, NULL);
-#endif
-    return 0;
-}
-
-/* Coroutine */
-            typedef struct {
-    PyObject_HEAD
-    PyObject *coroutine;
-} __pyx_CoroutineAwaitObject;
-static void __Pyx_CoroutineAwait_dealloc(PyObject *self) {
-    PyObject_GC_UnTrack(self);
-    Py_CLEAR(((__pyx_CoroutineAwaitObject*)self)->coroutine);
-    PyObject_GC_Del(self);
-}
-static int __Pyx_CoroutineAwait_traverse(__pyx_CoroutineAwaitObject *self, visitproc visit, void *arg) {
-    Py_VISIT(self->coroutine);
-    return 0;
-}
-static int __Pyx_CoroutineAwait_clear(__pyx_CoroutineAwaitObject *self) {
-    Py_CLEAR(self->coroutine);
-    return 0;
-}
-static PyObject *__Pyx_CoroutineAwait_Next(__pyx_CoroutineAwaitObject *self) {
-    return __Pyx_Generator_Next(self->coroutine);
-}
-static PyObject *__Pyx_CoroutineAwait_Send(__pyx_CoroutineAwaitObject *self, PyObject *value) {
-    return __Pyx_Coroutine_Send(self->coroutine, value);
-}
-static PyObject *__Pyx_CoroutineAwait_Throw(__pyx_CoroutineAwaitObject *self, PyObject *args) {
-    return __Pyx_Coroutine_Throw(self->coroutine, args);
-}
-static PyObject *__Pyx_CoroutineAwait_Close(__pyx_CoroutineAwaitObject *self) {
-    return __Pyx_Coroutine_Close(self->coroutine);
-}
-static PyObject *__Pyx_CoroutineAwait_self(PyObject *self) {
-    Py_INCREF(self);
-    return self;
-}
-#if !CYTHON_COMPILING_IN_PYPY
-static PyObject *__Pyx_CoroutineAwait_no_new(CYTHON_UNUSED PyTypeObject *type, CYTHON_UNUSED PyObject *args, CYTHON_UNUSED PyObject *kwargs) {
-    PyErr_SetString(PyExc_TypeError, "cannot instantiate type, use 'await coroutine' instead");
-    return NULL;
-}
-#endif
-static PyMethodDef __pyx_CoroutineAwait_methods[] = {
-    {"send", (PyCFunction) __Pyx_CoroutineAwait_Send, METH_O,
-     (char*) PyDoc_STR("send(arg) -> send 'arg' into coroutine,\nreturn next yielded value or raise StopIteration.")},
-    {"throw", (PyCFunction) __Pyx_CoroutineAwait_Throw, METH_VARARGS,
-     (char*) PyDoc_STR("throw(typ[,val[,tb]]) -> raise exception in coroutine,\nreturn next yielded value or raise StopIteration.")},
-    {"close", (PyCFunction) __Pyx_CoroutineAwait_Close, METH_NOARGS,
-     (char*) PyDoc_STR("close() -> raise GeneratorExit inside coroutine.")},
-    {0, 0, 0, 0}
-};
-static PyTypeObject __pyx_CoroutineAwaitType_type = {
-    PyVarObject_HEAD_INIT(0, 0)
-    "coroutine_wrapper",
-    sizeof(__pyx_CoroutineAwaitObject),
-    0,
-    (destructor) __Pyx_CoroutineAwait_dealloc,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC,
-    PyDoc_STR("A wrapper object implementing __await__ for coroutines."),
-    (traverseproc) __Pyx_CoroutineAwait_traverse,
-    (inquiry) __Pyx_CoroutineAwait_clear,
-    0,
-    0,
-    __Pyx_CoroutineAwait_self,
-    (iternextfunc) __Pyx_CoroutineAwait_Next,
-    __pyx_CoroutineAwait_methods,
-    0                         ,
-    0                      ,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-#if !CYTHON_COMPILING_IN_PYPY
-    __Pyx_CoroutineAwait_no_new,
-#else
-    0,
-#endif
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-#if PY_VERSION_HEX >= 0x030400a1
-    0,
-#endif
-};
-static CYTHON_INLINE PyObject *__Pyx__Coroutine_await(PyObject *coroutine) {
-#if CYTHON_COMPILING_IN_CPYTHON
-    __pyx_CoroutineAwaitObject *await = PyObject_GC_New(__pyx_CoroutineAwaitObject, __pyx_CoroutineAwaitType);
-#else
-    __pyx_CoroutineAwaitObject *await = (__pyx_CoroutineAwaitObject*)
-        __pyx_CoroutineAwaitType->tp_new(__pyx_CoroutineAwaitType, __pyx_empty_tuple, NULL);
-#endif
-    if (unlikely(!await)) return NULL;
-    Py_INCREF(coroutine);
-    await->coroutine = coroutine;
-#if CYTHON_COMPILING_IN_CPYTHON
-    PyObject_GC_Track(await);
-#endif
-    return (PyObject*)await;
-}
-static PyObject *__Pyx_Coroutine_await(PyObject *coroutine) {
-    if (unlikely(!coroutine || !__Pyx_Coroutine_CheckExact(coroutine))) {
-        PyErr_SetString(PyExc_TypeError, "invalid input, expected coroutine");
-        return NULL;
-    }
-    return __Pyx__Coroutine_await(coroutine);
-}
-static void __Pyx_Coroutine_check_and_dealloc(PyObject *self) {
-    __pyx_CoroutineObject *gen = (__pyx_CoroutineObject *) self;
-    if (gen->resume_label == 0 && !PyErr_Occurred()) {
-        PyObject_GC_UnTrack(self);
-#if PY_VERSION_HEX >= 0x03030000 || defined(PyErr_WarnFormat)
-        PyErr_WarnFormat(PyExc_RuntimeWarning, 1, "coroutine '%.50S' was never awaited", gen->gi_qualname);
-        PyErr_Clear();
-#else
-        {PyObject *msg;
-        char *cmsg;
-        #if CYTHON_COMPILING_IN_PYPY
-        msg = NULL;
-        cmsg = (char*) "coroutine was never awaited";
-        #else
-        char *cname;
-        PyObject *qualname;
-        #if PY_MAJOR_VERSION >= 3
-        qualname = PyUnicode_AsUTF8String(gen->gi_qualname);
-        if (likely(qualname)) {
-            cname = PyBytes_AS_STRING(qualname);
-        } else {
-            PyErr_Clear();
-            cname = (char*) "?";
-        }
-        msg = PyBytes_FromFormat(
-        #else
-        qualname = gen->gi_qualname;
-        cname = PyString_AS_STRING(qualname);
-        msg = PyString_FromFormat(
-        #endif
-            "coroutine '%.50s' was never awaited", cname);
-        #if PY_MAJOR_VERSION >= 3
-        Py_XDECREF(qualname);
-        #endif
-        if (unlikely(!msg)) {
-            PyErr_Clear();
-            cmsg = (char*) "coroutine was never awaited";
-        } else {
-            #if PY_MAJOR_VERSION >= 3
-            cmsg = PyBytes_AS_STRING(msg);
-            #else
-            cmsg = PyString_AS_STRING(msg);
-            #endif
-        }
-        #endif
-        if (unlikely(PyErr_WarnEx(PyExc_RuntimeWarning, cmsg, 1) < 0))
-            PyErr_WriteUnraisable(self);
-        Py_XDECREF(msg);}
-#endif
-        PyObject_GC_Track(self);
-    }
-    __Pyx_Coroutine_dealloc(self);
-}
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3 && PY_VERSION_HEX < 0x030500B1
-static PyObject *__Pyx_Coroutine_compare(PyObject *obj, PyObject *other, int op) {
-    PyObject* result;
-    switch (op) {
-        case Py_EQ: result = (other == obj) ? Py_True : Py_False; break;
-        case Py_NE: result = (other != obj) ? Py_True : Py_False; break;
-        default:
-            result = Py_NotImplemented;
-    }
-    Py_INCREF(result);
-    return result;
-}
-#endif
-static PyMethodDef __pyx_Coroutine_methods[] = {
-    {"send", (PyCFunction) __Pyx_Coroutine_Send, METH_O,
-     (char*) PyDoc_STR("send(arg) -> send 'arg' into coroutine,\nreturn next iterated value or raise StopIteration.")},
-    {"throw", (PyCFunction) __Pyx_Coroutine_Throw, METH_VARARGS,
-     (char*) PyDoc_STR("throw(typ[,val[,tb]]) -> raise exception in coroutine,\nreturn next iterated value or raise StopIteration.")},
-    {"close", (PyCFunction) __Pyx_Coroutine_Close, METH_NOARGS,
-     (char*) PyDoc_STR("close() -> raise GeneratorExit inside coroutine.")},
-#if PY_VERSION_HEX < 0x030500B1
-    {"__await__", (PyCFunction) __Pyx_Coroutine_await, METH_NOARGS,
-     (char*) PyDoc_STR("__await__() -> return an iterator to be used in await expression.")},
-#endif
-    {0, 0, 0, 0}
-};
-static PyMemberDef __pyx_Coroutine_memberlist[] = {
-    {(char *) "cr_running", T_BOOL, offsetof(__pyx_CoroutineObject, is_running), READONLY, NULL},
-    {(char*) "cr_await", T_OBJECT, offsetof(__pyx_CoroutineObject, yieldfrom), READONLY,
-     (char*) PyDoc_STR("object being awaited, or None")},
-    {(char *) "__module__", T_OBJECT, offsetof(__pyx_CoroutineObject, gi_modulename), PY_WRITE_RESTRICTED, 0},
-    {0, 0, 0, 0, 0}
-};
-static PyGetSetDef __pyx_Coroutine_getsets[] = {
-    {(char *) "__name__", (getter)__Pyx_Coroutine_get_name, (setter)__Pyx_Coroutine_set_name,
-     (char*) PyDoc_STR("name of the coroutine"), 0},
-    {(char *) "__qualname__", (getter)__Pyx_Coroutine_get_qualname, (setter)__Pyx_Coroutine_set_qualname,
-     (char*) PyDoc_STR("qualified name of the coroutine"), 0},
-    {0, 0, 0, 0, 0}
-};
-#if CYTHON_USE_ASYNC_SLOTS
-static __Pyx_PyAsyncMethodsStruct __pyx_Coroutine_as_async = {
-    __Pyx_Coroutine_await,
-    0,
-    0,
-};
-#endif
-static PyTypeObject __pyx_CoroutineType_type = {
-    PyVarObject_HEAD_INIT(0, 0)
-    "coroutine",
-    sizeof(__pyx_CoroutineObject),
-    0,
-    (destructor) __Pyx_Coroutine_check_and_dealloc,
-    0,
-    0,
-    0,
-#if CYTHON_USE_ASYNC_SLOTS
-    &__pyx_Coroutine_as_async,
-#else
-    0,
-#endif
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    Py_TPFLAGS_DEFAULT | Py_TPFLAGS_HAVE_GC | Py_TPFLAGS_HAVE_FINALIZE,
-    0,
-    (traverseproc) __Pyx_Coroutine_traverse,
-    0,
-#if CYTHON_COMPILING_IN_CPYTHON && PY_MAJOR_VERSION >= 3 && PY_VERSION_HEX < 0x030500B1
-    __Pyx_Coroutine_compare,
-#else
-    0,
-#endif
-    offsetof(__pyx_CoroutineObject, gi_weakreflist),
-    0,
-    0,
-    __pyx_Coroutine_methods,
-    __pyx_Coroutine_memberlist,
-    __pyx_Coroutine_getsets,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-    0,
-#if PY_VERSION_HEX >= 0x030400a1
-    0,
-#else
-    __Pyx_Coroutine_del,
-#endif
-    0,
-#if PY_VERSION_HEX >= 0x030400a1
-    __Pyx_Coroutine_del,
-#endif
-};
-static int __pyx_Coroutine_init(void) {
-    __pyx_CoroutineType_type.tp_getattro = PyObject_GenericGetAttr;
-    __pyx_CoroutineType = __Pyx_FetchCommonType(&__pyx_CoroutineType_type);
-    if (unlikely(!__pyx_CoroutineType))
-        return -1;
-    __pyx_CoroutineAwaitType = __Pyx_FetchCommonType(&__pyx_CoroutineAwaitType_type);
-    if (unlikely(!__pyx_CoroutineAwaitType))
-        return -1;
-    return 0;
-}
-
-/* GetAwaitIter */
-            static CYTHON_INLINE PyObject *__Pyx_Coroutine_GetAwaitableIter(PyObject *o) {
-#ifdef __Pyx_Coroutine_USED
-    if (__Pyx_Coroutine_CheckExact(o)) {
-        Py_INCREF(o);
-        return o;
-    }
-#endif
-    return __Pyx__Coroutine_GetAwaitableIter(o);
-}
-static PyObject *__Pyx__Coroutine_GetAwaitableIter(PyObject *obj) {
-    PyObject *res;
-#if CYTHON_USE_ASYNC_SLOTS
-    __Pyx_PyAsyncMethodsStruct* am = __Pyx_PyType_AsAsync(obj);
-    if (likely(am && am->am_await)) {
-        res = (*am->am_await)(obj);
-    } else
-#endif
-#if PY_VERSION_HEX >= 0x030500B2 || defined(PyCoro_CheckExact)
-    if (PyCoro_CheckExact(obj)) {
-        Py_INCREF(obj);
-        return obj;
-    } else
-#endif
-#if CYTHON_COMPILING_IN_CPYTHON && defined(CO_ITERABLE_COROUTINE)
-    if (PyGen_CheckExact(obj) && ((PyGenObject*)obj)->gi_code && ((PyCodeObject *)((PyGenObject*)obj)->gi_code)->co_flags & CO_ITERABLE_COROUTINE) {
-        Py_INCREF(obj);
-        return obj;
-    } else
-#endif
-    {
-        PyObject *method = __Pyx_PyObject_GetAttrStr(obj, __pyx_n_s_await);
-        if (unlikely(!method)) goto slot_error;
-        #if CYTHON_UNPACK_METHODS
-        if (likely(PyMethod_Check(method))) {
-            PyObject *self = PyMethod_GET_SELF(method);
-            if (likely(self)) {
-                PyObject *function = PyMethod_GET_FUNCTION(method);
-                res = __Pyx_PyObject_CallOneArg(function, self);
-            } else
-                res = __Pyx_PyObject_CallNoArg(method);
-        } else
-        #endif
-            res = __Pyx_PyObject_CallNoArg(method);
-        Py_DECREF(method);
-    }
-    if (unlikely(!res)) goto bad;
-    if (!PyIter_Check(res)) {
-        PyErr_Format(PyExc_TypeError,
-                     "__await__() returned non-iterator of type '%.100s'",
-                     Py_TYPE(res)->tp_name);
-        Py_CLEAR(res);
-    } else {
-        int is_coroutine = 0;
-        #ifdef __Pyx_Coroutine_USED
-        is_coroutine |= __Pyx_Coroutine_CheckExact(res);
-        #endif
-        #if PY_VERSION_HEX >= 0x030500B2 || defined(PyCoro_CheckExact)
-        is_coroutine |= PyCoro_CheckExact(res);
-        #endif
-        if (unlikely(is_coroutine)) {
-            /* __await__ must return an *iterator*, not
-               a coroutine or another awaitable (see PEP 492) */
-            PyErr_SetString(PyExc_TypeError,
-                            "__await__() returned a coroutine");
-            Py_CLEAR(res);
-        }
-    }
-    return res;
-slot_error:
-    PyErr_Format(PyExc_TypeError,
-                 "object %.100s can't be used in 'await' expression",
-                 Py_TYPE(obj)->tp_name);
-bad:
-    return NULL;
-}
-
-/* CoroutineYieldFrom */
-            static int __Pyx_WarnAIterDeprecation(PyObject *aiter) {
-    int result;
-#if PY_MAJOR_VERSION >= 3
-    result = PyErr_WarnFormat(
-        PyExc_PendingDeprecationWarning, 1,
-        "'%.100s' implements legacy __aiter__ protocol; "
-        "__aiter__ should return an asynchronous "
-        "iterator, not awaitable",
-        Py_TYPE(aiter)->tp_name);
-#else
-    result = PyErr_WarnEx(
-        PyExc_PendingDeprecationWarning,
-        "object implements legacy __aiter__ protocol; "
-        "__aiter__ should return an asynchronous "
-        "iterator, not awaitable",
-        1);
-#endif
-    return result != 0;
-}
-static CYTHON_INLINE PyObject* __Pyx__Coroutine_Yield_From(__pyx_CoroutineObject *gen, PyObject *source, int warn) {
-    PyObject *retval;
-    if (__Pyx_Coroutine_CheckExact(source)) {
-        if (warn && unlikely(__Pyx_WarnAIterDeprecation(source))) {
-            return NULL;
-        }
-        retval = __Pyx_Generator_Next(source);
-        if (retval) {
-            Py_INCREF(source);
-            gen->yieldfrom = source;
-            return retval;
-        }
-    } else {
-        PyObject *source_gen = __Pyx__Coroutine_GetAwaitableIter(source);
-        if (unlikely(!source_gen))
-            return NULL;
-        if (warn && unlikely(__Pyx_WarnAIterDeprecation(source))) {
-            Py_DECREF(source_gen);
-            return NULL;
-        }
-        if (__Pyx_Coroutine_CheckExact(source_gen)) {
-            retval = __Pyx_Generator_Next(source_gen);
-        } else {
-            retval = Py_TYPE(source_gen)->tp_iternext(source_gen);
-        }
-        if (retval) {
-            gen->yieldfrom = source_gen;
-            return retval;
-        }
-        Py_DECREF(source_gen);
-    }
-    return NULL;
-}
-
 /* PyIntBinop */
-            #if !CYTHON_COMPILING_IN_PYPY
+      #if !CYTHON_COMPILING_IN_PYPY
 static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED long intval, CYTHON_UNUSED int inplace) {
     #if PY_MAJOR_VERSION < 3
     if (likely(PyInt_CheckExact(op1))) {
@@ -6768,8 +5365,26 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED
 }
 #endif
 
+/* GetModuleGlobalName */
+      static CYTHON_INLINE PyObject *__Pyx_GetModuleGlobalName(PyObject *name) {
+    PyObject *result;
+#if !CYTHON_AVOID_BORROWED_REFS
+    result = PyDict_GetItem(__pyx_d, name);
+    if (likely(result)) {
+        Py_INCREF(result);
+    } else {
+#else
+    result = PyObject_GetItem(__pyx_d, name);
+    if (!result) {
+        PyErr_Clear();
+#endif
+        result = __Pyx_GetBuiltinName(name);
+    }
+    return result;
+}
+
 /* WriteUnraisableException */
-            static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
+        static void __Pyx_WriteUnraisable(const char *name, CYTHON_UNUSED int clineno,
                                   CYTHON_UNUSED int lineno, CYTHON_UNUSED const char *filename,
                                   int full_traceback, CYTHON_UNUSED int nogil) {
     PyObject *old_exc, *old_val, *old_tb;
@@ -6811,7 +5426,7 @@ static PyObject* __Pyx_PyInt_AddObjC(PyObject *op1, PyObject *op2, CYTHON_UNUSED
 }
 
 /* SetVTable */
-            static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
+        static int __Pyx_SetVtable(PyObject *dict, void *vtable) {
 #if PY_VERSION_HEX >= 0x02070000
     PyObject *ob = PyCapsule_New(vtable, 0, 0);
 #else
@@ -6829,7 +5444,7 @@ bad:
 }
 
 /* Import */
-            static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
+        static PyObject *__Pyx_Import(PyObject *name, PyObject *from_list, int level) {
     PyObject *empty_list = 0;
     PyObject *module = 0;
     PyObject *global_dict = 0;
@@ -6902,8 +5517,48 @@ bad:
     return module;
 }
 
+/* PatchModuleWithCoroutine */
+        static PyObject* __Pyx_Coroutine_patch_module(PyObject* module, const char* py_code) {
+#if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
+    int result;
+    PyObject *globals, *result_obj;
+    globals = PyDict_New();  if (unlikely(!globals)) goto ignore;
+    result = PyDict_SetItemString(globals, "_cython_coroutine_type",
+    #ifdef __Pyx_Coroutine_USED
+        (PyObject*)__pyx_CoroutineType);
+    #else
+        Py_None);
+    #endif
+    if (unlikely(result < 0)) goto ignore;
+    result = PyDict_SetItemString(globals, "_cython_generator_type",
+    #ifdef __Pyx_Generator_USED
+        (PyObject*)__pyx_GeneratorType);
+    #else
+        Py_None);
+    #endif
+    if (unlikely(result < 0)) goto ignore;
+    if (unlikely(PyDict_SetItemString(globals, "_module", module) < 0)) goto ignore;
+    if (unlikely(PyDict_SetItemString(globals, "__builtins__", __pyx_b) < 0)) goto ignore;
+    result_obj = PyRun_String(py_code, Py_file_input, globals, globals);
+    if (unlikely(!result_obj)) goto ignore;
+    Py_DECREF(result_obj);
+    Py_DECREF(globals);
+    return module;
+ignore:
+    Py_XDECREF(globals);
+    PyErr_WriteUnraisable(module);
+    if (unlikely(PyErr_WarnEx(PyExc_RuntimeWarning, "Cython module failed to patch module with custom type", 1) < 0)) {
+        Py_DECREF(module);
+        module = NULL;
+    }
+#else
+    py_code++;
+#endif
+    return module;
+}
+
 /* PatchInspect */
-            static PyObject* __Pyx_patch_inspect(PyObject* module) {
+        static PyObject* __Pyx_patch_inspect(PyObject* module) {
 #if defined(__Pyx_Generator_USED) && (!defined(CYTHON_PATCH_INSPECT) || CYTHON_PATCH_INSPECT)
     static int inspect_patched = 0;
     if (unlikely((!inspect_patched) && module)) {
@@ -6928,7 +5583,7 @@ bad:
 }
 
 /* PatchAsyncIO */
-            static PyObject* __Pyx_patch_asyncio(PyObject* module) {
+        static PyObject* __Pyx_patch_asyncio(PyObject* module) {
 #if PY_VERSION_HEX < 0x030500B2 &&\
         (defined(__Pyx_Coroutine_USED) || defined(__Pyx_Generator_USED)) &&\
         (!defined(CYTHON_PATCH_ASYNCIO) || CYTHON_PATCH_ASYNCIO)
@@ -7015,7 +5670,7 @@ ignore:
 }
 
 /* ImportFrom */
-            static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
+        static PyObject* __Pyx_ImportFrom(PyObject* module, PyObject* name) {
     PyObject* value = __Pyx_PyObject_GetAttrStr(module, name);
     if (unlikely(!value) && PyErr_ExceptionMatches(PyExc_AttributeError)) {
         PyErr_Format(PyExc_ImportError,
@@ -7029,7 +5684,7 @@ ignore:
 }
 
 /* CodeObjectCache */
-            static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
+        static int __pyx_bisect_code_objects(__Pyx_CodeObjectCacheEntry* entries, int count, int code_line) {
     int start = 0, mid = 0, end = count - 1;
     if (end >= 0 && code_line > entries[end].code_line) {
         return count;
@@ -7109,7 +5764,7 @@ static void __pyx_insert_code_object(int code_line, PyCodeObject* code_object) {
 }
 
 /* AddTraceback */
-            #include "compile.h"
+        #include "compile.h"
 #include "frameobject.h"
 #include "traceback.h"
 static PyCodeObject* __Pyx_CreateCodeObjectForTraceback(
@@ -7190,7 +5845,7 @@ bad:
 }
 
 /* Print */
-            #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
+        #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
 static PyObject *__Pyx_GetStdout(void) {
     PyObject *f = PySys_GetObject((char *)"stdout");
     if (!f) {
@@ -7296,7 +5951,7 @@ bad:
 #endif
 
 /* CIntToPy */
-            static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
+        static CYTHON_INLINE PyObject* __Pyx_PyInt_From_int(int value) {
     const int neg_one = (int) -1, const_zero = (int) 0;
     const int is_unsigned = neg_one > const_zero;
     if (is_unsigned) {
@@ -7327,7 +5982,7 @@ bad:
 }
 
 /* CIntFromPyVerify */
-            #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
+        #define __PYX_VERIFY_RETURN_INT(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 0)
 #define __PYX_VERIFY_RETURN_INT_EXC(target_type, func_type, func_value)\
     __PYX__VERIFY_RETURN_INT(target_type, func_type, func_value, 1)
@@ -7349,7 +6004,7 @@ bad:
     }
 
 /* PrintOne */
-            #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
+        #if !CYTHON_COMPILING_IN_PYPY && PY_MAJOR_VERSION < 3
 static int __Pyx_PrintOne(PyObject* f, PyObject *o) {
     if (!f) {
         if (!(f = __Pyx_GetStdout()))
@@ -7386,7 +6041,7 @@ static int __Pyx_PrintOne(PyObject* stream, PyObject *o) {
 #endif
 
 /* CIntFromPy */
-            static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *x) {
+        static CYTHON_INLINE size_t __Pyx_PyInt_As_size_t(PyObject *x) {
     const size_t neg_one = (size_t) -1, const_zero = (size_t) 0;
     const int is_unsigned = neg_one > const_zero;
 #if PY_MAJOR_VERSION < 3
@@ -7575,7 +6230,7 @@ raise_neg_overflow:
 }
 
 /* CIntToPy */
-            static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
+        static CYTHON_INLINE PyObject* __Pyx_PyInt_From_long(long value) {
     const long neg_one = (long) -1, const_zero = (long) 0;
     const int is_unsigned = neg_one > const_zero;
     if (is_unsigned) {
@@ -7606,7 +6261,7 @@ raise_neg_overflow:
 }
 
 /* CIntFromPy */
-            static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
+        static CYTHON_INLINE long __Pyx_PyInt_As_long(PyObject *x) {
     const long neg_one = (long) -1, const_zero = (long) 0;
     const int is_unsigned = neg_one > const_zero;
 #if PY_MAJOR_VERSION < 3
@@ -7795,7 +6450,7 @@ raise_neg_overflow:
 }
 
 /* CIntFromPy */
-            static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
+        static CYTHON_INLINE int __Pyx_PyInt_As_int(PyObject *x) {
     const int neg_one = (int) -1, const_zero = (int) 0;
     const int is_unsigned = neg_one > const_zero;
 #if PY_MAJOR_VERSION < 3
@@ -7984,7 +6639,7 @@ raise_neg_overflow:
 }
 
 /* CheckBinaryVersion */
-            static int __Pyx_check_binary_version(void) {
+        static int __Pyx_check_binary_version(void) {
     char ctversion[4], rtversion[4];
     PyOS_snprintf(ctversion, 4, "%d.%d", PY_MAJOR_VERSION, PY_MINOR_VERSION);
     PyOS_snprintf(rtversion, 4, "%s", Py_GetVersion());
@@ -8000,7 +6655,7 @@ raise_neg_overflow:
 }
 
 /* InitStrings */
-            static int __Pyx_InitStrings(__Pyx_StringTabEntry *t) {
+        static int __Pyx_InitStrings(__Pyx_StringTabEntry *t) {
     while (t->p) {
         #if PY_MAJOR_VERSION < 3
         if (t->is_unicode) {

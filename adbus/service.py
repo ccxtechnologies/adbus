@@ -3,8 +3,16 @@
 
 """D-Bus Service"""
 
-from adbus import _sdbus
+from . import _sdbus
 
-class Service(_sdbus.Service):
+class Service:
     """D-Bus Service"""
-    pass
+
+    def __init__(self, name, system=False):
+        self.sdbus = _sdbus.Service(name, system)
+
+    async def process(self):
+        """Wait for and then process the next D-Bus transaction"""
+        while True:
+            if not self.sdbus.bus_process():
+                self.sdbus.bus_wait()

@@ -3,6 +3,12 @@
 
 """D-Bus Method"""
 
+from . import _sdbus
+
 class Method:
     """D-Bus Method"""
-    pass
+
+    def __init__(self, name, callback, arg_types='', return_type='',
+            deprectiated=False, hidden=False, unprivledged=False):
+        self.sdbus = _sdbus.Method(name, callback, arg_types, return_type,
+            deprectiated, hidden, unprivledged)

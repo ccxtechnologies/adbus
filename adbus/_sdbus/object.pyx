@@ -3,10 +3,15 @@
 cdef class Object:
     cdef _sdbus_h.sd_bus_slot *_slot
     cdef _sdbus_h.sd_bus_vtable *_vtable
-    cdef void **_userdata;
+    cdef void **_userdata
+    cdef bytes path
+    cdef bytes interface
 
     def __cinit__(self, service, path, interface, vtable, 
             deprectiated=False, hidden=False):
+
+        self.path = path.encode()
+        self.interface = interface.encode()
 
         self._malloc(len(vtable))
         self._init_vtable(deprectiated, hidden, len(vtable))
@@ -17,7 +22,12 @@ cdef class Object:
                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0]) 
                 self._userdata[i] = (<Method>v).userdata
 
-        self._register_vtable(service, path, interface)
+        self._register_vtable(service, self.path, self.interface)
+    
+    def __dealloc__(self):
+        self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
+        PyMem_Free(self._vtable)
+        PyMem_Free(self._userdata)
 
     def _malloc(self, length):
         self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(
@@ -44,12 +54,8 @@ cdef class Object:
         self._vtable[length+1].flags = 0
 
     def _register_vtable(self, service, path, interface):
-        _ = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus, 
+        e = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus, 
                 &self._slot, path, interface, self._vtable, self._userdata)
-        if _ < 0:
-            raise SdbusError(f"Failed to register vtable: {errorcode[-_]}")
+        if e < 0:
+            raise SdbusError(f"Failed to register vtable: {errorcode[-e]}")
 
-    def __dealloc__(self):
-        self._slot = _sdbus_h.sd_bus_slot_unref(self._slot)
-        PyMem_Free(self._vtable)
-        PyMem_Free(self._userdata)

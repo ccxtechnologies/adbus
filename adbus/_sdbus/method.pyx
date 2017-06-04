@@ -3,7 +3,7 @@
 cdef int method_message_handler(_sdbus_h.sd_bus_message *m, 
         void *userdata, _sdbus_h.sd_bus_error *e):
     cdef void *callback = (<void**>userdata)[0]
-    args = message_read(m)
+    args = Message.args(m)
     (<object>callback)(*args)
     return 0
 
@@ -12,9 +12,16 @@ cdef class Method:
     cdef stdint.uint64_t flags
     cdef _sdbus_h.sd_bus_vtable_method x
     cdef void *userdata
+    cdef bytes name
+    cdef bytes arg_types
+    cdef bytes return_type
 
-    def __cinit__(self, name, callback, arg_types=b'', return_type=b'',
+    def __cinit__(self, name, callback, arg_types='', return_type='',
             deprectiated=False, hidden=False, unprivledged=False):
+
+        self.name = name.encode()
+        self.arg_types = arg_types.encode()
+        self.return_type = return_type.encode()
     
         self.type = _sdbus_h._SD_BUS_VTABLE_METHOD
 
@@ -31,10 +38,10 @@ cdef class Method:
         if unprivledged:
             self.flags |= _sdbus_h.SD_BUS_VTABLE_UNPRIVILEGED
 
-        self.x.member = name
+        self.x.member = self.name
         self.x.handler = method_message_handler
-        self.x.signature = arg_types
-        self.x.result = return_type
+        self.x.signature = self.arg_types
+        self.x.result = self.return_type
         
         self.userdata = <void *>callback
     
