@@ -43,3 +43,6 @@ cdef class Service:
 
     def remove(self, obj):
         self.objects.remove(obj)
+
+    def get_fd(self):
+        return _sdbus_h.sd_bus_get_fd(self.bus)

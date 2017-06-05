@@ -143,6 +143,7 @@ cdef extern from "systemd/sd-bus.h":
 
     int sd_bus_process(sd_bus *bus, sd_bus_message **r)
     int sd_bus_wait(sd_bus *bus, stdint.uint64_t timeout_usec)
+    int sd_bus_get_fd(sd_bus *bus)
     
     const char *sd_bus_message_get_signature(sd_bus_message *m, int complete)
 

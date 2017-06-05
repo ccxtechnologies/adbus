@@ -11,6 +11,13 @@ class Service:
     def __init__(self, name, system=False):
         self.sdbus = _sdbus.Service(name, system)
 
+    def set_loop(self, loop):
+        fd = self.sdbus.get_fd()
+        loop.add_reader(fd, self._process)
+
+    def _process(self):
+        self.sdbus.process()
+
     async def mainloop(self):
         """Wait for and then process the next D-Bus transaction"""
         while True:

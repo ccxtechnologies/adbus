@@ -1274,6 +1274,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_4wait(struct __pyx_obj_5adbus_
 static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_6process(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_8add(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self, PyObject *__pyx_v_path, PyObject *__pyx_v_interface, PyObject *__pyx_v_vtable, PyObject *__pyx_v_deprectiated, PyObject *__pyx_v_hidden); /* proto */
 static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_10remove(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self, PyObject *__pyx_v_obj); /* proto */
+static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_12get_fd(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self); /* proto */
 static PyObject *__pyx_tp_new_5adbus_6_sdbus_BusError(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5adbus_6_sdbus_SdbusError(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
 static PyObject *__pyx_tp_new_5adbus_6_sdbus_Message(PyTypeObject *t, PyObject *a, PyObject *k); /*proto*/
@@ -3924,6 +3925,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_8add(struct __pyx_obj_5adbus_6
  * 
  *     def remove(self, obj):             # <<<<<<<<<<<<<<
  *         self.objects.remove(obj)
+ * 
  */
 
 /* Python wrapper */
@@ -3952,6 +3954,8 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_10remove(struct __pyx_obj_5adb
  * 
  *     def remove(self, obj):
  *         self.objects.remove(obj)             # <<<<<<<<<<<<<<
+ * 
+ *     def get_fd(self):
  */
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_v_self->objects, __pyx_n_s_remove); if (unlikely(!__pyx_t_2)) __PYX_ERR(3, 45, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -4005,6 +4009,7 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_10remove(struct __pyx_obj_5adb
  * 
  *     def remove(self, obj):             # <<<<<<<<<<<<<<
  *         self.objects.remove(obj)
+ * 
  */
 
   /* function exit code */
@@ -4016,6 +4021,62 @@ static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_10remove(struct __pyx_obj_5adb
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_AddTraceback("adbus._sdbus.Service.remove", __pyx_clineno, __pyx_lineno, __pyx_filename);
+  __pyx_r = NULL;
+  __pyx_L0:;
+  __Pyx_XGIVEREF(__pyx_r);
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+/* "adbus/_sdbus/service.pyx":47
+ *         self.objects.remove(obj)
+ * 
+ *     def get_fd(self):             # <<<<<<<<<<<<<<
+ *         return _sdbus_h.sd_bus_get_fd(self.bus)
+ */
+
+/* Python wrapper */
+static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_13get_fd(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5adbus_6_sdbus_7Service_13get_fd(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+  PyObject *__pyx_r = 0;
+  __Pyx_RefNannyDeclarations
+  __Pyx_RefNannySetupContext("get_fd (wrapper)", 0);
+  __pyx_r = __pyx_pf_5adbus_6_sdbus_7Service_12get_fd(((struct __pyx_obj_5adbus_6_sdbus_Service *)__pyx_v_self));
+
+  /* function exit code */
+  __Pyx_RefNannyFinishContext();
+  return __pyx_r;
+}
+
+static PyObject *__pyx_pf_5adbus_6_sdbus_7Service_12get_fd(struct __pyx_obj_5adbus_6_sdbus_Service *__pyx_v_self) {
+  PyObject *__pyx_r = NULL;
+  __Pyx_RefNannyDeclarations
+  PyObject *__pyx_t_1 = NULL;
+  __Pyx_RefNannySetupContext("get_fd", 0);
+
+  /* "adbus/_sdbus/service.pyx":48
+ * 
+ *     def get_fd(self):
+ *         return _sdbus_h.sd_bus_get_fd(self.bus)             # <<<<<<<<<<<<<<
+ */
+  __Pyx_XDECREF(__pyx_r);
+  __pyx_t_1 = __Pyx_PyInt_From_int(sd_bus_get_fd(__pyx_v_self->bus)); if (unlikely(!__pyx_t_1)) __PYX_ERR(3, 48, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_r = __pyx_t_1;
+  __pyx_t_1 = 0;
+  goto __pyx_L0;
+
+  /* "adbus/_sdbus/service.pyx":47
+ *         self.objects.remove(obj)
+ * 
+ *     def get_fd(self):             # <<<<<<<<<<<<<<
+ *         return _sdbus_h.sd_bus_get_fd(self.bus)
+ */
+
+  /* function exit code */
+  __pyx_L1_error:;
+  __Pyx_XDECREF(__pyx_t_1);
+  __Pyx_AddTraceback("adbus._sdbus.Service.get_fd", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = NULL;
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
@@ -4562,6 +4623,7 @@ static PyMethodDef __pyx_methods_5adbus_6_sdbus_Service[] = {
   {"process", (PyCFunction)__pyx_pw_5adbus_6_sdbus_7Service_7process, METH_NOARGS, 0},
   {"add", (PyCFunction)__pyx_pw_5adbus_6_sdbus_7Service_9add, METH_VARARGS|METH_KEYWORDS, 0},
   {"remove", (PyCFunction)__pyx_pw_5adbus_6_sdbus_7Service_11remove, METH_O, 0},
+  {"get_fd", (PyCFunction)__pyx_pw_5adbus_6_sdbus_7Service_13get_fd, METH_NOARGS, 0},
   {0, 0, 0, 0}
 };
 
