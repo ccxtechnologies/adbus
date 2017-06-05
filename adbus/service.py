@@ -11,8 +11,16 @@ class Service:
     def __init__(self, name, system=False):
         self.sdbus = _sdbus.Service(name, system)
 
-    async def process(self):
+    async def mainloop(self):
         """Wait for and then process the next D-Bus transaction"""
         while True:
-            if not self.sdbus.bus_process():
-                self.sdbus.bus_wait()
+            if not self.sdbus.process():
+                self.sdbus.wait()
+
+    def add(self, path, interface, vtable, deprectiated=False, hidden=False):
+        """Add an object plus vtable to the Service."""
+        return self.sdbus.add(path, interface, [v.sdbus for v in vtable], deprectiated, hidden)
+
+    def remove(self, obj):
+        """Remove an object from the Service."""
+        self.sdbus.remove(obj)

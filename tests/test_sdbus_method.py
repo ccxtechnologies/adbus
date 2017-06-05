@@ -22,18 +22,18 @@ class Test(unittest.TestCase):
         loop = asyncio.get_event_loop()
 
         service = adbus.Service("adbus.test")
-        vtable = [adbus.Method("SingleStringArg", callback_str, arg_types='s')]
-        adbus.Object(service, "/adbus/test/methods", "adbus.test", vtable)
+        service.add("/adbus/test/methods", "adbus.test",
+                [adbus.Method("SingleStringArg", callback_str, arg_types='s'),])
 
         async def run_method():
             """Run the method"""
-            while True:
+            for i in range(0, 3):
                 print("++++++++++++++++++++++")
                 await asyncio.sleep(1)
                 print("----------------------")
                 await asyncio.sleep(1)
 
-        loop.run_until_complete(asyncio.gather(run_method(),))
+        loop.run_until_complete(asyncio.gather(run_method(), service.mainloop()))
 
 if __name__ == "__main__":
     unittest.main()

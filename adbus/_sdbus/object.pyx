@@ -6,15 +6,16 @@ cdef class Object:
     cdef void **_userdata
     cdef bytes path
     cdef bytes interface
+    cdef list vtable
 
-    def __cinit__(self, service, path, interface, vtable, 
-            deprectiated=False, hidden=False):
-
+    def __cinit__(self, service, path, interface, vtable, deprectiated=False, hidden=False):
+        
+        self.vtable = vtable
         self.path = path.encode()
         self.interface = interface.encode()
 
-        self._malloc(len(vtable))
-        self._init_vtable(deprectiated, hidden, len(vtable))
+        self._malloc()
+        self._init_vtable(deprectiated, hidden)
 
         for i, v in enumerate(vtable):
             if type(v) == Method:
@@ -29,7 +30,9 @@ cdef class Object:
         PyMem_Free(self._vtable)
         PyMem_Free(self._userdata)
 
-    def _malloc(self, length):
+    def _malloc(self):
+        length = len(self.vtable)
+
         self._vtable = <_sdbus_h.sd_bus_vtable *>PyMem_Malloc(
                 (length+2)*sizeof(_sdbus_h.sd_bus_vtable))
         if not self._vtable:
@@ -39,7 +42,9 @@ cdef class Object:
         if not self._userdata:
             raise MemoryError("Failed to allocate userdata")
 
-    def _init_vtable(self, deprectiated, hidden, length):
+    def _init_vtable(self, deprectiated, hidden):
+        length = len(self.vtable)
+
         self._vtable[0].type = _sdbus_h._SD_BUS_VTABLE_START
         self._vtable[0].x.start.element_size = sizeof(self._vtable[0])
         self._vtable[0].flags = 0
