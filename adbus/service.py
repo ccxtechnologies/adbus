@@ -8,26 +8,25 @@ from . import _sdbus
 class Service:
     """D-Bus Service"""
 
-    def __init__(self, name, system=False):
+    class BusError(Exception):
+        """Adbus Service Exception"""
+        pass
+
+    def __init__(self, name, loop, system=False):
         self.sdbus = _sdbus.Service(name, system)
 
-    def set_loop(self, loop):
-        fd = self.sdbus.get_fd()
-        loop.add_reader(fd, self._process)
+        # add a reader, so we process dbus message when they come in
+        bus_fd = self.sdbus.get_fd()
+        if bus_fd <= 0:
+            raise self.BusError("Failed to read sd-bus fd")
 
-    def _process(self):
-        self.sdbus.process()
+        loop.add_reader(bus_fd, self.sdbus.process)
 
-    async def mainloop(self):
-        """Wait for and then process the next D-Bus transaction"""
-        while True:
-            if not self.sdbus.process():
-                self.sdbus.wait()
-
-    def add(self, path, interface, vtable, deprectiated=False, hidden=False):
+    def add_object(self, path, interface, vtable, deprectiated=False, hidden=False):
         """Add an object plus vtable to the Service."""
-        return self.sdbus.add(path, interface, [v.sdbus for v in vtable], deprectiated, hidden)
+        return self.sdbus.add_object(path, interface,
+                [v.sdbus for v in vtable], deprectiated, hidden)
 
-    def remove(self, obj):
+    def remove_object(self, obj):
         """Remove an object from the Service."""
-        self.sdbus.remove(obj)
+        self.sdbus.remove_object(obj)

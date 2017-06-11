@@ -11,6 +11,7 @@ from cpython.mem cimport PyMem_Malloc
 from cpython.mem cimport PyMem_Free
 from libc.string cimport memcpy
 from libc.string cimport strncpy
+from cpython.ref cimport PyObject
 
 cdef class BusError(Exception):
     """D-Bus Bus Error (i.e. failed to connect)"""

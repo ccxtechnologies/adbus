@@ -18,9 +18,11 @@ class Test(unittest.TestCase):
 
     def test_method_single_str(self):
         """test method with single string arg and no return"""
+        
+        loop = asyncio.get_event_loop()
 
-        service = adbus.Service("adbus.test")
-        service.add("/adbus/test/methods", "adbus.test", [
+        service = adbus.Service("adbus.test", loop)
+        service.add_object("/adbus/test/methods", "adbus.test", [
             adbus.Method("SingleStringArg", callback_str, arg_types='s'),
             ])
 
@@ -32,11 +34,8 @@ class Test(unittest.TestCase):
                 print("-"*i)
                 await asyncio.sleep(1)
 
-        loop = asyncio.get_event_loop()
-        service.set_loop(loop)
         loop.run_until_complete(asyncio.gather(
             run_method(),
-            #service.mainloop(),
             ))
         loop.close()
 

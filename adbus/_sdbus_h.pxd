@@ -147,3 +147,5 @@ cdef extern from "systemd/sd-bus.h":
     
     const char *sd_bus_message_get_signature(sd_bus_message *m, int complete)
 
+    int sd_bus_reply_method_return(sd_bus_message *call, const char *types, ...)
+    int sd_bus_reply_method_errorf(sd_bus_message *call, const char *name, const char *format, ...)

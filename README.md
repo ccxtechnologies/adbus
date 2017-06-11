@@ -8,7 +8,7 @@ D-Bus Binding for Python supporting coroutines (asyncio)
 
 1. Python >= 3.6
 2. libsystemd >= 232 (don't need systemd, just libsystemd which is a seperate package)
-3. Cython >= 0.25.2
+3. Cython >= 0.25.2 (only required to regnerate sdbus.c, if you make any changes)
 
 ## Building / Installing
 

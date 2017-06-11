@@ -20,28 +20,25 @@ cdef class Service:
 
         if _sdbus_h.sd_bus_request_name(self.bus, self.name, 0) < 0:
             raise BusError(f"Failed to acquire name {self.name}")
-
+        
     def __dealloc__(self):
         self.bus = _sdbus_h.sd_bus_unref(self.bus)
 
-    def wait(self):
-        print("Waiting")
-        r = _sdbus_h.sd_bus_wait(self.bus, -1)
-        if r < 0:
-            raise BusError(f"Failed to wait for bus {self.name}")
-
     def process(self):
-        print("Processing")
-        r = _sdbus_h.sd_bus_process(self.bus, NULL)
-        if r < 0:
-            raise BusError(f"Failed to process bus {self.name}")
-        return bool(r)
+        while True:
+            r = _sdbus_h.sd_bus_process(self.bus, NULL)
 
-    def add(self, path, interface, vtable, deprectiated=False, hidden=False):
+            if r < 0:
+                raise BusError(f"Failed to process bus {self.name}")
+
+            if r == 0:
+                break
+
+    def add_object(self, path, interface, vtable, deprectiated=False, hidden=False):
         obj = Object(self, path, interface, vtable, deprectiated, hidden)
         self.objects.append(obj)
 
-    def remove(self, obj):
+    def remove_object(self, obj):
         self.objects.remove(obj)
 
     def get_fd(self):
