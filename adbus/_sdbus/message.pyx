@@ -42,7 +42,6 @@ cdef class Message:
     cdef _read_basic(self, char sig, void *value):
         cdef int ret
         ret = _sdbus_h.sd_bus_message_read_basic(self._m, sig, value);
-        print((ret, chr(sig), <char*>value))
         if ret < 0:
             raise SdbusError(f"Failed to read value {chr(sig)}: {errorcode[-ret]}")
         if ret == 0:
@@ -84,11 +83,11 @@ cdef class Message:
     
         if _sdbus_h.sd_bus_message_enter_container(self._m, 
                 _sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
-            raise SdbusError(f"Failed to enter container {esignature}")
+            raise SdbusError(f"Failed to enter array {esignature}")
 
         while True:
             try:
-                value = self._read_signature(esignature)
+                value = self._read(esignature)
                 if len(value) == 1:
                     values.append(value[0])
                 else:
@@ -97,11 +96,69 @@ cdef class Message:
                 break
     
         if _sdbus_h.sd_bus_message_exit_container(self._m) < 0:
-            raise SdbusError(f"Failed to exit container {esignature}")
+            raise SdbusError(f"Failed to exit array {esignature}")
 
-        return values
+        # A dictionary is always an array with two elements (based on d-bus defintion)
+        # so if we're a dictionary convert it.
+        if esignature[0] == _sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
+            return {v[0]: v[1] for v in values}
+        else:
+            return values
 
-    cdef list _read_signature(self, const char *signature):
+    cdef _read_variant(self):
+        cdef const char *esignature
+        cdef list value
+
+        if _sdbus_h.sd_bus_message_enter_container(self._m, 
+                _sdbus_h.SD_BUS_TYPE_VARIANT, NULL) < 0:
+            raise SdbusError("Failed to enter variant")
+        
+        esignature = _sdbus_h.sd_bus_message_get_signature(self._m, 0)
+        value = self._read(esignature)
+
+        if _sdbus_h.sd_bus_message_exit_container(self._m) < 0:
+            raise SdbusError(f"Failed to exit variant {esignature}")
+
+        return value
+    
+    cdef _read_struct(self, const char *signature, unsigned int *index):
+        cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
+        cdef bytes psignature = signature[index[0]:elength+index[0]-1]
+        cdef char *esignature = psignature
+        cdef list value
+        
+        index[0] += elength + 1
+    
+        if _sdbus_h.sd_bus_message_enter_container(self._m, 
+                _sdbus_h.SD_BUS_TYPE_STRUCT, esignature) < 0:
+            raise SdbusError(f"Failed to enter structure {esignature}")
+
+        value = self._read(esignature)
+    
+        if _sdbus_h.sd_bus_message_exit_container(self._m) < 0:
+            raise SdbusError(f"Failed to exit structure {esignature}")
+
+        return value
+    
+    cdef _read_dict(self, const char *signature, unsigned int *index):
+        cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
+        cdef bytes psignature = signature[index[0]:elength+index[0]-1]
+        cdef char *esignature = psignature
+        
+        index[0] += elength + 1
+    
+        if _sdbus_h.sd_bus_message_enter_container(self._m, 
+                _sdbus_h.SD_BUS_TYPE_DICT_ENTRY, esignature) < 0:
+            raise SdbusError(f"Failed to enter dictionary {esignature}")
+
+        value = self._read(esignature)
+    
+        if _sdbus_h.sd_bus_message_exit_container(self._m) < 0:
+            raise SdbusError(f"Failed to exit dictionary {esignature}")
+
+        return value
+
+    cdef list _read(self, const char *signature):
         cdef _value v
         cdef list values = []
         cdef unsigned int i = 0
@@ -117,13 +174,13 @@ cdef class Message:
                 values.append(self._read_array(signature, &i))
 
             elif s == _sdbus_h.SD_BUS_TYPE_VARIANT:
-                pass
+                values.append(self._read_variant())
 
             elif s == _sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
-                pass
+                values.append(self._read_struct(signature, &i))
 
             elif s == _sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
-                pass
+                values.append(self._read_dict(signature, &i))
 
             elif s == _sdbus_h.SD_BUS_TYPE_BYTE:
                 self._read_basic(s, <void*>&v.c_byte)
@@ -178,7 +235,7 @@ cdef class Message:
                 values.append(v.c_int32)
 
             else:
-                raise SdbusError(f"Unsupported signature type {str(s)}")
+                raise SdbusError(f"Unsupported signature type {chr(s)}")
 
         if len(values) == 0:
             raise MessageEmpty(f"No data read in type {signature}")
@@ -187,5 +244,5 @@ cdef class Message:
     
     cdef list read(self):
         cdef const char *signature = _sdbus_h.sd_bus_message_get_signature(self._m, 0)
-        return self._read_signature(signature)
+        return self._read(signature)
 

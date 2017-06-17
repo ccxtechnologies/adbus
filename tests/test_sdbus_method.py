@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
 
         service = adbus.Service("adbus.test", loop)
         service.add_object("/adbus/test/methods", "adbus.test",
-                [adbus.Method("BasicMethod", _callback, arg_types='ai')])
+                [adbus.Method("BasicMethod", _callback, arg_types='a{ii}')])
 
         async def run_method():
             """Run the method"""
