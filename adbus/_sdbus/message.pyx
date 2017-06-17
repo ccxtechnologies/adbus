@@ -18,21 +18,13 @@ cdef class MessageEmpty(Exception):
 
 cdef class Message:
     cdef _sdbus_h.sd_bus_message *_m
-    cdef bint owned
 
     def __cinit__(self):
-        self.owned = True
         self._m = NULL
-    
-    def __dealloc__(self):
-        if self.owned:
-            PyMem_Free(self._m)
 
     cdef import_sd_bus_message(self, _sdbus_h.sd_bus_message *message):
         if self._m:
             raise SdbusError("Message already initialized")
-
-        self.owned = False
         self._m = message
 
     @property

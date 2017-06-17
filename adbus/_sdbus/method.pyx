@@ -5,6 +5,7 @@ cdef int method_message_handler(_sdbus_h.sd_bus_message *m,
 
     cdef PyObject *method_ptr = (((<PyObject**>userdata)[0]))
     cdef Method method = <Method>method_ptr
+    cdef bytes err_message
 
     message = Message()
     message.import_sd_bus_message(m)
@@ -12,9 +13,10 @@ cdef int method_message_handler(_sdbus_h.sd_bus_message *m,
     try:
         ret = method.callback(*message.read())
     except Exception as e:
-        print((e.__class__.__name__, str(e)))
-        #TODO: add error message
-        return 0
+        err.name = e.__class__.__name__
+        err_message = str(e).encode('utf-8')
+        err.message = err_message
+        return _sdbus_h.sd_bus_reply_method_error(m, err)
 
     #TODO: add return message
     return 0
