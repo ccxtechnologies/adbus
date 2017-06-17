@@ -1,21 +1,23 @@
 # == Copyright: 2017, Charles Eidsness
 
 cdef int method_message_handler(_sdbus_h.sd_bus_message *m, 
-        void *userdata, _sdbus_h.sd_bus_error *e):
+        void *userdata, _sdbus_h.sd_bus_error *err):
+
     cdef PyObject *method_ptr = (((<PyObject**>userdata)[0]))
     cdef Method method = <Method>method_ptr
-    cdef char* err_name
-    cdef char* err_str
-    
-    args = Message.args(m)
-    try:
-        ret = method.callback(*args)
-    except Exception as e:
-        err_name = e.__class__.__name__
-        err_str = str(e)
-        return _sdbus_h.sd_bus_reply_method_errorf(m, err_name, err_str)
 
-    return _sdbus_h.sd_bus_reply_method_return(m, method.return_type, ret)
+    message = Message()
+    message.import_sd_bus_message(m)
+    
+    try:
+        ret = method.callback(*message.read())
+    except Exception as e:
+        print((e.__class__.__name__, str(e)))
+        #TODO: add error message
+        return 0
+
+    #TODO: add return message
+    return 0
 
 cdef class Method:
     cdef stdint.uint8_t type

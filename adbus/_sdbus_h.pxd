@@ -142,10 +142,11 @@ cdef extern from "systemd/sd-bus.h":
     sd_bus_slot* sd_bus_slot_unref(sd_bus_slot *slot)
 
     int sd_bus_process(sd_bus *bus, sd_bus_message **r)
-    int sd_bus_wait(sd_bus *bus, stdint.uint64_t timeout_usec)
     int sd_bus_get_fd(sd_bus *bus)
     
     const char *sd_bus_message_get_signature(sd_bus_message *m, int complete)
+    int sd_bus_message_read_basic(sd_bus_message *m, char type, void *p)
+    int sd_bus_message_enter_container(sd_bus_message *m, char type, const char *contents)
+    int sd_bus_message_exit_container(sd_bus_message *m)
+    int sd_bus_message_peek_type(sd_bus_message *m, char *type, const char **contents)
 
-    int sd_bus_reply_method_return(sd_bus_message *call, const char *types, ...)
-    int sd_bus_reply_method_errorf(sd_bus_message *call, const char *name, const char *format, ...)

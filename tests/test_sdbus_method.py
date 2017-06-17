@@ -9,22 +9,23 @@ import unittest
 import asyncio
 import adbus
 
-def callback_str(message):
-    """test callback with single string argument, no return"""
-    print(message)
-
 class Test(unittest.TestCase):
     """sd-bus wrapper method test cases"""
 
-    def test_method_single_str(self):
-        """test method with single string arg and no return"""
-        
+    def test_method_basic(self):
+        """test a basic method"""
+
+        def _callback(a1):
+            """test callback"""
+            print("callback")
+            print((a1))
+            print((type(a1)))
+
         loop = asyncio.get_event_loop()
 
         service = adbus.Service("adbus.test", loop)
-        service.add_object("/adbus/test/methods", "adbus.test", [
-            adbus.Method("SingleStringArg", callback_str, arg_types='s'),
-            ])
+        service.add_object("/adbus/test/methods", "adbus.test",
+                [adbus.Method("BasicMethod", _callback, arg_types='ai')])
 
         async def run_method():
             """Run the method"""
