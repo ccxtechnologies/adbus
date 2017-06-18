@@ -5,20 +5,21 @@ cdef int method_message_handler(_sdbus_h.sd_bus_message *m,
 
     cdef PyObject *method_ptr = (((<PyObject**>userdata)[0]))
     cdef Method method = <Method>method_ptr
-    cdef bytes err_message
+    cdef Message message = Message()
+    cdef Error error
+    cdef list args
 
-    message = Message()
     message.import_sd_bus_message(m)
+    args = message.read()
     
     try:
-        ret = method.callback(*message.read())
+        ret = method.callback(*args)
     except Exception as e:
-        err.name = e.__class__.__name__
-        err_message = str(e).encode('utf-8')
-        err.message = err_message
-        return _sdbus_h.sd_bus_reply_method_error(m, err)
+        error = Error()
+        error.import_sd_bus_error(err)
+        method.exceptions.append(e)
+        return error.from_exception(e)
 
-    #TODO: add return message
     return 0
 
 cdef class Method:
@@ -30,6 +31,7 @@ cdef class Method:
     cdef bytes name
     cdef bytes arg_types
     cdef bytes return_type
+    cdef list exceptions
 
     def __cinit__(self, name, callback, arg_types='', return_type='',
             deprectiated=False, hidden=False, unprivledged=False):
@@ -38,6 +40,7 @@ cdef class Method:
         self.arg_types = arg_types.encode()
         self.return_type = return_type.encode()
         self.callback = callback
+        self.exceptions = []
     
         self.type = _sdbus_h._SD_BUS_VTABLE_METHOD
 

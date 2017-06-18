@@ -4,11 +4,12 @@ cdef class Service:
     cdef _sdbus_h.sd_bus *bus
     cdef bytes name
     cdef list objects
+    cdef list exceptions
 
     def __cinit__(self, name, system=False):
-
         self.name = name.encode()
         self.objects = []
+        self.exceptions = []
 
         if system:
             if _sdbus_h.sd_bus_open_system(&self.bus) < 0:
@@ -19,7 +20,7 @@ cdef class Service:
                 raise BusError("Failed to connect to Bus")
 
         if _sdbus_h.sd_bus_request_name(self.bus, self.name, 0) < 0:
-            raise BusError(f"Failed to acquire name {self.name}")
+            raise BusError(f"Failed to acquire name {self.name.decode('utf-8')}")
         
     def __dealloc__(self):
         self.bus = _sdbus_h.sd_bus_unref(self.bus)
@@ -29,7 +30,12 @@ cdef class Service:
             r = _sdbus_h.sd_bus_process(self.bus, NULL)
 
             if r < 0:
-                raise BusError(f"Failed to process bus {self.name}")
+                raise BusError(f"Failed to process {self.name.decode('utf-8')}: {errorcode[-r]}")
+
+            if self.exceptions:
+                for callback_exception in self.exceptions[:]:
+                    self.exceptions.remove(callback_exception)
+                    raise callback_exception
 
             if r == 0:
                 break

@@ -20,6 +20,7 @@ class Test(unittest.TestCase):
             print("callback")
             print((a1))
             print((type(a1)))
+            f[0]
 
         loop = asyncio.get_event_loop()
 

@@ -30,8 +30,6 @@ cdef extern from "systemd/sd-bus-protocol.h":
 
 cdef extern from "systemd/sd-bus.h":
 
-    # -- Callbacks --
-
     ctypedef int (*sd_bus_message_handler_t)(sd_bus_message *m, 
             void *userdata, sd_bus_error *ret_error)
 
@@ -42,7 +40,6 @@ cdef extern from "systemd/sd-bus.h":
     ctypedef int (*sd_bus_property_set_t) (sd_bus *bus, const char *path, 
             const char *interface, const char *property, 
             sd_bus_message *value, void *userdata, sd_bus_error *ret_error)
-    
     
 ctypedef struct sd_bus_vtable_start:
     size_t element_size
@@ -73,8 +70,6 @@ ctypedef union sd_bus_vtable_data:
 
 cdef extern from "systemd/sd-bus-vtable.h":
 
-    # -- Constants --
-
     cdef enum:
         _SD_BUS_VTABLE_START             = 60 # ascii '<'
         _SD_BUS_VTABLE_END               = 62 # ascii '>'
@@ -93,8 +88,6 @@ cdef extern from "systemd/sd-bus-vtable.h":
         SD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION  = 1ULL << 6
         SD_BUS_VTABLE_PROPERTY_EXPLICIT            = 1ULL << 7
     
-    # -- Structs --
-
     ctypedef struct sd_bus_vtable:
         stdint.uint8_t type
         stdint.uint64_t flags
@@ -102,14 +95,10 @@ cdef extern from "systemd/sd-bus-vtable.h":
     
 cdef extern from "systemd/sd-bus.h":
 
-    # -- Constants --
-    
     cdef enum:
         SD_BUS_NAME_REPLACE_EXISTING  = 1 << 0
         SD_BUS_NAME_ALLOW_REPLACEMENT = 1 << 1
         SD_BUS_NAME_QUEUE             = 1 << 2
-    
-    # -- Structs --
     
     ctypedef struct sd_bus:
         pass
@@ -129,8 +118,6 @@ cdef extern from "systemd/sd-bus.h":
         const char* name
         int code
     
-    # -- Functions --
-
     int sd_bus_open_user(sd_bus **ret)
     int sd_bus_open_system(sd_bus **ret)
     int sd_bus_request_name(sd_bus *bus, const char *name, stdint.uint64_t flags)
@@ -148,6 +135,9 @@ cdef extern from "systemd/sd-bus.h":
     int sd_bus_message_read_basic(sd_bus_message *m, char type, void *p)
     int sd_bus_message_enter_container(sd_bus_message *m, char type, const char *contents)
     int sd_bus_message_exit_container(sd_bus_message *m)
+    int sd_bus_message_new_method_return(sd_bus_message *call, sd_bus_message **m)
+    sd_bus_message* sd_bus_message_ref(sd_bus_message *m)
+    sd_bus_message* sd_bus_message_unref(sd_bus_message *m)
     
-    int sd_bus_reply_method_error(sd_bus_message *call, const sd_bus_error *e)
+    int sd_bus_error_set(sd_bus_error *e, const char *name, const char *message)
 

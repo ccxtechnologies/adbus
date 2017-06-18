@@ -7,12 +7,14 @@ cdef class Object:
     cdef bytes path
     cdef bytes interface
     cdef list vtable
+    cdef list exceptions
 
     def __cinit__(self, service, path, interface, vtable, deprectiated=False, hidden=False):
         
         self.vtable = vtable
         self.path = path.encode()
         self.interface = interface.encode()
+        self.exceptions = (<Service>service).exceptions
 
         self._malloc()
         self._init_vtable(deprectiated, hidden)
@@ -20,6 +22,7 @@ cdef class Object:
         for i, v in enumerate(vtable):
             if type(v) == Method:
                 (<Method>v).populate_vtable(&self._vtable[i+1])
+                (<Method>v).exceptions = self.exceptions
                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0]) 
                 self._userdata[i] = (<Method>v).userdata
 

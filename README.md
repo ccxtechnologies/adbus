@@ -1,4 +1,4 @@
-# async-dbus-python
+# python-adbus
 D-Bus Binding for Python supporting coroutines (asyncio)
 
 ## Status

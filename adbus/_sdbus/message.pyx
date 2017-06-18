@@ -21,23 +21,20 @@ cdef class Message:
 
     def __cinit__(self):
         self._m = NULL
+    
+    def __dealloc__(self):
+        self._m = _sdbus_h.sd_bus_message_unref(self._m)
 
     cdef import_sd_bus_message(self, _sdbus_h.sd_bus_message *message):
-        if self._m:
-            raise SdbusError("Message already initialized")
-        self._m = message
+        self._m = _sdbus_h.sd_bus_message_unref(self._m)
+        self._m = _sdbus_h.sd_bus_message_ref(message)
 
-    @property
-    def signature(self):
-        return _sdbus_h.sd_bus_message_get_signature(self._m, 0)
-
-    cdef _read_basic(self, char sig, void *value):
+    cdef new_method_return(self, _sdbus_h.sd_bus_message *call):
         cdef int ret
-        ret = _sdbus_h.sd_bus_message_read_basic(self._m, sig, value);
+        self._m = _sdbus_h.sd_bus_message_unref(self._m)
+        ret = _sdbus_h.sd_bus_message_new_method_return(call, &self._m);
         if ret < 0:
-            raise SdbusError(f"Failed to read value {chr(sig)}: {errorcode[-ret]}")
-        if ret == 0:
-            raise MessageEmpty(f"No data to read of type {chr(sig)}")
+            raise SdbusError(f"Failed to create new method return: {errorcode[-ret]}")
 
     cdef _element_length(self, const char *signature):
         cdef unsigned int i = 0
@@ -63,10 +60,18 @@ cdef class Message:
                 break
 
         return i
+    
+    cdef _read_basic(self, char sig, void *value):
+        cdef int ret
+        ret = _sdbus_h.sd_bus_message_read_basic(self._m, sig, value);
+        if ret < 0:
+            raise SdbusError(f"Failed to read value {chr(sig)}: {errorcode[-ret]}")
+        if ret == 0:
+            raise MessageEmpty(f"No data to read of type {chr(sig)}")
 
     cdef _read_array(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]])
-        cdef bytes psignature = signature[index[0]:elength+index[0]]
+        cdef bytes psignature = signature[index[0]:elength+index[0]] + bytes(1)
         cdef char *esignature = psignature
         cdef list values = []
         cdef list value
@@ -115,7 +120,7 @@ cdef class Message:
     
     cdef _read_struct(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
-        cdef bytes psignature = signature[index[0]:elength+index[0]-1]
+        cdef bytes psignature = signature[index[0]:elength+index[0]-1] + bytes(1)
         cdef char *esignature = psignature
         cdef list value
         
@@ -134,7 +139,7 @@ cdef class Message:
     
     cdef _read_dict(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
-        cdef bytes psignature = signature[index[0]:elength+index[0]-1]
+        cdef bytes psignature = signature[index[0]:elength+index[0]-1] + bytes(1)
         cdef char *esignature = psignature
         
         index[0] += elength + 1
@@ -158,11 +163,14 @@ cdef class Message:
         cdef int dict_cnt = 0
         cdef char s
 
-        while signature[i] != 0:
+        while True:
             s = signature[i]
             i += 1
 
-            if s == _sdbus_h.SD_BUS_TYPE_ARRAY:
+            if s ==  _sdbus_h._SD_BUS_TYPE_INVALID:
+                break
+
+            elif s == _sdbus_h.SD_BUS_TYPE_ARRAY:
                 values.append(self._read_array(signature, &i))
 
             elif s == _sdbus_h.SD_BUS_TYPE_VARIANT:

@@ -24,7 +24,8 @@ cdef class SdbusError(Exception):
     pass
 
 include "_sdbus/message.pyx"
+include "_sdbus/error.pyx"
+include "_sdbus/service.pyx"
 include "_sdbus/object.pyx"
 include "_sdbus/method.pyx"
-include "_sdbus/service.pyx"
 
