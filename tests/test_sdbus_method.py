@@ -16,19 +16,17 @@ class Test(unittest.TestCase):
     def test_method_basic():
         """test a basic method"""
 
-        def _callback(a1):
+        def _callback(arg1):
             """test callback"""
-            print("callback")
-            print((a1))
-            print((type(a1)))
-            return 'teststr'
+            print(f"callback {arg1}")
+            return True
 
         loop = asyncio.get_event_loop()
 
         service = adbus.Service("adbus.test", loop)
         service.add_object("/adbus/test/methods", "adbus.test",
                 [adbus.Method("BasicMethod", _callback, arg_signature='a{ii}',
-                    return_signature='s')])
+                    return_signature='v')])
 
         async def run_method():
             """Run the method"""
