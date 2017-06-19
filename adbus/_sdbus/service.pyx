@@ -27,6 +27,7 @@ cdef class Service:
 
     def process(self):
         while True:
+            print("processing")
             r = _sdbus_h.sd_bus_process(self.bus, NULL)
 
             if r < 0:

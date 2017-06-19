@@ -21,7 +21,10 @@ cdef class BusError(Exception):
 
 cdef class SdbusError(Exception):
     """SD-Bus Library Configuration Error"""
-    pass
+
+    def __init__(self, message, errno=1):
+        Exception.__init__(self, message)
+        self.errno = errno
 
 include "_sdbus/message.pyx"
 include "_sdbus/error.pyx"

@@ -5,16 +5,15 @@
 
 """distutils build and configuration script for async-dbus-python."""
 
-from Cython.Build import cythonize
 from distutils.core import setup
 from distutils.core import Extension
+from Cython.Build import cythonize
 
 def build():
     """Build Package."""
 
     sdbus = cythonize([Extension("adbus._sdbus", ["adbus/_sdbus.pyx"],
         libraries=["systemd"])])
-
 
     setup(name='adbus',
             version='0.1',

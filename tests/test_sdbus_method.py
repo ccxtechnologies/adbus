@@ -12,7 +12,8 @@ import adbus
 class Test(unittest.TestCase):
     """sd-bus wrapper method test cases"""
 
-    def test_method_basic(self):
+    @staticmethod
+    def test_method_basic():
         """test a basic method"""
 
         def _callback(a1):
@@ -20,13 +21,14 @@ class Test(unittest.TestCase):
             print("callback")
             print((a1))
             print((type(a1)))
-            f[0]
+            return 'teststr'
 
         loop = asyncio.get_event_loop()
 
         service = adbus.Service("adbus.test", loop)
         service.add_object("/adbus/test/methods", "adbus.test",
-                [adbus.Method("BasicMethod", _callback, arg_types='a{ii}')])
+                [adbus.Method("BasicMethod", _callback, arg_signature='a{ii}',
+                    return_signature='s')])
 
         async def run_method():
             """Run the method"""

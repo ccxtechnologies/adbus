@@ -62,8 +62,8 @@ cdef class Object:
         self._vtable[length+1].flags = 0
 
     def _register_vtable(self, service, path, interface):
-        e = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus, 
+        ret = _sdbus_h.sd_bus_add_object_vtable((<Service>service).bus, 
                 &self._slot, path, interface, self._vtable, self._userdata)
-        if e < 0:
-            raise SdbusError(f"Failed to register vtable: {errorcode[-e]}")
+        if ret < 0:
+            raise SdbusError(f"Failed to register vtable: {errorcode[-ret]}", -ret)
 

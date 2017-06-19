@@ -8,7 +8,7 @@ from . import _sdbus
 class Method:
     """D-Bus Method"""
 
-    def __init__(self, name, callback, arg_types='', return_type='',
+    def __init__(self, name, callback, arg_signature='', return_signature='',
             deprectiated=False, hidden=False, unprivledged=False):
-        self.sdbus = _sdbus.Method(name, callback, arg_types, return_type,
+        self.sdbus = _sdbus.Method(name, callback, arg_signature, return_signature,
             deprectiated, hidden, unprivledged)
