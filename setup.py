@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 # Copyright: 2017, Charles Eidsness
-# pylint: disable=C0330
 
 """distutils build and configuration script for async-dbus-python."""
 
