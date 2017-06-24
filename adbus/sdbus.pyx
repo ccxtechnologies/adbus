@@ -1,6 +1,6 @@
 # == Copyright: 2017, Charles Eidsness
 
-cimport _sdbus_h
+cimport sdbus_h
 
 from asyncio import get_event_loop
 from concurrent.futures import ThreadPoolExecutor
@@ -26,9 +26,9 @@ cdef class SdbusError(Exception):
         Exception.__init__(self, message)
         self.errno = errno
 
-include "_sdbus/message.pyx"
-include "_sdbus/error.pyx"
-include "_sdbus/service.pyx"
-include "_sdbus/object.pyx"
-include "_sdbus/method.pyx"
+include "sdbus/message.pyx"
+include "sdbus/error.pyx"
+include "sdbus/service.pyx"
+include "sdbus/object.pyx"
+include "sdbus/method.pyx"
 

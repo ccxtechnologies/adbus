@@ -2,7 +2,7 @@
 
 """D-Bus Service"""
 
-from . import _sdbus
+from .. import sdbus
 
 class Service:
     """D-Bus Service"""
@@ -12,7 +12,7 @@ class Service:
         pass
 
     def __init__(self, name, loop, system=False):
-        self.sdbus = _sdbus.Service(name, system)
+        self.sdbus = sdbus.Service(name, system)
 
         # add a reader, so we process dbus message when they come in
         bus_fd = self.sdbus.get_fd()

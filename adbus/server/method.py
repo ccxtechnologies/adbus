@@ -2,12 +2,12 @@
 
 """D-Bus Method"""
 
-from . import _sdbus
+from .. import sdbus
 
 class Method:
     """D-Bus Method"""
 
     def __init__(self, name, callback, arg_signature='', return_signature='',
             deprectiated=False, hidden=False, unprivledged=False):
-        self.sdbus = _sdbus.Method(name, callback, arg_signature, return_signature,
+        self.sdbus = sdbus.Method(name, callback, arg_signature, return_signature,
             deprectiated, hidden, unprivledged)

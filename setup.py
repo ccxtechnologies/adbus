@@ -11,7 +11,7 @@ from Cython.Build import cythonize
 def build():
     """Build Package."""
 
-    sdbus = cythonize([Extension("adbus._sdbus", ["adbus/_sdbus.pyx"],
+    sdbus = cythonize([Extension("adbus.sdbus", ["adbus/sdbus.pyx"],
         libraries=["systemd"])])
 
     setup(name='adbus',
@@ -20,7 +20,7 @@ def build():
             license='MIT',
             author='Charles Eidsness',
             author_email='charles.eidsness@ieee.org',
-            url='http://github.com/charleseidsness/async-dbus-python',
+            url='http://github.com/charleseidsness/python-adbus',
             platforms=['linux'],
             provides=['adbus'],
             packages=['adbus'],

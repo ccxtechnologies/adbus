@@ -7,7 +7,8 @@
 import unittest
 import asyncio
 import asyncio.subprocess
-import adbus
+from adbus.server.service import Service
+from adbus.server.method import Method
 
 class Test(unittest.TestCase):
     """sd-bus wrapper method test cases"""
@@ -15,7 +16,7 @@ class Test(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls._loop = asyncio.get_event_loop()
-        cls._service = adbus.Service("adbus.test", cls._loop)
+        cls._service = Service("adbus.test", cls._loop)
 
     @classmethod
     def tearDownClass(cls):
@@ -62,7 +63,7 @@ class Test(unittest.TestCase):
             return f"callback {arg1}, {arg2}, {arg3}"
 
         self._service.add_object("/adbus/test/methods", "adbus.test",
-                [adbus.Method("BasicMethod", _callback, arg_signature='ius',
+                [Method("BasicMethod", _callback, arg_signature='ius',
                     return_signature='s')])
 
         self._loop.run_until_complete(self.call_method("BasicMethod",
@@ -76,7 +77,7 @@ class Test(unittest.TestCase):
             return int(arg1)
 
         self._service.add_object("/adbus/test/methods", "adbus.test",
-                [adbus.Method("VariantMethod", _callback, arg_signature='i',
+                [Method("VariantMethod", _callback, arg_signature='i',
                     return_signature='v')])
 
         self._loop.run_until_complete(self.call_method("VariantMethod",

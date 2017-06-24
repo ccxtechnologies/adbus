@@ -1,7 +1,7 @@
 # == Copyright: 2017, Charles Eidsness
 
-cdef int method_message_handler(_sdbus_h.sd_bus_message *m, 
-        void *userdata, _sdbus_h.sd_bus_error *err):
+cdef int method_message_handler(sdbus_h.sd_bus_message *m, 
+        void *userdata, sdbus_h.sd_bus_error *err):
     cdef PyObject *method_ptr = (((<PyObject**>userdata)[0]))
     cdef Method method = <Method>method_ptr
     cdef Message message = Message()
@@ -33,7 +33,7 @@ cdef int method_message_handler(_sdbus_h.sd_bus_message *m,
 cdef class Method:
     cdef stdint.uint8_t type
     cdef stdint.uint64_t flags
-    cdef _sdbus_h.sd_bus_vtable_method x
+    cdef sdbus_h.sd_bus_vtable_method x
     cdef void *userdata
     cdef object callback
     cdef bytes name
@@ -50,20 +50,20 @@ cdef class Method:
         self.callback = callback
         self.exceptions = []
     
-        self.type = _sdbus_h._SD_BUS_VTABLE_METHOD
+        self.type = sdbus_h._SD_BUS_VTABLE_METHOD
 
         self.flags = 0
         if not return_signature:
-            self.flags |= _sdbus_h.SD_BUS_VTABLE_METHOD_NO_REPLY
+            self.flags |= sdbus_h.SD_BUS_VTABLE_METHOD_NO_REPLY
 
         if deprectiated:
-            self.flags |= _sdbus_h.SD_BUS_VTABLE_DEPRECATED
+            self.flags |= sdbus_h.SD_BUS_VTABLE_DEPRECATED
 
         if hidden:
-            self.flags |= _sdbus_h.SD_BUS_VTABLE_HIDDEN
+            self.flags |= sdbus_h.SD_BUS_VTABLE_HIDDEN
 
         if unprivledged:
-            self.flags |= _sdbus_h.SD_BUS_VTABLE_UNPRIVILEGED
+            self.flags |= sdbus_h.SD_BUS_VTABLE_UNPRIVILEGED
 
         self.x.member = self.name
         self.x.handler = method_message_handler
@@ -72,7 +72,7 @@ cdef class Method:
         
         self.userdata = <void *>self
     
-    cdef populate_vtable(self, _sdbus_h.sd_bus_vtable *vtable):
+    cdef populate_vtable(self, sdbus_h.sd_bus_vtable *vtable):
         vtable.type = self.type
         vtable.flags = self.flags
         memcpy(&vtable.x, &self.x, sizeof(self.x))
