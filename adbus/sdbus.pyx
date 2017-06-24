@@ -31,4 +31,5 @@ include "sdbus/error.pyx"
 include "sdbus/service.pyx"
 include "sdbus/object.pyx"
 include "sdbus/method.pyx"
+include "sdbus/property.pyx"
 

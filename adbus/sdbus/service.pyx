@@ -21,7 +21,7 @@ cdef class Service:
 
         if sdbus_h.sd_bus_request_name(self.bus, self.name, 0) < 0:
             raise BusError(f"Failed to acquire name {self.name.decode('utf-8')}")
-        
+
     def __dealloc__(self):
         self.bus = sdbus_h.sd_bus_unref(self.bus)
 
@@ -30,7 +30,7 @@ cdef class Service:
             r = sdbus_h.sd_bus_process(self.bus, NULL)
 
             if r < 0:
-                raise BusError(f"Failed to process {self.name.decode('utf-8')}: {errorcode[-r]}")
+                raise BusError(f"{self.name.decode('utf-8')} process errno: {errorcode[-r]}")
 
             if self.exceptions:
                 for callback_exception in self.exceptions[:]:

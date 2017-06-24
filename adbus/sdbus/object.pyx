@@ -9,8 +9,9 @@ cdef class Object:
     cdef list vtable
     cdef list exceptions
 
-    def __cinit__(self, service, path, interface, vtable, deprectiated=False, hidden=False):
-        
+    def __cinit__(self, service, path, interface, vtable,
+            deprectiated=False, hidden=False):
+
         self.vtable = vtable
         self.path = path.encode()
         self.interface = interface.encode()
@@ -23,11 +24,16 @@ cdef class Object:
             if type(v) == Method:
                 (<Method>v).populate_vtable(&self._vtable[i+1])
                 (<Method>v).exceptions = self.exceptions
-                self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0]) 
+                self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
                 self._userdata[i] = (<Method>v).userdata
+            elif type(v) == Property:
+                (<Property>v).populate_vtable(&self._vtable[i+1])
+                (<Property>v).exceptions = self.exceptions
+                self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
+                self._userdata[i] = (<Property>v).userdata
 
         self._register_vtable(service, self.path, self.interface)
-    
+
     def __dealloc__(self):
         self._slot = sdbus_h.sd_bus_slot_unref(self._slot)
         PyMem_Free(self._vtable)
@@ -62,7 +68,7 @@ cdef class Object:
         self._vtable[length+1].flags = 0
 
     def _register_vtable(self, service, path, interface):
-        ret = sdbus_h.sd_bus_add_object_vtable((<Service>service).bus, 
+        ret = sdbus_h.sd_bus_add_object_vtable((<Service>service).bus,
                 &self._slot, path, interface, self._vtable, self._userdata)
         if ret < 0:
             raise SdbusError(f"Failed to register vtable: {errorcode[-ret]}", -ret)
