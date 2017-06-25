@@ -30,17 +30,17 @@ cdef extern from "systemd/sd-bus-protocol.h":
 
 cdef extern from "systemd/sd-bus.h":
 
-    ctypedef int (*sd_bus_message_handler_t)(sd_bus_message *m, 
+    ctypedef int (*sd_bus_message_handler_t)(sd_bus_message *m,
             void *userdata, sd_bus_error *ret_error)
 
-    ctypedef int (*sd_bus_property_get_t) (sd_bus *bus, const char *path, 
-            const char *interface, const char *property, 
+    ctypedef int (*sd_bus_property_get_t) (sd_bus *bus, const char *path,
+            const char *interface, const char *property,
             sd_bus_message *reply, void *userdata, sd_bus_error *ret_error)
 
-    ctypedef int (*sd_bus_property_set_t) (sd_bus *bus, const char *path, 
-            const char *interface, const char *property, 
+    ctypedef int (*sd_bus_property_set_t) (sd_bus *bus, const char *path,
+            const char *interface, const char *property,
             sd_bus_message *value, void *userdata, sd_bus_error *ret_error)
-    
+
 ctypedef struct sd_bus_vtable_start:
     size_t element_size
 
@@ -87,25 +87,25 @@ cdef extern from "systemd/sd-bus-vtable.h":
         SD_BUS_VTABLE_PROPERTY_EMITS_CHANGE        = 1ULL << 5
         SD_BUS_VTABLE_PROPERTY_EMITS_INVALIDATION  = 1ULL << 6
         SD_BUS_VTABLE_PROPERTY_EXPLICIT            = 1ULL << 7
-    
+
     ctypedef struct sd_bus_vtable:
         stdint.uint8_t type
         stdint.uint64_t flags
         sd_bus_vtable_data x
-    
+
 cdef extern from "systemd/sd-bus.h":
 
     cdef enum:
         SD_BUS_NAME_REPLACE_EXISTING  = 1 << 0
         SD_BUS_NAME_ALLOW_REPLACEMENT = 1 << 1
         SD_BUS_NAME_QUEUE             = 1 << 2
-    
+
     ctypedef struct sd_bus:
         pass
-    
+
     ctypedef struct sd_bus_message:
         pass
-    
+
     ctypedef struct sd_bus_slot:
         pass
 
@@ -117,20 +117,20 @@ cdef extern from "systemd/sd-bus.h":
     ctypedef struct sd_bus_error_map:
         const char* name
         int code
-    
+
     int sd_bus_open_user(sd_bus **ret)
     int sd_bus_open_system(sd_bus **ret)
     int sd_bus_request_name(sd_bus *bus, const char *name, stdint.uint64_t flags)
     sd_bus *sd_bus_unref(sd_bus *bus)
 
-    int sd_bus_add_object_vtable(sd_bus *bus, sd_bus_slot **slot, 
-            const char *path, const char *interface, 
+    int sd_bus_add_object_vtable(sd_bus *bus, sd_bus_slot **slot,
+            const char *path, const char *interface,
             const sd_bus_vtable *vtable, void *userdata)
     sd_bus_slot* sd_bus_slot_unref(sd_bus_slot *slot)
 
     int sd_bus_process(sd_bus *bus, sd_bus_message **r)
     int sd_bus_get_fd(sd_bus *bus)
-    
+
     const char *sd_bus_message_get_signature(sd_bus_message *m, int complete)
     int sd_bus_message_read_basic(sd_bus_message *m, char type, void *p)
     int sd_bus_message_enter_container(sd_bus_message *m, char type, const char *contents)
@@ -140,8 +140,11 @@ cdef extern from "systemd/sd-bus.h":
     int sd_bus_message_close_container(sd_bus_message *m)
     sd_bus_message* sd_bus_message_ref(sd_bus_message *m)
     sd_bus_message* sd_bus_message_unref(sd_bus_message *m)
-    
+
     int sd_bus_error_set(sd_bus_error *e, const char *name, const char *message)
 
     int sd_bus_message_append_basic(sd_bus_message *m, char type, const void *p)
     int sd_bus_send(sd_bus *bus, sd_bus_message *m, stdint.uint64_t *cookie)
+
+    int sd_bus_emit_properties_changed_strv(sd_bus *bus, const char *path,
+            const char *interface, char **names)

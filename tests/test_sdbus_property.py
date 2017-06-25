@@ -8,6 +8,7 @@ import unittest
 import asyncio
 import asyncio.subprocess
 from adbus.server.service import Service
+from adbus.server.object import Object
 from adbus.server.property import Property
 
 class Test(unittest.TestCase):
@@ -78,10 +79,20 @@ class Test(unittest.TestCase):
             await self.get_property("Basic", 'i', "test_prop")
             await self.set_property("Basic", 'i', "test_prop", -1267)
 
-        self._service.add_object("/adbus/test/methods", "adbus.test",
+        self.object = Object(self._service,
                 [Property("Basic", self, 'test_prop', signature='i')])
 
         self._loop.run_until_complete(test_seq())
+
+    def test_property_signal(self):
+        """test a basic method"""
+
+        self.object = Object(self._service, "/adbus/test/methods", "adbus.test",
+                [Property("Basic", self, 'test_prop', signature='i',
+                    emits_change=True)])
+        self.object.emit_changed(["Basic"])
+
+        self._loop.run_until_complete(self.delay(120))
 
 if __name__ == "__main__":
     unittest.main()

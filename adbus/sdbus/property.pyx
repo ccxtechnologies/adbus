@@ -103,3 +103,4 @@ cdef class Property:
         vtable.type = self.type
         vtable.flags = self.flags
         memcpy(&vtable.x, &self.x, sizeof(self.x))
+

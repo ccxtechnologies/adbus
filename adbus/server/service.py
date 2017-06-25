@@ -21,11 +21,3 @@ class Service:
 
         loop.add_reader(bus_fd, self.sdbus.process)
 
-    def add_object(self, path, interface, vtable, deprectiated=False, hidden=False):
-        """Add an object plus vtable to the Service."""
-        return self.sdbus.add_object(path, interface,
-                [v.sdbus for v in vtable], deprectiated, hidden)
-
-    def remove_object(self, obj):
-        """Remove an object from the Service."""
-        self.sdbus.remove_object(obj)

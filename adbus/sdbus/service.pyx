@@ -3,12 +3,10 @@
 cdef class Service:
     cdef sdbus_h.sd_bus *bus
     cdef bytes name
-    cdef list objects
     cdef list exceptions
 
     def __cinit__(self, name, system=False):
         self.name = name.encode()
-        self.objects = []
         self.exceptions = []
 
         if system:
@@ -30,7 +28,7 @@ cdef class Service:
             r = sdbus_h.sd_bus_process(self.bus, NULL)
 
             if r < 0:
-                raise BusError(f"{self.name.decode('utf-8')} process errno: {errorcode[-r]}")
+                raise BusError(f"{self.name.decode('utf-8')} process err: {errorcode[-r]}")
 
             if self.exceptions:
                 for callback_exception in self.exceptions[:]:
@@ -39,13 +37,6 @@ cdef class Service:
 
             if r == 0:
                 break
-
-    def add_object(self, path, interface, vtable, deprectiated=False, hidden=False):
-        obj = Object(self, path, interface, vtable, deprectiated, hidden)
-        self.objects.append(obj)
-
-    def remove_object(self, obj):
-        self.objects.remove(obj)
 
     def get_fd(self):
         return sdbus_h.sd_bus_get_fd(self.bus)

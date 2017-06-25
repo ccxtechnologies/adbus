@@ -8,6 +8,7 @@ import unittest
 import asyncio
 import asyncio.subprocess
 from adbus.server.service import Service
+from adbus.server.object import Object
 from adbus.server.method import Method
 
 class Test(unittest.TestCase):
@@ -62,7 +63,7 @@ class Test(unittest.TestCase):
         def _callback(arg1, arg2, arg3):
             return f"callback {arg1}, {arg2}, {arg3}"
 
-        self._service.add_object("/adbus/test/methods", "adbus.test",
+        self.obj = Object(self._service, "/adbus/test/methods", "adbus.test",
                 [Method("BasicMethod", _callback, arg_signature='ius',
                     return_signature='s')])
 
@@ -76,7 +77,7 @@ class Test(unittest.TestCase):
         def _callback(arg1):
             return int(arg1)
 
-        self._service.add_object("/adbus/test/methods", "adbus.test",
+        self.obj = Object(self._service, "/adbus/test/methods", "adbus.test",
                 [Method("VariantMethod", _callback, arg_signature='i',
                     return_signature='v')])
 
