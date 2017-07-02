@@ -12,6 +12,6 @@ class Object:
         self.sdbus = sdbus.Object(service.sdbus, path, interface,
                 [v.sdbus for v in vtable], deprectiated, hidden)
 
-    def emit_changes(self, properties):
+    def emit_changed(self, properties):
         self.sdbus.emit_changed(properties)
 
