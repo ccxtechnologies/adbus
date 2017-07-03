@@ -79,7 +79,7 @@ class Test(unittest.TestCase):
             await self.get_property("Basic", 'i', "test_prop")
             await self.set_property("Basic", 'i', "test_prop", -1267)
 
-        self.object = Object(self._service,
+        self.object = Object(self._service, "/adbus/test/methods", "adbus.test",
                 [Property("Basic", self, 'test_prop', signature='i')])
 
         self._loop.run_until_complete(test_seq())
