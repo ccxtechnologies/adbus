@@ -32,4 +32,4 @@ include "sdbus/service.pyx"
 include "sdbus/object.pyx"
 include "sdbus/method.pyx"
 include "sdbus/property.pyx"
-
+include "sdbus/signal.pyx"

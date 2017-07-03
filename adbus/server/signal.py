@@ -2,6 +2,13 @@
 
 """D-Bus Signal"""
 
-class Object:
+from .. import sdbus
+
+class Signal:
     """D-Bus Signal"""
-    pass
+
+    def __init__(self, name, signature='', deprectiated=False, hidden=False):
+        self.sdbus = sdbus.Signal(name, signature, deprectiated, hidden)
+
+    def emit(self, value):
+        pass

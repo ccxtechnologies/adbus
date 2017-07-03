@@ -34,6 +34,9 @@ cdef class Object:
                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
                 self._userdata[i] = (<Property>v).userdata
 
+            elif type(v) == Signal:
+                (<Signal>v).populate_vtable(&self._vtable[i+1])
+
         self._register_vtable()
 
     def __dealloc__(self):
@@ -75,7 +78,7 @@ cdef class Object:
         if ret < 0:
             raise SdbusError(f"Failed to register vtable: {errorcode[-ret]}", -ret)
 
-    def emit_changed(self, properties):
+    def emit_properties_changed(self, properties):
         cdef int ret
         cdef list property_names = [p.encode() for p in properties]
         cdef char **names = <char**>PyMem_Malloc((len(properties)+1)*sizeof(char*))
