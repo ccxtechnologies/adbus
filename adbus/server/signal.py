@@ -11,4 +11,4 @@ class Signal:
         self.sdbus = sdbus.Signal(name, signature, deprectiated, hidden)
 
     def emit(self, value):
-        pass
+        self.sdbus.emit(value)

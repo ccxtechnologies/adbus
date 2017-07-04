@@ -11,7 +11,7 @@ cdef union _value:
     double c_double
     bint c_bool
     const char* c_str
-    
+
 cdef class MessageEmpty(Exception):
     """Empty Message Element"""
     pass
@@ -21,10 +21,10 @@ cdef class Message:
 
     def __cinit__(self):
         self._m = NULL
-    
+
     def __dealloc__(self):
         self._m = sdbus_h.sd_bus_message_unref(self._m)
-    
+
     # ------------
 
     cdef import_sd_bus_message(self, sdbus_h.sd_bus_message *message):
@@ -36,8 +36,17 @@ cdef class Message:
         self._m = sdbus_h.sd_bus_message_unref(self._m)
         ret = sdbus_h.sd_bus_message_new_method_return(call, &self._m)
         if ret < 0:
-            raise SdbusError(f"Failed to create new method return: {errorcode[-ret]}", -ret)
-    
+            raise SdbusError(f"New method returned: {errorcode[-ret]}", -ret)
+
+    cdef new_signal(self, Signal signal):
+        cdef int ret
+        cdef Object object = signal.object
+        self._m = sdbus_h.sd_bus_message_unref(self._m)
+        ret = sdbus_h.sd_bus_message_new_signal(object.bus, &self._m, object.path,
+                object.interface, signal.name)
+        if ret < 0:
+            raise SdbusError(f"New signal returned: {errorcode[-ret]}", -ret)
+
     # ------------
 
     cdef _element_length(self, const char *signature):
@@ -64,7 +73,7 @@ cdef class Message:
                 break
 
         return i
-    
+
     cdef bytes _object_signature_basic(self, object value):
         if isinstance(value, bool):
             return sdbus_h.SD_BUS_TYPE_BOOLEAN
@@ -110,7 +119,7 @@ cdef class Message:
         return signature
 
     # ------------
-    
+
     cdef _read_basic(self, char sig, void *value):
         cdef int ret
         ret = sdbus_h.sd_bus_message_read_basic(self._m, sig, value)
@@ -125,10 +134,10 @@ cdef class Message:
         cdef char *esignature = psignature
         cdef list values = []
         cdef list value
-        
+
         index[0] += elength
-    
-        if sdbus_h.sd_bus_message_enter_container(self._m, 
+
+        if sdbus_h.sd_bus_message_enter_container(self._m,
                 sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
             raise SdbusError(f"Failed to enter array {esignature}")
 
@@ -141,7 +150,7 @@ cdef class Message:
                     values.append(value)
             except MessageEmpty:
                 break
-    
+
         if sdbus_h.sd_bus_message_exit_container(self._m) < 0:
             raise SdbusError(f"Failed to exit array {esignature}")
 
@@ -156,10 +165,10 @@ cdef class Message:
         cdef const char *esignature
         cdef list value
 
-        if sdbus_h.sd_bus_message_enter_container(self._m, 
+        if sdbus_h.sd_bus_message_enter_container(self._m,
                 sdbus_h.SD_BUS_TYPE_VARIANT, NULL) < 0:
             raise SdbusError("Failed to enter variant")
-        
+
         esignature = sdbus_h.sd_bus_message_get_signature(self._m, 0)
         value = self.read(esignature)
 
@@ -167,39 +176,39 @@ cdef class Message:
             raise SdbusError(f"Failed to exit variant {esignature}")
 
         return value
-    
+
     cdef list _read_struct(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
         cdef bytes psignature = signature[index[0]:elength+index[0]-1] + bytes(1)
         cdef char *esignature = psignature
         cdef list value
-        
+
         index[0] += elength + 1
-    
-        if sdbus_h.sd_bus_message_enter_container(self._m, 
+
+        if sdbus_h.sd_bus_message_enter_container(self._m,
                 sdbus_h.SD_BUS_TYPE_STRUCT, esignature) < 0:
             raise SdbusError(f"Failed to enter structure {esignature}")
 
         value = self.read(esignature)
-    
+
         if sdbus_h.sd_bus_message_exit_container(self._m) < 0:
             raise SdbusError(f"Failed to exit structure {esignature}")
 
         return value
-    
+
     cdef list _read_dict(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
         cdef bytes psignature = signature[index[0]:elength+index[0]-1] + bytes(1)
         cdef char *esignature = psignature
-        
+
         index[0] += elength + 1
-    
-        if sdbus_h.sd_bus_message_enter_container(self._m, 
+
+        if sdbus_h.sd_bus_message_enter_container(self._m,
                 sdbus_h.SD_BUS_TYPE_DICT_ENTRY, esignature) < 0:
             raise SdbusError(f"Failed to enter dictionary {esignature}")
 
         value = self.read(esignature)
-    
+
         if sdbus_h.sd_bus_message_exit_container(self._m) < 0:
             raise SdbusError(f"Failed to exit dictionary {esignature}")
 
@@ -235,31 +244,31 @@ cdef class Message:
             elif s == sdbus_h.SD_BUS_TYPE_BYTE:
                 self._read_basic(s, <void*>&v.c_byte)
                 values.append(v.c_byte)
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_BOOLEAN:
                 self._read_basic(s, <void*>&v.c_bool)
                 values.append(v.c_bool)
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_UINT16:
                 self._read_basic(s, <void*>&v.c_uint16)
                 values.append(v.c_uint16)
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_INT16:
                 self._read_basic(s, <void*>&v.c_int16)
                 values.append(v.c_int16)
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_UINT32:
                 self._read_basic(s, <void*>&v.c_uint32)
                 values.append(v.c_uint32)
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_INT32:
                 self._read_basic(s, <void*>&v.c_int32)
                 values.append(v.c_int32)
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_UINT64:
                 self._read_basic(s, <void*>&v.c_uint64)
                 values.append(v.c_uint64)
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_INT64:
                 self._read_basic(s, <void*>&v.c_int64)
                 values.append(v.c_int64)
@@ -267,19 +276,19 @@ cdef class Message:
             elif s == sdbus_h.SD_BUS_TYPE_DOUBLE:
                 self._read_basic(s, <void*>&v.c_double)
                 values.append(v.c_double)
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_STRING:
                 self._read_basic(s, <void*>&v.c_str)
                 values.append(v.c_str.decode('utf-8'))
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_OBJECT_PATH:
                 self._read_basic(s, <void*>&v.c_str)
                 values.append(v.c_str.decode('utf-8'))
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_SIGNATURE:
                 self._read_basic(s, <void*>&v.c_str)
                 values.append(v.c_str.decode('utf-8'))
-            
+
             elif s == sdbus_h.SD_BUS_TYPE_UNIX_FD:
                 self._read_basic(s, <void*>&v.c_int32)
                 values.append(v.c_int32)
@@ -293,22 +302,22 @@ cdef class Message:
             return values
 
     # ------------
-    
+
     cdef _append_basic(self, char sig, const void *value):
         cdef int ret
         ret = sdbus_h.sd_bus_message_append_basic(self._m, sig, value)
         if ret < 0:
             raise SdbusError(f"Failed to append value {chr(sig)}: {errorcode[-ret]}", -ret)
-    
+
     cdef _append_array(self, const char *signature, object value):
         cdef unsigned int elength = self._element_length(&signature[1])
         cdef bytes psignature = signature[1:elength+1] + bytes(1)
         cdef char *esignature = psignature
-    
-        if sdbus_h.sd_bus_message_open_container(self._m, 
+
+        if sdbus_h.sd_bus_message_open_container(self._m,
                 sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
             raise SdbusError(f"Failed to open array {esignature}")
-        
+
         # A dictionary is always an array with two elements (based on d-bus defintion)
         # so if we're a dictionary convert it.
         if esignature[0] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
@@ -317,24 +326,24 @@ cdef class Message:
         else:
             for v in <list>value:
                 self.append(esignature, v)
-    
+
         if sdbus_h.sd_bus_message_close_container(self._m) < 0:
             raise SdbusError(f"Failed to close array {esignature}")
-    
+
     cdef _append_variant(self, object value):
         cdef const char *esignature
-        
+
         esignature = self._object_signature(value)
 
-        if sdbus_h.sd_bus_message_open_container(self._m, 
+        if sdbus_h.sd_bus_message_open_container(self._m,
                 sdbus_h.SD_BUS_TYPE_VARIANT, esignature) < 0:
             raise SdbusError(f"Failed to open variant {esignature}")
-        
+
         self.append(esignature, value)
 
         if sdbus_h.sd_bus_message_close_container(self._m) < 0:
             raise SdbusError(f"Failed to close variant {esignature}")
-    
+
     cdef append(self, const char *signature, object value):
         cdef _value v
         cdef int struct_cnt = 0
@@ -362,31 +371,31 @@ cdef class Message:
         elif s == sdbus_h.SD_BUS_TYPE_BYTE:
             v.c_byte = value
             self._append_basic(s, <void*>&v.c_byte)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_BOOLEAN:
             v.c_bool = value
             self._append_basic(s, <void*>&v.c_bool)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_UINT16:
             v.c_uint16 = value
             self._append_basic(s, <void*>&v.c_uint16)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_INT16:
             v.c_int16 = value
             self._append_basic(s, <void*>&v.c_int16)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_UINT32:
             v.c_uint32 = value
             self._append_basic(s, <void*>&v.c_uint32)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_INT32:
             v.c_int32 = value
             self._append_basic(s, <void*>&v.c_int32)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_UINT64:
             v.c_uint64 = value
             self._append_basic(s, <void*>&v.c_uint64)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_INT64:
             v.c_int64 = value
             self._append_basic(s, <void*>&v.c_int64)
@@ -394,22 +403,22 @@ cdef class Message:
         elif s == sdbus_h.SD_BUS_TYPE_DOUBLE:
             v.c_double = value
             self._append_basic(s, <void*>&v.c_double)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_STRING:
             v_str = value.encode('utf-8')
             v.c_str = v_str
             self._append_basic(s, <void*>v.c_str)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_OBJECT_PATH:
             v_str = value.encode('utf-8')
             v.c_str = v_str
             self._append_basic(s, <void*>v.c_str)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_SIGNATURE:
             v_str = value.encode('utf-8')
             v.c_str = v_str
             self._append_basic(s, <void*>v.c_str)
-        
+
         elif s == sdbus_h.SD_BUS_TYPE_UNIX_FD:
             v.c_int32 = value
             self._append_basic(s, <void*>&v.c_int32)

@@ -13,3 +13,6 @@ class Property:
         self.sdbus = sdbus.Property(name, py_object, attr_name, signature, read_only,
             deprectiated, hidden, unprivledged, emits_constant, emits_change,
             emits_invalidation)
+
+    def emit_changed(self):
+        self.sdbus.emits_change()

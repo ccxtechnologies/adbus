@@ -87,10 +87,12 @@ class Test(unittest.TestCase):
     def test_property_signal(self):
         """test a basic method"""
 
+        prop_basic = Property("Basic", self, 'test_prop', signature='i',
+                    emits_change=True)
+
         self.object = Object(self._service, "/adbus/test/methods", "adbus.test",
-                [Property("Basic", self, 'test_prop', signature='i',
-                    emits_change=True)])
-        self.object.emit_changed(["Basic"])
+                [prop_basic])
+        self.object.emit_properties_changed([prop_basic])
 
         self._loop.run_until_complete(self.delay(120))
 

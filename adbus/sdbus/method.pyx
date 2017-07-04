@@ -1,6 +1,6 @@
 # == Copyright: 2017, Charles Eidsness
 
-cdef int method_message_handler(sdbus_h.sd_bus_message *m, 
+cdef int method_message_handler(sdbus_h.sd_bus_message *m,
         void *userdata, sdbus_h.sd_bus_error *err):
     cdef PyObject *method_ptr = (((<PyObject**>userdata)[0]))
     cdef Method method = <Method>method_ptr
@@ -11,7 +11,7 @@ cdef int method_message_handler(sdbus_h.sd_bus_message *m,
 
     message.import_sd_bus_message(m)
     args = message.read(method.arg_signature)
-    
+
     try:
         value = method.callback(*args)
     except Exception as e:
@@ -40,6 +40,7 @@ cdef class Method:
     cdef bytes arg_signature
     cdef bytes return_signature
     cdef list exceptions
+    cdef Object object
 
     def __cinit__(self, name, callback, arg_signature='', return_signature='',
             deprectiated=False, hidden=False, unprivledged=False):
@@ -49,7 +50,8 @@ cdef class Method:
         self.return_signature = return_signature.encode()
         self.callback = callback
         self.exceptions = []
-    
+        self.object = None
+
         self.type = sdbus_h._SD_BUS_VTABLE_METHOD
 
         self.flags = 0
@@ -69,10 +71,15 @@ cdef class Method:
         self.x.handler = method_message_handler
         self.x.signature = self.arg_signature
         self.x.result = self.return_signature
-        
+
         self.userdata = <void *>self
-    
+
     cdef populate_vtable(self, sdbus_h.sd_bus_vtable *vtable):
         vtable.type = self.type
         vtable.flags = self.flags
         memcpy(&vtable.x, &self.x, sizeof(self.x))
+
+    cdef set_object(self, object):
+        if self.object:
+            raise SdbusError("Method already associated")
+        self.object = object

@@ -35,11 +35,13 @@ class Test(unittest.TestCase):
     def test_signal_basic(self):
         """test a basic method"""
 
+        signal = Signal("BasicSignal", signature='i')
 
         self.obj = Object(self._service, "/adbus/test/methods", "adbus.test",
-                [Signal("BasicSignal", signature='i')])
+                [signal])
+        signal.emit(45)
 
-        self._loop.run_until_complete(self.delay(30))
+        self._loop.run_until_complete(self.delay(10))
 
 if __name__ == "__main__":
     unittest.main()

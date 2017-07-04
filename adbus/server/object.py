@@ -13,5 +13,5 @@ class Object:
                 [v.sdbus for v in vtable], deprectiated, hidden)
 
     def emit_properties_changed(self, properties):
-        self.sdbus.emit_properties_changed(properties)
+        self.sdbus.emit_properties_changed([p.sdbus for p in properties])
 

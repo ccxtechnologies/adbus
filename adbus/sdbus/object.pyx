@@ -1,7 +1,7 @@
 # == Copyright: 2017, Charles Eidsness
 
 cdef class Object:
-    cdef sdbus_h.sd_bus *_bus
+    cdef sdbus_h.sd_bus *bus
     cdef sdbus_h.sd_bus_slot *_slot
     cdef sdbus_h.sd_bus_vtable *_vtable
     cdef void **_userdata
@@ -16,25 +16,28 @@ cdef class Object:
         self.path = path.encode()
         self.interface = interface.encode()
         self.exceptions = (<Service>service).exceptions
-        self._bus = (<Service>service).bus
+        self.bus = (<Service>service).bus
 
         self._malloc()
         self._init_vtable(deprectiated, hidden)
 
         for i, v in enumerate(vtable):
             if type(v) == Method:
+                (<Method>v).set_object(self)
                 (<Method>v).populate_vtable(&self._vtable[i+1])
                 (<Method>v).exceptions = self.exceptions
                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
                 self._userdata[i] = (<Method>v).userdata
 
             elif type(v) == Property:
+                (<Property>v).set_object(self)
                 (<Property>v).populate_vtable(&self._vtable[i+1])
                 (<Property>v).exceptions = self.exceptions
                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
                 self._userdata[i] = (<Property>v).userdata
 
             elif type(v) == Signal:
+                (<Signal>v).set_object(self)
                 (<Signal>v).populate_vtable(&self._vtable[i+1])
 
         self._register_vtable()
@@ -73,14 +76,14 @@ cdef class Object:
         self._vtable[length+1].flags = 0
 
     def _register_vtable(self):
-        ret = sdbus_h.sd_bus_add_object_vtable(self._bus, &self._slot,
+        ret = sdbus_h.sd_bus_add_object_vtable(self.bus, &self._slot,
                 self.path, self.interface, self._vtable, self._userdata)
         if ret < 0:
             raise SdbusError(f"Failed to register vtable: {errorcode[-ret]}", -ret)
 
     def emit_properties_changed(self, properties):
         cdef int ret
-        cdef list property_names = [p.encode() for p in properties]
+        cdef list property_names = [p.get_name() for p in properties]
         cdef char **names = <char**>PyMem_Malloc((len(properties)+1)*sizeof(char*))
         if not names:
             raise MemoryError("Failed to allocate names")
@@ -89,7 +92,7 @@ cdef class Object:
         for i, property in enumerate(property_names):
             names[i] = <bytes>property
 
-        ret = sdbus_h.sd_bus_emit_properties_changed_strv(self._bus, self.path,
+        ret = sdbus_h.sd_bus_emit_properties_changed_strv(self.bus, self.path,
             self.interface, names)
         if ret < 0:
             raise SdbusError(f"Failed to emit changed: {errorcode[-ret]}", -ret)

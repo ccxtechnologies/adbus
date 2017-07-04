@@ -7,12 +7,14 @@ cdef class Signal:
     cdef void *userdata
     cdef bytes name
     cdef bytes signature
+    cdef Object object
 
     def __cinit__(self, name, signature='', deprectiated=False, hidden=False):
 
         self.name = name.encode()
         self.signature = signature.encode()
         self.type = sdbus_h._SD_BUS_VTABLE_SIGNAL
+        self.object = None
 
         self.flags = 0
         if deprectiated:
@@ -28,4 +30,15 @@ cdef class Signal:
         vtable.type = self.type
         vtable.flags = self.flags
         memcpy(&vtable.x, &self.x, sizeof(self.x))
+
+    cdef set_object(self, object):
+        if self.object:
+            raise SdbusError("Signal already associated")
+        self.object = object
+
+    def emit(self, value):
+        message = Message()
+        message.new_signal(self)
+        message.append(self.signature, value)
+        message.send()
 

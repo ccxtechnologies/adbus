@@ -54,6 +54,7 @@ cdef class Property:
     cdef bytes name
     cdef bytes signature
     cdef list exceptions
+    cdef Object object
 
     def __cinit__(self, name, py_object, attr_name, signature='', read_only=False,
             deprectiated=False, hidden=False, unprivledged=False,
@@ -64,6 +65,7 @@ cdef class Property:
         self.attr_name = attr_name
         self.signature = signature.encode()
         self.exceptions = []
+        self.object = None
 
         if read_only:
             self.type = sdbus_h._SD_BUS_VTABLE_PROPERTY
@@ -99,8 +101,21 @@ cdef class Property:
 
         self.userdata = <void *>self
 
+    def get_name(self):
+        return self.name
+
     cdef populate_vtable(self, sdbus_h.sd_bus_vtable *vtable):
         vtable.type = self.type
         vtable.flags = self.flags
         memcpy(&vtable.x, &self.x, sizeof(self.x))
+
+    cdef set_object(self, object):
+        if self.object:
+            raise SdbusError("Property already associated")
+        self.object = object
+
+    def emit_changed(self):
+        if not self.object:
+            raise SdbusError("Signal not associated")
+        return self.object.emit_properties_changed([self.name.decode()])
 
