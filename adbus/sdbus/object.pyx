@@ -20,26 +20,7 @@ cdef class Object:
 
         self._malloc()
         self._init_vtable(deprectiated, hidden)
-
-        for i, v in enumerate(vtable):
-            if type(v) == Method:
-                (<Method>v).set_object(self)
-                (<Method>v).populate_vtable(&self._vtable[i+1])
-                (<Method>v).exceptions = self.exceptions
-                self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
-                self._userdata[i] = (<Method>v).userdata
-
-            elif type(v) == Property:
-                (<Property>v).set_object(self)
-                (<Property>v).populate_vtable(&self._vtable[i+1])
-                (<Property>v).exceptions = self.exceptions
-                self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
-                self._userdata[i] = (<Property>v).userdata
-
-            elif type(v) == Signal:
-                (<Signal>v).set_object(self)
-                (<Signal>v).populate_vtable(&self._vtable[i+1])
-
+        self._populate_vtable()
         self._register_vtable()
 
     def __dealloc__(self):
@@ -74,6 +55,26 @@ cdef class Object:
 
         self._vtable[length+1].type = sdbus_h._SD_BUS_VTABLE_END
         self._vtable[length+1].flags = 0
+
+    def _populate_vtable(self):
+        for i, v in enumerate(self.vtable):
+            if type(v) == Method:
+                (<Method>v).set_object(self)
+                (<Method>v).populate_vtable(&self._vtable[i+1])
+                (<Method>v).exceptions = self.exceptions
+                self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
+                self._userdata[i] = (<Method>v).userdata
+
+            elif type(v) == Property:
+                (<Property>v).set_object(self)
+                (<Property>v).populate_vtable(&self._vtable[i+1])
+                (<Property>v).exceptions = self.exceptions
+                self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
+                self._userdata[i] = (<Property>v).userdata
+
+            elif type(v) == Signal:
+                (<Signal>v).set_object(self)
+                (<Signal>v).populate_vtable(&self._vtable[i+1])
 
     def _register_vtable(self):
         ret = sdbus_h.sd_bus_add_object_vtable(self.bus, &self._slot,

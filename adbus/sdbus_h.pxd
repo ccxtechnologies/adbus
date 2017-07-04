@@ -127,6 +127,7 @@ cdef extern from "systemd/sd-bus.h":
             const char *path, const char *interface,
             const sd_bus_vtable *vtable, void *userdata)
     sd_bus_slot* sd_bus_slot_unref(sd_bus_slot *slot)
+    int sd_bus_add_object_manager(sd_bus *bus, sd_bus_slot **slot, const char *path)
 
     int sd_bus_process(sd_bus *bus, sd_bus_message **r)
     int sd_bus_get_fd(sd_bus *bus)
