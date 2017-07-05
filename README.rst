@@ -40,16 +40,15 @@ Server Example
 --------------
 
 .. code-block:: python
+        import adbus
 
-import adbus
+        class ExampleClass(adbus.Object):
 
-class ExampleClass(adbus.Object):
+            signal1: int = adbus.Signal()
+            signal2: List[int] = adbus.Signal()
 
-    signal1: int = adbus.Signal()
-    signal2: List[int] = adbus.Signal()
-
-    property1: str = adbus.Property(read_only=False,
-            deprectiated=False, hidden=False, unprivledged=False, emits='change')
-    property2: List[int] = adbus.Property(read_only=False,
-            deprectiated=False, hidden=False, unprivledged=False, emits='change')
+            property1: str = adbus.Property(read_only=False,
+                    deprectiated=False, hidden=False, unprivledged=False, emits='change')
+            property2: List[int] = adbus.Property(read_only=False,
+                    deprectiated=False, hidden=False, unprivledged=False, emits='change')
 
