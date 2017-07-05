@@ -1,14 +1,12 @@
-# Copyright: 2017, Charles Eidsness
+# Copyright: 2017, CCX Technologies
 
-"""D-Bus Signal"""
+"""D-Bus Exceptions"""
 
-from .. import sdbus
+class BusError(Exception):
+    """Server Error
 
-class Signal:
-    """D-Bus Signal"""
+    Attributes:
+        message: Error message
+    """
+    pass
 
-    def __init__(self, name, signature='', deprectiated=False, hidden=False):
-        self.sdbus = sdbus.Signal(name, signature, deprectiated, hidden)
-
-    def emit(self, value):
-        self.sdbus.emit(value)
