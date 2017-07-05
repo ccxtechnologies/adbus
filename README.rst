@@ -40,6 +40,7 @@ Server Example
 --------------
 
 .. code-block:: python
+
         import adbus
 
         class ExampleClass(adbus.Object):
