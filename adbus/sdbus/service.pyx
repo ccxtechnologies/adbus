@@ -42,7 +42,7 @@ cdef class Service:
         self.bus = sdbus_h.sd_bus_unref(self.bus)
 
     def process(self):
-        """Processes all avaliable transactions from the D-Bus.
+        """Processes all available transactions from the D-Bus.
 
         Raises:
             sdbus.BusError: if an error occurs interfacing with the D-Bus
@@ -67,6 +67,6 @@ cdef class Service:
         """Get the file-descriptor associated with the D-Bus socket.
 
         Returns:
-            A file descriptor (int), wich can be used to wait for incoming messages.
+            A file descriptor (int), which can be used to wait for incoming messages.
         ."""
         return sdbus_h.sd_bus_get_fd(self.bus)

@@ -74,50 +74,6 @@ cdef class Message:
 
         return i
 
-    cdef bytes _object_signature_basic(self, object value):
-        if isinstance(value, bool):
-            return sdbus_h.SD_BUS_TYPE_BOOLEAN
-        elif isinstance(value, int):
-            return sdbus_h.SD_BUS_TYPE_INT32
-        elif isinstance(value, float):
-            return sdbus_h.SD_BUS_TYPE_DOUBLE
-        elif isinstance(value, str):
-            return sdbus_h.SD_BUS_TYPE_STRING
-        elif isinstance(value, bytes):
-            return sdbus_h.SD_BUS_TYPE_STRING
-        return b''
-
-    cdef const char* _object_signature(self, object value):
-        cdef bytes signature = b''
-        if hasattr(value, 'dbus_signature'):
-            signature += value.dbus_signature.encode('utf-8')
-        else:
-            signature += self._object_signature_basic(value)
-
-        if signature:
-            pass
-
-        elif isinstance(value, dict):
-            signature += sdbus_h.SD_BUS_TYPE_ARRAY
-            signature += sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN
-            signature += self._object_signature_basic(next (iter (value.keys())))
-            signature += self._object_signature_basic(next (iter (value.values())))
-            signature += sdbus_h.SD_BUS_TYPE_DICT_ENTRY_END
-
-        elif isinstance(value, list):
-            if all(isinstance(v, type(value[0])) for v in value):
-                # if all the same type it's an array
-                signature += sdbus_h.SD_BUS_TYPE_ARRAY
-                signature += self._object_signature(value[0])
-            else:
-                # otherwise it's a struct
-                signature += sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN
-                for v in value:
-                    signature += self._object_signature(v)
-                signature += sdbus_h.SD_BUS_TYPE_STRUCT_END
-
-        return signature
-
     # ------------
 
     cdef _read_basic(self, char sig, void *value):
@@ -333,7 +289,7 @@ cdef class Message:
     cdef _append_variant(self, object value):
         cdef const char *esignature
 
-        esignature = self._object_signature(value)
+        esignature = _object_signature(value)
 
         if sdbus_h.sd_bus_message_open_container(self._m,
                 sdbus_h.SD_BUS_TYPE_VARIANT, esignature) < 0:

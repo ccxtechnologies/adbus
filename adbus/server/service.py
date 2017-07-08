@@ -48,7 +48,7 @@ class Service:
         # add a reader, so we process dbus message when they come in
         bus_fd = self.sdbus.get_fd()
         if bus_fd <= 0:
-            raise self.BusError("Failed to read sd-bus fd")
+            raise exceptions.BusError("Failed to read sd-bus fd")
 
         if not loop:
             loop = asyncio.get_event_loop()

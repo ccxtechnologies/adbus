@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright: 2017, Charles Eidsness
+# Copyright: 2017, CCX Technologies
 
 """test of low-level sd-bus wrapper of an exported method"""
 

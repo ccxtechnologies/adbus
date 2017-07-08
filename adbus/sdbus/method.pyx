@@ -1,7 +1,9 @@
-# == Copyright: 2017, Charles Eidsness
+# == Copyright: 2017, CCX Technologies
 
 cdef int method_message_handler(sdbus_h.sd_bus_message *m,
         void *userdata, sdbus_h.sd_bus_error *err):
+    """Callback for D-Bus methods, calls the corresponding python function."""
+
     cdef PyObject *method_ptr = (((<PyObject**>userdata)[0]))
     cdef Method method = <Method>method_ptr
     cdef Message message = Message()
@@ -31,6 +33,8 @@ cdef int method_message_handler(sdbus_h.sd_bus_message *m,
         return 1
 
 cdef class Method:
+    """Wrapper around the sd-bus vtable_method typedef."""
+
     cdef stdint.uint8_t type
     cdef stdint.uint64_t flags
     cdef sdbus_h.sd_bus_vtable_method x
