@@ -1,4 +1,4 @@
-# == Copyright: 2017, Charles Eidsness
+# Copyright: 2017, CCX Technologies
 
 cimport sdbus_h
 
@@ -25,6 +25,12 @@ cdef class SdbusError(Exception):
     def __init__(self, message, errno=1):
         Exception.__init__(self, message)
         self.errno = errno
+
+def underscore_to_camel(value):
+    pass
+
+def camel_to_underscore(value):
+    pass
 
 include "sdbus/message.pyx"
 include "sdbus/error.pyx"

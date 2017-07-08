@@ -1,7 +1,7 @@
 python-adbus
 ============
 
-D-Bus Binding for Python supporting coroutines (asyncio)
+D-Bus Binding for Python based on the asyncio mainloop.
 
 Status
 ------
@@ -9,20 +9,17 @@ Status
 This project is currently under development
 ===========================================
 
-Dependcies
-----------
+Dependencies
+------------
 
 1. Python >= 3.6
-2. libsystemd >= 232 (don’t need systemd, just libsystemd which is a
-   seperate package)
-3. Cython >= 0.25.2 (only required to regnerate sdbus.c, if you make any
-   changes)
+2. libsystemd >= 232 (don’t need systemd, just libsystemd which is a separate package)
+3. Cython >= 0.25.2 (only required to regenerate sdbus.c, if you make any changes)
 
 Building / Installing
 ---------------------
 
--  To build in place for development python ./setup.py build\_ext
-   –inplace
+-  To build in place for development python ./setup.py build\_ext –inplace
 
 Unit-Tests
 ----------
@@ -48,8 +45,18 @@ Server Example
             signal1: int = adbus.Signal()
             signal2: List[int] = adbus.Signal()
 
-            property1: str = adbus.Property(read_only=False,
-                    deprectiated=False, hidden=False, unprivledged=False, emits='change')
-            property2: List[int] = adbus.Property(read_only=False,
-                    deprectiated=False, hidden=False, unprivledged=False, emits='change')
+            property1: str = adbus.Property('none', read_only=True, hidden=True)
+            property2: List[int] = adbus.Property(['rr', 'ff'],
+                        deprectiated=True, emits=None)
+
+            def __init__(self, service):
+                adbus.Object.__init__(self, service, path='xxx', interface='xxx')
+
+            @adbus.method(name='test', hidden=True)
+            def test_method(self, r: int, gg: str) -> int:
+                return r + 10
+
+            def do_something(self):
+                f = 14
+                self.signal1.emit(f)
 

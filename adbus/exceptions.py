@@ -3,7 +3,7 @@
 """D-Bus Exceptions"""
 
 class BusError(Exception):
-    """Server Error
+    """Error Interfacing on the Bus
 
     Attributes:
         message: Error message

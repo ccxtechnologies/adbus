@@ -1,5 +1,6 @@
-# == Based on libsystemd's v232 dbus library
-# == Copyright: 2017, Charles Eidsness
+# Copyright: 2017, CCX Technologies
+
+"""Wrapper for libsystemd's v232 dbus library."""
 
 from libc cimport stdint
 

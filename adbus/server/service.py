@@ -3,6 +3,7 @@
 """D-Bus Service"""
 
 from .. import sdbus
+from .. import exceptions
 import asyncio
 
 class Service:
@@ -21,7 +22,7 @@ class Service:
             replace_existing=False, allow_replacement=False, queue=False):
         """D-Bus Service Initilization.
 
-        Attributes:
+        Args:
             name (str): name to be used on the D-Bus, ie. org.test
             loop: optional, asyncio loop to attach to, if not
                 defined will use asyncio.get_event_loop()
@@ -42,7 +43,7 @@ class Service:
             self.sdbus = sdbus.Service(name, bus, if_name_in_use)
             """Interface to sd-bus library"""
         except sdbus.BusError as exc:
-            raise BusError(str(exc)) from exc
+            raise exceptions.BusError(str(exc)) from exc
 
         # add a reader, so we process dbus message when they come in
         bus_fd = self.sdbus.get_fd()
