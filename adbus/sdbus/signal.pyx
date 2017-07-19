@@ -9,7 +9,7 @@ cdef class Signal:
     cdef bytes signature
     cdef Object object
 
-    def __cinit__(self, name, signature='', deprectiated=False, hidden=False):
+    def __cinit__(self, name, signature='', depreciated=False, hidden=False):
 
         self.name = name.encode()
         self.signature = signature.encode()
@@ -17,7 +17,7 @@ cdef class Signal:
         self.object = None
 
         self.flags = 0
-        if deprectiated:
+        if depreciated:
             self.flags |= sdbus_h.SD_BUS_VTABLE_DEPRECATED
 
         if hidden:

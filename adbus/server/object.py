@@ -4,6 +4,9 @@
 
 from .. import sdbus
 from .. import exceptions
+from . import Signal
+from . import Method
+from . import Property
 
 class Object:
     """Provides an interface between a D-Bus and a Python Object.
@@ -17,8 +20,8 @@ class Object:
     """
 
     def __init__(self, service, path, interface, vtable=[],
-            deprectiated=False, hidden=False, manager=False):
-        """D-Bus Object Initilization.
+            depreciated=False, hidden=False, manager=False):
+        """D-Bus Object Initialization.
 
         Args:
             service (Service): service to connect to
@@ -28,8 +31,8 @@ class Object:
                 objects methods and properties, ie. com.awesome.settings
             vtable (list): optional, list of signals, methods, and
                 properties that will be added to the decorator defined items
-            deprectiated (bool): optional, if true object is labelled
-                as deprectiated in the introspect XML data
+            depreciated (bool): optional, if true object is labelled
+                as depreciated in the introspect XML data
             hidden (bool): optional, if true object won't be added
                 to the introspect XML data
             manager (bool): add a device manager to this object, as
@@ -37,14 +40,22 @@ class Object:
 
         Raises:
             BusError: if an error occurs during initialization
-
         """
 
-        #TODO: Create the vtable from the decorated items
+        self.vtable = vtable[:]
+        """List of all D-Bus Methods, Properties, and Signals."""
+
+        for name, item in type(self).__dict__:
+            if isinstance(item, (Method, Signal)):
+                self.vtable.append(self.__dict__[name])
+            elif isinstance(item, Property):
+                # property is a descriptor which uses a fancy __get__ call
+                # to get the instantiated object and not the value
+                self.vtable.append(item)
 
         try:
             self.sdbus = sdbus.Object(service.sdbus, path, interface,
-                [v.sdbus for v in vtable], deprectiated, hidden)
+                [v.sdbus for v in self.vtable], depreciated, hidden)
             """Interface to sd-bus library"""
         except sdbus.BusError as exc:
             raise exceptions.BusError(str(exc)) from exc

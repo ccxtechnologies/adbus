@@ -11,7 +11,7 @@ cdef class Object:
     cdef list exceptions
 
     def __cinit__(self, service, path, interface, vtable,
-            deprectiated=False, hidden=False):
+            depreciated=False, hidden=False):
         self.vtable = vtable
         self.path = path.encode()
         self.interface = interface.encode()
@@ -19,7 +19,7 @@ cdef class Object:
         self.bus = (<Service>service).bus
 
         self._malloc()
-        self._init_vtable(deprectiated, hidden)
+        self._init_vtable(depreciated, hidden)
         self._populate_vtable()
         self._register_vtable()
 
@@ -40,14 +40,14 @@ cdef class Object:
         if not self._userdata:
             raise MemoryError("Failed to allocate userdata")
 
-    def _init_vtable(self, deprectiated, hidden):
+    def _init_vtable(self, depreciated, hidden):
         length = len(self.vtable)
 
         self._vtable[0].type = sdbus_h._SD_BUS_VTABLE_START
         self._vtable[0].x.start.element_size = sizeof(self._vtable[0])
         self._vtable[0].flags = 0
 
-        if deprectiated:
+        if depreciated:
             self._vtable[0].flags |= sdbus_h.SD_BUS_VTABLE_DEPRECATED
 
         if hidden:
