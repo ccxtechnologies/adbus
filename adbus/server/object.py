@@ -1,26 +1,29 @@
 # Copyright: 2017, CCX Technologies
-
 """D-Bus Object"""
 
 from .. import sdbus
-from .. import exceptions
-from . import Signal
-from . import Method
-from . import Property
+
 
 class Object:
     """Provides an interface between a D-Bus and a Python Object.
 
     Though this class can be used on its own it is intended to be inherited
     by another object which uses decorators to define methods, properties,
-    and signals that are exposed on the D-Bus.
+    and signals which are exposed on the D-Bus.
 
-    The object must be added to a service, which provides the D-Bus interface.
-    It must be running in an asyncio loop to process requests.
+    This object must be added to a service, which provides the D-Bus interface.
     """
 
-    def __init__(self, service, path, interface, vtable=[],
-            depreciated=False, hidden=False, manager=False):
+    def __init__(
+        self,
+        service,
+        path,
+        interface,
+        vtable=[],
+        depreciated=False,
+        hidden=False,
+        manager=False
+    ):
         """D-Bus Object Initialization.
 
         Args:
@@ -30,7 +33,10 @@ class Object:
             interface (str): interface label to use for all of this
                 objects methods and properties, ie. com.awesome.settings
             vtable (list): optional, list of signals, methods, and
-                properties that will be added to the decorator defined items
+                properties that will be added to the D-Bus Object,
+                this list is in addition to the methods, properties, and
+                signals which are added to this object using the provided
+                decorators and descriptors
             depreciated (bool): optional, if true object is labelled
                 as depreciated in the introspect XML data
             hidden (bool): optional, if true object won't be added
@@ -42,27 +48,21 @@ class Object:
             BusError: if an error occurs during initialization
         """
 
-        self.vtable = vtable[:]
+        self.vtable = [x.vt() for x in vtable]
         """List of all D-Bus Methods, Properties, and Signals."""
 
-        for name, item in type(self).__dict__:
-            if isinstance(item, (Method, Signal)):
-                self.vtable.append(self.__dict__[name])
-            elif isinstance(item, Property):
-                # property is a descriptor which uses a fancy __get__ call
-                # to get the instantiated object and not the value
-                self.vtable.append(item)
+        self.vtable += [
+            v.vt(self) for v in type(self).__dict__.values() if hasattr(v, 'vt')
+        ]
 
-        try:
-            self.sdbus = sdbus.Object(service.sdbus, path, interface,
-                [v.sdbus for v in self.vtable], depreciated, hidden)
-            """Interface to sd-bus library"""
-        except sdbus.BusError as exc:
-            raise exceptions.BusError(str(exc)) from exc
+        self.sdbus = sdbus.Object(
+            service.sdbus, path, interface, self.vtable,
+            depreciated, hidden
+        )
+        """Interface to sd-bus library"""
 
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
 
     def emit_properties_changed(self, properties):
         self.sdbus.emit_properties_changed([p.sdbus for p in properties])
-

@@ -1,4 +1,4 @@
-# == Copyright: 2017, Charles Eidsness
+# == Copyright: 2017, CCX Technologies
 
 cdef class Error:
     cdef sdbus_h.sd_bus_error *_e

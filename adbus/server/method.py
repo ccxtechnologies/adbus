@@ -17,27 +17,29 @@ class Method:
     """
 
     def __init__(
-            self,
-            name,
-            callback,
-            depreciated=False,
-            hidden=False,
-            unprivleged=False,
-            camel_convert=True
+        self,
+        callback,
+        name=None,
+        depreciated=False,
+        hidden=False,
+        unprivleged=False,
+        camel_convert=True
     ):
         """D-Bus Method Initialization.
 
         Args:
-            name (str): name of the method advertised on the D-Bus
             callback (function): function that will be called when
-                D-Bus method is called, it **must** use new style type
+                D-Bus method is called, it should use new style type
                 annotations to define the types of all arguments,
                 and the return value, ie. function(x: int, y: str) -> bool:
+                if no type is defined a D-Bus Variant will be used
+            name (str): optional, name of the method advertised on the D-Bus
+                if not set then will use the callback name
             depreciated (bool): optional, if true object is labelled
                 as depreciated in the introspect XML data
             hidden (bool): optional, if true object won't be added
                 to the introspect XML data
-            unprivileged (bool): optional, indicates that this method
+            unprivleged (bool): optional, indicates that this method
                 may have to ask the user for authentication before
                 executing, which may take a little while
             camel_convert (bool): optional, D-Bus method and property
@@ -50,6 +52,9 @@ class Method:
             BusError: if an error occurs during initialization
         """
 
+        if not name:
+            name = callback.__name__
+
         self.callback = callback
         """Function called when this method is called."""
 
@@ -59,51 +64,65 @@ class Method:
         else:
             self.name = name
 
-        arg_signature = []
-        return_signature = b''
+        self.depreciated = depreciated
+        self.hidden = hidden
+        self.unprivleged = unprivleged
+
+        self.arg_signature = ''
+        self.return_signature = ''
         for arg_name, arg_type in callback.__annotations__.items():
             if arg_name == 'return':
-                return_signature = sdbus.object_signature(arg_type)
+                self.return_signature = sdbus.object_signature(arg_type)
             else:
-                arg_signature.append(sdbus.object_signature(arg_type))
-
-        if len(signature(callback.parameters)) != len(arg_signature):
-            raise exceptions.BusError(
-                    "Missing type annotations for some arguments"
-            )
-
-        self.sdbus = sdbus.Method(
-                self.name, self.callback, arg_signature, return_signature,
-                depreciated, hidden, unprivleged
-        )
-        """Interface to sd-bus library"""
+                self.arg_signature += sdbus.object_signature(arg_type)
 
     def __call__(self, *args, **kwargs):
         return self.callback(*args, **kwargs)
 
+    def vt(self, instance=None):
+        """Interface to sd-bus library"""
+        if instance:
+            callback = functools.partial(self.callback, instance)
+        else:
+            callback = self.callback
+
+        num_args = len(signature(callback).parameters)
+        num_sig = len(self.arg_signature)
+        if num_args != num_sig:
+            print(signature(callback).parameters)
+            raise exceptions.BusError(
+                f"{num_args} args in method, but {num_sig} args in sig"
+            )
+
+        return sdbus.Method(
+            self.name, callback, self.arg_signature, self.return_signature,
+            self.depreciated, self.hidden, self.unprivleged
+        )
+
 
 def method(
-        name=None,
-        deprectiated=False,
-        hidden=False,
-        unprivleged=False,
-        camel_convert=True
+    name=None,
+    depreciated=False,
+    hidden=False,
+    unprivleged=False,
+    camel_convert=True
 ):
     """D-Bus Method Decorator.
 
     Note:
-        The decorated method **must** use new style type annotations
+        The decorated method should use new style type annotations
         to define the types of all arguments, and the return value,
         ie. function(x: int, y: str) -> bool:
+        if no type is defined a D-Bus Variant will be used
 
     Args:
         name (str): optional, if set this name will be used on
             the D-Bus, instead of the decorated function's name
         depreciated (bool): optional, if true object is labelled
-            as depreciated in the introspect xml data
+            as depreciated in the introspect XML data
         hidden (bool): optional, if true object won't be added
-            to the introspect xml data
-        unprivileged (bool): optional, indicates that this method
+            to the introspect XML data
+        unprivleged (bool): optional, indicates that this method
             may have to ask the user for authentication before
             executing, which may take a little while
         camel_convert (bool): optional, D-Bus method and property
@@ -117,12 +136,9 @@ def method(
         or function.
     """
 
-    @functools.wraps(func)
-    def wrapper():
-        if not name:
-            name = func.__name__
+    def wrapper(function):
         return Method(
-                name, func, deprectiated, hidden, unprivleged, camel_convert
+            function, name, depreciated, hidden, unprivleged, camel_convert
         )
 
     return wrapper

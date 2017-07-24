@@ -1,8 +1,6 @@
 # Copyright: 2017, CCX Technologies
 
 cdef class Service:
-    """Wrapper around the sd-bus bus typedef."""
-
     cdef sdbus_h.sd_bus *bus
     cdef bytes name
     cdef list exceptions

@@ -1,4 +1,4 @@
-# == Copyright: 2017, Charles Eidsness
+# == Copyright: 2017, CCX Technologies
 
 cdef class Object:
     cdef sdbus_h.sd_bus *bus
@@ -80,12 +80,14 @@ cdef class Object:
         ret = sdbus_h.sd_bus_add_object_vtable(self.bus, &self._slot,
                 self.path, self.interface, self._vtable, self._userdata)
         if ret < 0:
-            raise SdbusError(f"Failed to register vtable: {errorcode[-ret]}", -ret)
+            raise SdbusError(
+                    f"Failed to register vtable: {errorcode[-ret]}", -ret)
 
     def emit_properties_changed(self, properties):
         cdef int ret
         cdef list property_names = [p.get_name() for p in properties]
-        cdef char **names = <char**>PyMem_Malloc((len(properties)+1)*sizeof(char*))
+        cdef char **names = <char**>PyMem_Malloc(
+                (len(properties)+1)*sizeof(char*))
         if not names:
             raise MemoryError("Failed to allocate names")
 

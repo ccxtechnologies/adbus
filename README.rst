@@ -23,6 +23,8 @@ Building / Installing
 Unit-Tests
 ----------
 
+NOTE: Some test-cases require the busctl tool from systemd.
+
 -  To run a specific unit-test from the root directory (eg.): python -m
    unittest tests.test\_sdbus\_method.Test.test\_method\_single\_str
 

@@ -1,4 +1,4 @@
-# == Copyright: 2017, Charles Eidsness
+# == Copyright: 2017, CCX Technologies
 
 cdef union _value:
     stdint.uint8_t c_byte
@@ -12,8 +12,8 @@ cdef union _value:
     bint c_bool
     const char* c_str
 
-cdef class MessageEmpty(Exception):
-    """Empty Message Element"""
+cdef class MessageEmptyError(Exception):
+    """Empty Message Element Error"""
     pass
 
 cdef class Message:
@@ -24,8 +24,6 @@ cdef class Message:
 
     def __dealloc__(self):
         self._m = sdbus_h.sd_bus_message_unref(self._m)
-
-    # ------------
 
     cdef import_sd_bus_message(self, sdbus_h.sd_bus_message *message):
         self._m = sdbus_h.sd_bus_message_unref(self._m)
@@ -43,8 +41,7 @@ cdef class Message:
         cdef Object object = signal.object
         self._m = sdbus_h.sd_bus_message_unref(self._m)
         ret = sdbus_h.sd_bus_message_new_signal(object.bus, &self._m,
-                                                object.path, object.interface,
-                                                signal.name)
+                object.path, object.interface, signal.name)
         if ret < 0:
             raise SdbusError(f"New signal returned: {errorcode[-ret]}", -ret)
 
@@ -81,9 +78,10 @@ cdef class Message:
         cdef int ret
         ret = sdbus_h.sd_bus_message_read_basic(self._m, sig, value)
         if ret < 0:
-            raise SdbusError(f"Failed to read value {chr(sig)}: {errorcode[-ret]}", -ret)
+            raise SdbusError(
+                    f"Failed to read value {chr(sig)}: {errorcode[-ret]}", -ret)
         if ret == 0:
-            raise MessageEmpty(f"No data to read of type {chr(sig)}")
+            raise MessageEmptyError(f"No data to read of type {chr(sig)}")
 
     cdef _read_array(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]])
@@ -105,14 +103,14 @@ cdef class Message:
                     values.append(value[0])
                 else:
                     values.append(value)
-            except MessageEmpty:
+            except MessageEmptyError:
                 break
 
         if sdbus_h.sd_bus_message_exit_container(self._m) < 0:
             raise SdbusError(f"Failed to exit array {esignature}")
 
-        # A dictionary is always an array with two elements (based on d-bus defintion)
-        # so if we're a dictionary convert it.
+        # A dictionary is always an array with two elements (based on D-Bus
+        # definition) so if we're a dictionary convert it.
         if esignature[0] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
             return {v[0]: v[1] for v in values}
         else:
@@ -254,7 +252,7 @@ cdef class Message:
                 raise SdbusError(f"Unsupported signature type {chr(s)} for read")
 
         if len(values) == 0:
-            raise MessageEmpty(f"No data read in type {signature}")
+            raise MessageEmptyError(f"No data read in type {signature}")
         else:
             return values
 
@@ -264,7 +262,8 @@ cdef class Message:
         cdef int ret
         ret = sdbus_h.sd_bus_message_append_basic(self._m, sig, value)
         if ret < 0:
-            raise SdbusError(f"Failed to append value {chr(sig)}: {errorcode[-ret]}", -ret)
+            raise SdbusError(
+                    f"Failed to append value {chr(sig)}: {errorcode[-ret]}", -ret)
 
     cdef _append_array(self, const char *signature, object value):
         cdef unsigned int elength = self._element_length(&signature[1])
@@ -275,8 +274,8 @@ cdef class Message:
                 sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
             raise SdbusError(f"Failed to open array {esignature}")
 
-        # A dictionary is always an array with two elements (based on d-bus defintion)
-        # so if we're a dictionary convert it.
+        # A dictionary is always an array with two elements (based on D-Bus
+        # definition) so if we're a dictionary convert it.
         if esignature[0] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
             for k, v in (<dict>value).items():
                 self.append(esignature, [k, v])
@@ -311,7 +310,7 @@ cdef class Message:
         s = signature[0]
 
         if s ==  sdbus_h._SD_BUS_TYPE_INVALID:
-            raise MessageEmpty(f"No data append in type {signature}")
+            raise MessageEmptyError(f"No data append in type {signature}")
 
         elif s == sdbus_h.SD_BUS_TYPE_ARRAY:
             self._append_array(signature, value)

@@ -17,7 +17,7 @@ from libc.string cimport strncpy
 from libc.string cimport strlen
 from cpython.ref cimport PyObject
 from cpython cimport bool
-from .expections import BusError
+from .exceptions import BusError
 
 # -----------
 

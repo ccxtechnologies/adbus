@@ -1,2 +1,2 @@
-# == Copyright: 2017, Charles Eidsness
+# == Copyright: 2017, CCX Technologies
 

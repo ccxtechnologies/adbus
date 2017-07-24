@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright: 2017, Charles Eidsness
+# Copyright: 2017, CCX Technologies
 """distutils build and configuration script for python-adbus."""
 
 from distutils.core import setup
@@ -19,9 +19,9 @@ def build():
         version='0.1',
         description='asyncio based dbus interface',
         license='MIT',
-        author='Charles Eidsness',
+        author='CCX Technologies',
         author_email='charles@ccxtechnologies.com',
-        url='http://github.com/charleseidsness/python-adbus',
+        url='http://github.com/ccxtechnologies/python-adbus',
         platforms=['linux'],
         provides=['adbus'],
         packages=['adbus'],

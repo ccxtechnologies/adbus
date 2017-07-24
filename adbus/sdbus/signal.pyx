@@ -1,4 +1,4 @@
-# == Copyright: 2017, Charles Eidsness
+# == Copyright: 2017, CCX Technologies
 
 cdef class Signal:
     cdef stdint.uint8_t type

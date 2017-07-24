@@ -1,15 +1,14 @@
 #!/usr/bin/env python3
-
-# Copyright: 2017, Charles Eidsness
-
-"""test of low-level sd-bus snake and camel conversion utils"""
+# Copyright: 2017, CCX Technologies
+"""Test of low-level sd-bus snake and camel conversion utilities"""
 
 import unittest
 from adbus.sdbus import snake_to_camel
 from adbus.sdbus import camel_to_snake
 
+
 class Test(unittest.TestCase):
-    """snake case test cases"""
+    """Snake Case to Camel Case Converter test cases."""
 
     def test_snake_to_camel(self):
         c = snake_to_camel("test_one")
@@ -42,6 +41,7 @@ class Test(unittest.TestCase):
 
         c = camel_to_snake("TTestOne")
         self.assertEqual(c, "t_test_one")
+
 
 if __name__ == "__main__":
     unittest.main()
