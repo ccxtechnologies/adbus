@@ -14,6 +14,32 @@ class Method:
     Though this class can be used on its own it is intended to be used with
     the method decorator applied to methods on a class that is a subclass of
     the main Object type.
+
+    Args:
+        callback (function): function that will be called when
+            D-Bus method is called, it should use new style type
+            annotations to define the types of all arguments,
+            and the return value, ie. function(x: int, y: str) -> bool:
+            if no type is defined a D-Bus Variant will be used
+        name (str): optional, name of the method advertised on the D-Bus
+            if not set then will use the callback name
+        depreciated (bool): optional, if true object is labelled
+            as depreciated in the introspect XML data
+        hidden (bool): optional, if true object won't be added
+            to the introspect XML data
+        unprivileged (bool): optional, indicates that this method
+            may have to ask the user for authentication before
+            executing, which may take a little while
+        camel_convert (bool): optional, D-Bus method and property
+            names are typically defined in Camel Case, but Python
+            methods and arguments are typically defined in Snake
+            Case, if this is set the cases will be automatically
+            converted between the two
+        dont_block (bool): optional, if true the method call will not
+            block on the D-Bus, a value will never be returned
+
+    Raises:
+        BusError: if an error occurs during initialization
     """
 
     def __init__(
@@ -26,35 +52,6 @@ class Method:
         camel_convert=True,
         dont_block=False,
     ):
-        """D-Bus Method Initialization.
-
-        Args:
-            callback (function): function that will be called when
-                D-Bus method is called, it should use new style type
-                annotations to define the types of all arguments,
-                and the return value, ie. function(x: int, y: str) -> bool:
-                if no type is defined a D-Bus Variant will be used
-            name (str): optional, name of the method advertised on the D-Bus
-                if not set then will use the callback name
-            depreciated (bool): optional, if true object is labelled
-                as depreciated in the introspect XML data
-            hidden (bool): optional, if true object won't be added
-                to the introspect XML data
-            unprivileged (bool): optional, indicates that this method
-                may have to ask the user for authentication before
-                executing, which may take a little while
-            camel_convert (bool): optional, D-Bus method and property
-                names are typically defined in Camel Case, but Python
-                methods and arguments are typically defined in Snake
-                Case, if this is set the cases will be automatically
-                converted between the two
-            dont_block (bool): optional, if true the method call will not
-                block on the D-Bus, a value will never be returned
-
-        Raises:
-            BusError: if an error occurs during initialization
-        """
-
         if not name:
             name = callback.__name__
 

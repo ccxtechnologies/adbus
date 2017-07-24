@@ -12,6 +12,28 @@ class Object:
     and signals which are exposed on the D-Bus.
 
     This object must be added to a service, which provides the D-Bus interface.
+
+    Args:
+        service (Service): service to connect to
+        path (str): path to create on the service
+            ie. /com/awesome/Settings1
+        interface (str): interface label to use for all of this
+            objects methods and properties, ie. com.awesome.settings
+        vtable (list): optional, list of signals, methods, and
+            properties that will be added to the D-Bus Object,
+            this list is in addition to the methods, properties, and
+            signals which are added to this object using the provided
+            decorators and descriptors
+        depreciated (bool): optional, if true object is labelled
+            as depreciated in the introspect XML data
+        hidden (bool): optional, if true object won't be added
+            to the introspect XML data
+        manager (bool): add a device manager to this object, as
+            defined by the D-Bus Spec from freedesktop.org
+
+    Raises:
+        BusError: if an error occurs during initialization
+
     """
 
     def __init__(
@@ -24,30 +46,6 @@ class Object:
         hidden=False,
         manager=False
     ):
-        """D-Bus Object Initialization.
-
-        Args:
-            service (Service): service to connect to
-            path (str): path to create on the service,
-                ie. /com/awesome/Settings1
-            interface (str): interface label to use for all of this
-                objects methods and properties, ie. com.awesome.settings
-            vtable (list): optional, list of signals, methods, and
-                properties that will be added to the D-Bus Object,
-                this list is in addition to the methods, properties, and
-                signals which are added to this object using the provided
-                decorators and descriptors
-            depreciated (bool): optional, if true object is labelled
-                as depreciated in the introspect XML data
-            hidden (bool): optional, if true object won't be added
-                to the introspect XML data
-            manager (bool): add a device manager to this object, as
-                defined by the D-Bus Spec from freedesktop.org
-
-        Raises:
-            BusError: if an error occurs during initialization
-        """
-
         self.vtable = [x.vt() for x in vtable]
         """List of all D-Bus Methods, Properties, and Signals."""
 
@@ -59,7 +57,7 @@ class Object:
             service.sdbus, path, interface, self.vtable,
             depreciated, hidden
         )
-        """Interface to sd-bus library"""
+        """Interface to sd-bus library."""
 
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)

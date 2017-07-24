@@ -5,7 +5,7 @@
 class BusError(Exception):
     """Error Interfacing on the D-Bus
 
-    Attributes:
+    Args:
         message: Error message
     """
     pass
