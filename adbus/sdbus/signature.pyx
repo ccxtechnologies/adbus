@@ -1,5 +1,6 @@
 # Copyright: 2017, CCX Technologies
 
+cdef bytes signature_variant = int(sdbus_h.SD_BUS_TYPE_VARIANT).to_bytes(1, 'big')
 cdef bytes signature_byte = int(sdbus_h.SD_BUS_TYPE_BYTE).to_bytes(1, 'big')
 cdef bytes signature_int = int(sdbus_h.SD_BUS_TYPE_INT32).to_bytes(1, 'big')
 cdef bytes signature_float = int(sdbus_h.SD_BUS_TYPE_DOUBLE).to_bytes(1, 'big')
@@ -72,11 +73,14 @@ cdef const char* _object_signature(object obj):
 
     return signature
 
-def object_signature(obj):
+def variant_signature():
+    return signature_variant.decode()
+
+def py_signature(obj):
     """Calculates a D-Bus Signature from a Python object or type.
 
     Args:
-        obj (obj or type): Python object or type.
+        obj (obj or type): Python object or type,
             supports bool, int, str, float, bytes, and from the
             typing library, List, Dict, and Tuple
 

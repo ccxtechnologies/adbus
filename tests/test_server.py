@@ -22,6 +22,15 @@ class TestObject(adbus.server.Object):
     def test_method(self, r: int, gg: str) -> int:
         return r + len(gg)
 
+    @adbus.server.method(name="DifferentName", depreciated=True)
+    def test_method2(self, r: int, gg: str) -> int:
+        return r + 10 * len(gg)
+
+    @adbus.server.method()
+    def var_method1(self, arg5: int, arg2: str, arg3, arg4, arg1: float):
+        print(type(arg3))
+        return str(arg3)
+
 
 class Test(unittest.TestCase):
     """adbus method test cases."""
@@ -30,10 +39,10 @@ class Test(unittest.TestCase):
     def setUpClass(cls):
         cls.loop = asyncio.get_event_loop()
         cls.service = adbus.server.Service(service_name, bus='session')
+        cls.obj = TestObject(cls.service)
 
     @classmethod
     def tearDownClass(cls):
-        pass
         cls.loop.close()
 
     @staticmethod
@@ -68,14 +77,25 @@ class Test(unittest.TestCase):
         await proc.wait()
 
     def test_method_basic(self):
+        self.loop.run_until_complete(
+            self.call_method("TestMethod", "is", [-100, "doggie"], 'i', -94)
+        )
 
-        TestObject(self.service)
+    def test_method_rename(self):
+        self.loop.run_until_complete(
+            self.
+            call_method("DifferentName", "is", [-100, "different"], 'i', -10)
+        )
 
+    def test_method_variants(self):
         self.loop.run_until_complete(
             self.call_method(
-                "TestMethod", "is", [-100, "doggie"], 'i', -94
+                "VarMethod1", "isvvd", [
+                    -100, "different", 's', "test_string", 'i', 100, 12.5
+                ], 'v s', '"test_string"'
             )
         )
+
 
 if __name__ == "__main__":
     unittest.main()

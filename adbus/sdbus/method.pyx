@@ -45,7 +45,7 @@ cdef class Method:
     cdef Object object
 
     def __cinit__(self, name, callback, arg_signature='', return_signature='',
-            depreciated=False, hidden=False, unprivleged=False):
+            depreciated=False, hidden=False, unprivileged=False):
 
         self.name = name.encode()
         self.arg_signature = arg_signature.encode()
@@ -66,7 +66,7 @@ cdef class Method:
         if hidden:
             self.flags |= sdbus_h.SD_BUS_VTABLE_HIDDEN
 
-        if unprivleged:
+        if unprivileged:
             self.flags |= sdbus_h.SD_BUS_VTABLE_UNPRIVILEGED
 
         self.x.member = self.name

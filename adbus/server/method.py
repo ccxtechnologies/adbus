@@ -2,7 +2,7 @@
 """D-Bus Method"""
 
 import functools
-from inspect import signature
+import inspect
 
 from .. import sdbus
 from .. import exceptions
@@ -22,8 +22,9 @@ class Method:
         name=None,
         depreciated=False,
         hidden=False,
-        unprivleged=False,
-        camel_convert=True
+        unprivileged=False,
+        camel_convert=True,
+        dont_block=False,
     ):
         """D-Bus Method Initialization.
 
@@ -39,7 +40,7 @@ class Method:
                 as depreciated in the introspect XML data
             hidden (bool): optional, if true object won't be added
                 to the introspect XML data
-            unprivleged (bool): optional, indicates that this method
+            unprivileged (bool): optional, indicates that this method
                 may have to ask the user for authentication before
                 executing, which may take a little while
             camel_convert (bool): optional, D-Bus method and property
@@ -47,6 +48,8 @@ class Method:
                 methods and arguments are typically defined in Snake
                 Case, if this is set the cases will be automatically
                 converted between the two
+            dont_block (bool): optional, if true the method call will not
+                block on the D-Bus, a value will never be returned
 
         Raises:
             BusError: if an error occurs during initialization
@@ -66,15 +69,23 @@ class Method:
 
         self.depreciated = depreciated
         self.hidden = hidden
-        self.unprivleged = unprivleged
+        self.unprivileged = unprivileged
 
         self.arg_signature = ''
-        self.return_signature = ''
-        for arg_name, arg_type in callback.__annotations__.items():
-            if arg_name == 'return':
-                self.return_signature = sdbus.object_signature(arg_type)
+        # NOTE: Add support for defaults
+        sig = inspect.signature(callback)
+        for param in sig.parameters.values():
+            if param.annotation != inspect.Parameter.empty:
+                self.arg_signature += sdbus.py_signature(param.annotation)
             else:
-                self.arg_signature += sdbus.object_signature(arg_type)
+                self.arg_signature += sdbus.variant_signature()
+
+        if dont_block:
+            self.return_signature = ''
+        elif sig.return_annotation != inspect.Parameter.empty:
+            self.return_signature = sdbus.py_signature(sig.return_annotation)
+        else:
+            self.return_signature = sdbus.variant_signature()
 
     def __call__(self, *args, **kwargs):
         return self.callback(*args, **kwargs)
@@ -82,21 +93,15 @@ class Method:
     def vt(self, instance=None):
         """Interface to sd-bus library"""
         if instance:
+            arg_signature = self.arg_signature[1:]
             callback = functools.partial(self.callback, instance)
         else:
+            arg_signature = self.arg_signature
             callback = self.callback
 
-        num_args = len(signature(callback).parameters)
-        num_sig = len(self.arg_signature)
-        if num_args != num_sig:
-            print(signature(callback).parameters)
-            raise exceptions.BusError(
-                f"{num_args} args in method, but {num_sig} args in sig"
-            )
-
         return sdbus.Method(
-            self.name, callback, self.arg_signature, self.return_signature,
-            self.depreciated, self.hidden, self.unprivleged
+            self.name, callback, arg_signature, self.return_signature,
+            self.depreciated, self.hidden, self.unprivileged
         )
 
 
@@ -104,7 +109,7 @@ def method(
     name=None,
     depreciated=False,
     hidden=False,
-    unprivleged=False,
+    unprivileged=False,
     camel_convert=True
 ):
     """D-Bus Method Decorator.
@@ -122,7 +127,7 @@ def method(
             as depreciated in the introspect XML data
         hidden (bool): optional, if true object won't be added
             to the introspect XML data
-        unprivleged (bool): optional, indicates that this method
+        unprivileged (bool): optional, indicates that this method
             may have to ask the user for authentication before
             executing, which may take a little while
         camel_convert (bool): optional, D-Bus method and property
@@ -138,7 +143,7 @@ def method(
 
     def wrapper(function):
         return Method(
-            function, name, depreciated, hidden, unprivleged, camel_convert
+            function, name, depreciated, hidden, unprivileged, camel_convert
         )
 
     return wrapper
