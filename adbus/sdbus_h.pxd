@@ -139,9 +139,11 @@ cdef extern from "systemd/sd-bus.h":
             const char *contents)
     int sd_bus_message_exit_container(sd_bus_message *m)
     int sd_bus_message_new_method_return(sd_bus_message *call, sd_bus_message **m)
-    int sd_bus_message_new_signal(sd_bus *bus, sd_bus_message **m, const char *path,
-            const char *interface, const char *member)
-    int sd_bus_message_open_container(sd_bus_message *m, char type, const char *contents)
+    int sd_bus_message_new_signal(sd_bus *bus, sd_bus_message **m,
+                                  const char *path, const char *interface,
+                                  const char *member)
+    int sd_bus_message_open_container(sd_bus_message *m, char type,
+                                      const char *contents)
     int sd_bus_message_close_container(sd_bus_message *m)
     sd_bus_message* sd_bus_message_ref(sd_bus_message *m)
     sd_bus_message* sd_bus_message_unref(sd_bus_message *m)

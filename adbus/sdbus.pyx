@@ -17,12 +17,9 @@ from libc.string cimport strncpy
 from libc.string cimport strlen
 from cpython.ref cimport PyObject
 from cpython cimport bool
+from .expections import BusError
 
 # -----------
-
-cdef class BusError(Exception):
-    """D-Bus Bus Error (i.e. failed to connect)"""
-    pass
 
 cdef class SdbusError(Exception):
     """SD-Bus Library Configuration Error"""

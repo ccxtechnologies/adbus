@@ -39,7 +39,8 @@ class Test(unittest.TestCase):
         path = '/adbus/test/methods'
         interface = 'adbus.test'
 
-        cmd = f'busctl --user -- call {service} {path} {interface} {method} "{arg_signature}"'
+        cmd = f'busctl --user -- call {service} {path} {interface} {method}'
+        cmd += f' "{arg_signature}"'
         for i in args:
             cmd += f' {i}'
 

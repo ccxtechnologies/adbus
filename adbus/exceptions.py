@@ -1,12 +1,11 @@
 # Copyright: 2017, CCX Technologies
+"""D-Bus Exceptions from the adbus package"""
 
-"""D-Bus Exceptions"""
 
 class BusError(Exception):
-    """Error Interfacing on the Bus
+    """Error Interfacing on the D-Bus
 
     Attributes:
         message: Error message
     """
     pass
-
