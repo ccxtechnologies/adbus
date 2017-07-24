@@ -26,6 +26,10 @@ class TestObject(adbus.server.Object):
     def test_method2(self, r: int, gg: str) -> int:
         return r + 10 * len(gg)
 
+    @adbus.server.method(name="DifferentName")
+    def test_methodX(self, r: int, gg: str, y: float) -> int:
+        return r + 10 * len(gg)
+
     @adbus.server.method()
     def var_method1(self, arg5: int, arg2: str, arg3, arg4, arg1: float):
         print(type(arg3))

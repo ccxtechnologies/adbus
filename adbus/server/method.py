@@ -72,7 +72,6 @@ class Method:
         self.unprivileged = unprivileged
 
         self.arg_signature = ''
-        # NOTE: Add support for defaults
         sig = inspect.signature(callback)
         for param in sig.parameters.values():
             if param.annotation != inspect.Parameter.empty:
