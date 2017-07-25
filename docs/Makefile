@@ -6,7 +6,7 @@ SPHINXOPTS    =
 SPHINXBUILD   = python -msphinx
 SPHINXPROJ    = python-adbus
 SOURCEDIR     = source
-BUILDDIR      = build
+BUILDDIR      = ../../python-adbus-docs
 
 # Put it first so that "make" without argument is like "make help".
 help:

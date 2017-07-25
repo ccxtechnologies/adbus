@@ -18,7 +18,13 @@ Dependencies
 Building / Installing
 ---------------------
 
--  To build in place for development python ./setup.py build\_ext –inplace
+- To build in place for development python ./setup.py build\_ext –inplace
+- The html documents are stored in gh-pages branch, so that GitHub will
+  serve them as a GitHub Pages. To build them:
+  1. check out the gh-pages branch into ../python-adbus/html
+  2. cd into docs
+  3. sphinx-apidoc -o source/ ../adbus
+  4. make html
 
 Unit-Tests
 ----------
