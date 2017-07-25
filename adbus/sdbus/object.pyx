@@ -102,6 +102,3 @@ cdef class Object:
             raise SdbusError(f"Failed to emit changed: {errorcode[-ret]}", -ret)
 
         PyMem_Free(names)
-
-    def is_connected(self):
-        return self.service.connected

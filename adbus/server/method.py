@@ -35,7 +35,7 @@ class Method:
             Case, if this is set the cases will be automatically
             converted between the two
         dont_block (bool): optional, if true the method call will not
-            block on the D-Bus, a value will never be returned
+            block on the D-Bus, **a value will never be returned**
 
     Raises:
         BusError: if an error occurs during initialization

@@ -35,7 +35,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="python-adbus 0.1.0 documentation" href="index.html"/> 
+    <link rel="top" title="python-adbus 0.1.0 documentation" href="index.html"/>
+        <link rel="up" title="adbus package" href="adbus.html"/>
+        <link rel="prev" title="adbus package" href="adbus.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -88,8 +90,23 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">python-adbus</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">adbus</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="adbus.html">adbus package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="adbus.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">adbus.server package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus.exceptions">adbus.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus.sdbus">adbus.sdbus module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -133,6 +150,10 @@
   <ul class="wy-breadcrumbs">
     
       <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">adbus</a> &raquo;</li>
+        
+          <li><a href="adbus.html">adbus package</a> &raquo;</li>
         
       <li>adbus.server package</li>
     
@@ -194,7 +215,7 @@ methods and arguments are typically defined in Snake
 Case, if this is set the cases will be automatically
 converted between the two</li>
 <li><strong>dont_block</strong> (<em>bool</em>) – optional, if true the method call will not
-block on the D-Bus, a value will never be returned</li>
+block on the D-Bus, <strong>a value will never be returned</strong></li>
 </ul>
 </td>
 </tr>
@@ -270,19 +291,22 @@ or function.</p>
 <p>D-Bus Object</p>
 <dl class="class">
 <dt id="adbus.server.object.Object">
-<em class="property">class </em><code class="descclassname">adbus.server.object.</code><code class="descname">Object</code><span class="sig-paren">(</span><em>service</em>, <em>path</em>, <em>interface</em>, <em>vtable=[]</em>, <em>depreciated=False</em>, <em>hidden=False</em>, <em>manager=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/object.html#Object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.object.Object" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">adbus.server.object.</code><code class="descname">Object</code><span class="sig-paren">(</span><em>service</em>, <em>path</em>, <em>interface</em>, <em>vtable=[]</em>, <em>depreciated=False</em>, <em>hidden=False</em>, <em>manager=False</em>, <em>changed_callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/object.html#Object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.object.Object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Provides an interface between a D-Bus and a Python Object.</p>
 <p>Though this class can be used on its own it is intended to be inherited
 by another object which uses decorators to define methods, properties,
 and signals which are exposed on the D-Bus.</p>
 <p>This object must be added to a service, which provides the D-Bus interface.</p>
+<p>It also provides a Context Manager so that multiple properties can be set,
+or one property can be set multiple times, with a single D-Bus changed signal
+being sent for all property updates once the context is closed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>service</strong> (<a class="reference internal" href="adbus.html#adbus.sdbus.Service" title="adbus.sdbus.Service"><em>Service</em></a>) – service to connect to</li>
+<li><strong>service</strong> (<em>adbus.server.Service</em>) – service to connect to</li>
 <li><strong>path</strong> (<em>str</em>) – path to create on the service
 ie. /com/awesome/Settings1</li>
 <li><strong>interface</strong> (<em>str</em>) – interface label to use for all of this
@@ -296,8 +320,10 @@ decorators and descriptors</li>
 as depreciated in the introspect XML data</li>
 <li><strong>hidden</strong> (<em>bool</em>) – optional, if true object won’t be added
 to the introspect XML data</li>
-<li><strong>manager</strong> (<em>bool</em>) – add a device manager to this object, as
-defined by the D-Bus Spec from freedesktop.org</li>
+<li><strong>manager</strong> (<em>bool</em>) – optional, if True add a device manager to this object,
+as defined by the D-Bus Spec from freedesktop.org</li>
+<li><strong>changed_callback</strong> – optional, callback called with a list of changed
+properties, single argument is a list of property names</li>
 </ul>
 </td>
 </tr>
@@ -307,8 +333,13 @@ defined by the D-Bus Spec from freedesktop.org</li>
 </tbody>
 </table>
 <dl class="method">
-<dt id="adbus.server.object.Object.emit_properties_changed">
-<code class="descname">emit_properties_changed</code><span class="sig-paren">(</span><em>properties</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/object.html#Object.emit_properties_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.object.Object.emit_properties_changed" title="Permalink to this definition">¶</a></dt>
+<dt id="adbus.server.object.Object.defer_signals">
+<code class="descname">defer_signals</code><span class="sig-paren">(</span><em>enable</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/object.html#Object.defer_signals"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.object.Object.defer_signals" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="adbus.server.object.Object.emit_property_changed">
+<code class="descname">emit_property_changed</code><span class="sig-paren">(</span><em>py_name</em>, <em>dbus_name</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/object.html#Object.emit_property_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.object.Object.emit_property_changed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="attribute">
@@ -331,13 +362,50 @@ defined by the D-Bus Spec from freedesktop.org</li>
 <p>D-Bus Property</p>
 <dl class="class">
 <dt id="adbus.server.property.Property">
-<em class="property">class </em><code class="descclassname">adbus.server.property.</code><code class="descname">Property</code><span class="sig-paren">(</span><em>name</em>, <em>py_object</em>, <em>attr_name</em>, <em>signature=''</em>, <em>read_only=False</em>, <em>deprectiated=False</em>, <em>hidden=False</em>, <em>unprivledged=False</em>, <em>emits_constant=False</em>, <em>emits_change=False</em>, <em>emits_invalidation=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/property.html#Property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.property.Property" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">adbus.server.property.</code><code class="descname">Property</code><span class="sig-paren">(</span><em>default=None</em>, <em>name=None</em>, <em>read_only=False</em>, <em>constant=False</em>, <em>depreciated=False</em>, <em>hidden=False</em>, <em>unprivileged=False</em>, <em>emits_change=True</em>, <em>emits_invalidation=False</em>, <em>camel_convert=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/property.html#Property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.property.Property" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>D-Bus Property Descriptor.</p>
+<p>Provides an interface between a D-Bus and a Python Property.</p>
+<p>This class is to be used as a Decorator for arguments (properties) in
+an adbus.server.object which will be exported via the D-Bus.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>default</strong> – optional, default setting for the property</li>
+<li><strong>name</strong> (<em>str</em>) – optional, property name used in the D-Bus, if None the
+property’s label will be used</li>
+<li><strong>read_only</strong> (<em>bool</em>) – if True the property can only be read via D-Bus
+(but can still be set locally)</li>
+<li><strong>constant</strong> (<em>bool</em>) – if True the property can only be read via D-Bus or
+locally, it also advertises constant in the introspect XML data</li>
+<li><strong>depreciated</strong> (<em>bool</em>) – optional, if true object is labelled
+as depreciated in the introspect XML data</li>
+<li><strong>hidden</strong> (<em>bool</em>) – optional, if true object won’t be added
+to the introspect XML data</li>
+<li><strong>unprivileged</strong> (<em>bool</em>) – optional, indicates that this method
+may have to ask the user for authentication before
+executing, which may take a little while</li>
+<li><strong>emits_change</strong> (<em>bool</em>) – optional, when changed emits a signal with
+the new value</li>
+<li><strong>emits_invalidation</strong> (<em>bool</em>) – optional, when changed emits a signal but
+doesn’t provide the new value, can be used for large, complex
+properties, overrides emits_change if it’s set</li>
+<li><strong>camel_convert</strong> (<em>bool</em>) – optional, D-Bus method and property
+names are typically defined in Camel Case, but Python
+methods and arguments are typically defined in Snake
+Case, if this is set the cases will be automatically
+converted between the two</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
-<dt id="adbus.server.property.Property.emit_changed">
-<code class="descname">emit_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/property.html#Property.emit_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.property.Property.emit_changed" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dt id="adbus.server.property.Property.vt">
+<code class="descname">vt</code><span class="sig-paren">(</span><em>instance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/property.html#Property.vt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.property.Property.vt" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface to sd-bus library</p>
+</dd></dl>
 
 </dd></dl>
 
@@ -380,6 +448,11 @@ name once the existing service relinquishes it</li>
 </tr>
 </tbody>
 </table>
+<dl class="method">
+<dt id="adbus.server.service.Service.is_running">
+<code class="descname">is_running</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/service.html#Service.is_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.service.Service.is_running" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 <dl class="attribute">
 <dt id="adbus.server.service.Service.sdbus">
 <code class="descname">sdbus</code><em class="property"> = None</em><a class="headerlink" href="#adbus.server.service.Service.sdbus" title="Permalink to this definition">¶</a></dt>
@@ -417,6 +490,13 @@ name once the existing service relinquishes it</li>
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="adbus.html" class="btn btn-neutral" title="adbus package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

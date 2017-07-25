@@ -111,7 +111,7 @@ class Test(unittest.TestCase):
                 o.property2 = 42
                 o.property3 = [6,7,10,43,102]
 
-            await self.delay(120)
+            await self.delay(3)
 
         self.loop.run_until_complete(set_props(self.obj))
 

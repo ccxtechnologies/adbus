@@ -13,8 +13,12 @@ class Object:
 
     This object must be added to a service, which provides the D-Bus interface.
 
+    It also provides a Context Manager so that multiple properties can be set,
+    or one property can be set multiple times, with a single D-Bus changed signal
+    being sent for all property updates once the context is closed.
+
     Args:
-        service (Service): service to connect to
+        service (adbus.server.Service): service to connect to
         path (str): path to create on the service
             ie. /com/awesome/Settings1
         interface (str): interface label to use for all of this
@@ -28,8 +32,10 @@ class Object:
             as depreciated in the introspect XML data
         hidden (bool): optional, if true object won't be added
             to the introspect XML data
-        manager (bool): add a device manager to this object, as
-            defined by the D-Bus Spec from freedesktop.org
+        manager (bool): optional, if True add a device manager to this object,
+            as defined by the D-Bus Spec from freedesktop.org
+        changed_callback: optional, callback called with a list of changed
+            properties, single argument is a list of property names
 
     Raises:
         BusError: if an error occurs during initialization
@@ -44,10 +50,13 @@ class Object:
         vtable=[],
         depreciated=False,
         hidden=False,
-        manager=False
+        manager=False,
+        changed_callback=None,
     ):
         self._defer_properties = False
         self._deferred_properties = {}
+
+        self.service = service
 
         self.vtable = [x.vt() for x in vtable]
         """List of all D-Bus Methods, Properties, and Signals."""
@@ -65,11 +74,18 @@ class Object:
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
 
-    def emit_property_changed(self, name):
+        self.changed_callback = changed_callback
+
+    def emit_property_changed(self, py_name, dbus_name):
         if self._defer_properties:
-            self._deferred_properties[name.encode()] = None
-        elif self.sdbus.is_connected():
-            self.sdbus.emit_properties_changed([name.encode()])
+            self._deferred_properties[dbus_name.encode()] = py_name
+
+        else:
+            if self.service.is_running():
+                self.sdbus.emit_properties_changed([dbus_name.encode()])
+
+            if self.changed_callback:
+                self.changed_callback([py_name])
 
     def defer_signals(self, enable):
         if enable:
@@ -79,10 +95,15 @@ class Object:
             self._defer_properties = False
 
             if self._deferred_properties:
-                self.sdbus.emit_properties_changed(
-                    list(self._deferred_properties.keys())
-                )
-                self._deferred_properties = {}
+                if self.service.is_running():
+                    self.sdbus.emit_properties_changed(
+                        list(self._deferred_properties.keys())
+                    )
+
+            if self.changed_callback:
+                self.changed_callback(list(self._deferred_properties.values()))
+
+            self._deferred_properties = {}
 
     def __enter__(self):
         self.defer_signals(True)
@@ -90,4 +111,3 @@ class Object:
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
         self.defer_signals(False)
-

@@ -77,6 +77,3 @@ cdef class Service:
             A file descriptor (int), which can be used to wait for incoming messages.
         ."""
         return sdbus_h.sd_bus_get_fd(self.bus)
-
-    def is_connected(self):
-        return self.connected

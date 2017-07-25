@@ -35,7 +35,10 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="python-adbus 0.1.0 documentation" href="index.html"/> 
+    <link rel="top" title="python-adbus 0.1.0 documentation" href="index.html"/>
+        <link rel="up" title="adbus" href="modules.html"/>
+        <link rel="next" title="adbus.server package" href="adbus.server.html"/>
+        <link rel="prev" title="adbus" href="modules.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -88,8 +91,23 @@
               
             
             
-              <ul>
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="readme.html">python-adbus</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">adbus</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">adbus package</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="adbus.server.html">adbus.server package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-adbus.exceptions">adbus.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-adbus.sdbus">adbus.sdbus module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-adbus">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
             
@@ -133,6 +151,8 @@
   <ul class="wy-breadcrumbs">
     
       <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">adbus</a> &raquo;</li>
         
       <li>adbus package</li>
     
@@ -247,11 +267,6 @@
 <code class="descname">emit_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Property.emit_changed" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="adbus.sdbus.Property.get_name">
-<code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Property.get_name" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
 </dd></dl>
 
 <dl class="exception">
@@ -328,18 +343,23 @@
 </dd></dl>
 
 <dl class="function">
-<dt id="adbus.sdbus.py_signature">
-<code class="descclassname">adbus.sdbus.</code><code class="descname">py_signature</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.py_signature" title="Permalink to this definition">¶</a></dt>
+<dt id="adbus.sdbus.dbus_signature">
+<code class="descclassname">adbus.sdbus.</code><code class="descname">dbus_signature</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.dbus_signature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates a D-Bus Signature from a Python object or type.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<em>obj</em><em> or </em><em>type</em>) – Python object or type,
-supports bool, int, str, float, bytes, and from the
-typing library, List, Dict, and Tuple</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="adbus.server.html#module-adbus.server.object" title="adbus.server.object"><em>object</em></a><em> or </em><em>type</em>) – Python object or type,
+If the object has a dbus_signature attribute it will
+be used, otherwise the object or type will be parsed
+to calculate the D-Bus Signature.
+Supports bool, int, str, float, bytes, and from the
+typing library, List, Dict, and Tuple.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string representing the D-Bus Signature.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code> – If no D-Bus Equivalent for objects type.</td>
 </tr>
 </tbody>
 </table>
@@ -379,6 +399,15 @@ typing library, List, Dict, and Tuple</td>
            </div>
           </div>
           <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="adbus.server.html" class="btn btn-neutral float-right" title="adbus.server package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="modules.html" class="btn btn-neutral" title="adbus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
   
 
   <hr/>

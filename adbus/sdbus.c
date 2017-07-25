@@ -2275,9 +2275,8 @@ static int __pyx_pf_5adbus_5sdbus_7Service___cinit__(struct __pyx_obj_5adbus_5sd
 static void __pyx_pf_5adbus_5sdbus_7Service_2__dealloc__(struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5adbus_5sdbus_7Service_4process(struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5adbus_5sdbus_7Service_6get_fd(struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5adbus_5sdbus_7Service_8is_connected(struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5adbus_5sdbus_7Service_10__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5adbus_5sdbus_7Service_12__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_5adbus_5sdbus_7Service_8__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5adbus_5sdbus_7Service_10__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_5adbus_5sdbus_6Object___cinit__(struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self, PyObject *__pyx_v_service, PyObject *__pyx_v_path, PyObject *__pyx_v_interface, PyObject *__pyx_v_vtable, PyObject *__pyx_v_depreciated, PyObject *__pyx_v_hidden); /* proto */
 static void __pyx_pf_5adbus_5sdbus_6Object_2__dealloc__(struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5adbus_5sdbus_6Object_4_malloc(struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self); /* proto */
@@ -2285,9 +2284,8 @@ static PyObject *__pyx_pf_5adbus_5sdbus_6Object_6_init_vtable(struct __pyx_obj_5
 static PyObject *__pyx_pf_5adbus_5sdbus_6Object_8_populate_vtable(struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5adbus_5sdbus_6Object_10_register_vtable(struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5adbus_5sdbus_6Object_12emit_properties_changed(struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self, PyObject *__pyx_v_property_names); /* proto */
-static PyObject *__pyx_pf_5adbus_5sdbus_6Object_14is_connected(struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5adbus_5sdbus_6Object_16__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self); /* proto */
-static PyObject *__pyx_pf_5adbus_5sdbus_6Object_18__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
+static PyObject *__pyx_pf_5adbus_5sdbus_6Object_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self); /* proto */
+static PyObject *__pyx_pf_5adbus_5sdbus_6Object_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state); /* proto */
 static int __pyx_pf_5adbus_5sdbus_7Manager___cinit__(struct __pyx_obj_5adbus_5sdbus_Manager *__pyx_v_self, PyObject *__pyx_v_service, PyObject *__pyx_v_path); /* proto */
 static void __pyx_pf_5adbus_5sdbus_7Manager_2__dealloc__(struct __pyx_obj_5adbus_5sdbus_Manager *__pyx_v_self); /* proto */
 static PyObject *__pyx_pf_5adbus_5sdbus_7Manager_4__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Manager *__pyx_v_self); /* proto */
@@ -11075,8 +11073,6 @@ static PyObject *__pyx_pf_5adbus_5sdbus_7Service_6get_fd(struct __pyx_obj_5adbus
  *             A file descriptor (int), which can be used to wait for incoming messages.
  *         ."""
  *         return sdbus_h.sd_bus_get_fd(self.bus)             # <<<<<<<<<<<<<<
- * 
- *     def is_connected(self):
  */
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyInt_From_int(sd_bus_get_fd(__pyx_v_self->bus)); if (unlikely(!__pyx_t_1)) __PYX_ERR(7, 79, __pyx_L1_error)
@@ -11104,55 +11100,6 @@ static PyObject *__pyx_pf_5adbus_5sdbus_7Service_6get_fd(struct __pyx_obj_5adbus
   return __pyx_r;
 }
 
-/* "adbus/sdbus/service.pyx":81
- *         return sdbus_h.sd_bus_get_fd(self.bus)
- * 
- *     def is_connected(self):             # <<<<<<<<<<<<<<
- *         return self.connected
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5adbus_5sdbus_7Service_9is_connected(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5adbus_5sdbus_7Service_9is_connected(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("is_connected (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_5sdbus_7Service_8is_connected(((struct __pyx_obj_5adbus_5sdbus_Service *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5adbus_5sdbus_7Service_8is_connected(struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("is_connected", 0);
-
-  /* "adbus/sdbus/service.pyx":82
- * 
- *     def is_connected(self):
- *         return self.connected             # <<<<<<<<<<<<<<
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(((PyObject *)__pyx_v_self->connected));
-  __pyx_r = ((PyObject *)__pyx_v_self->connected);
-  goto __pyx_L0;
-
-  /* "adbus/sdbus/service.pyx":81
- *         return sdbus_h.sd_bus_get_fd(self.bus)
- * 
- *     def is_connected(self):             # <<<<<<<<<<<<<<
- *         return self.connected
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -11160,19 +11107,19 @@ static PyObject *__pyx_pf_5adbus_5sdbus_7Service_8is_connected(struct __pyx_obj_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5adbus_5sdbus_7Service_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5adbus_5sdbus_7Service_11__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5adbus_5sdbus_7Service_9__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5adbus_5sdbus_7Service_9__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_5sdbus_7Service_10__reduce_cython__(((struct __pyx_obj_5adbus_5sdbus_Service *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5adbus_5sdbus_7Service_8__reduce_cython__(((struct __pyx_obj_5adbus_5sdbus_Service *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5adbus_5sdbus_7Service_10__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self) {
+static PyObject *__pyx_pf_5adbus_5sdbus_7Service_8__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -11214,19 +11161,19 @@ static PyObject *__pyx_pf_5adbus_5sdbus_7Service_10__reduce_cython__(CYTHON_UNUS
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5adbus_5sdbus_7Service_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_5adbus_5sdbus_7Service_13__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_5adbus_5sdbus_7Service_11__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_5adbus_5sdbus_7Service_11__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_5sdbus_7Service_12__setstate_cython__(((struct __pyx_obj_5adbus_5sdbus_Service *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_5adbus_5sdbus_7Service_10__setstate_cython__(((struct __pyx_obj_5adbus_5sdbus_Service *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5adbus_5sdbus_7Service_12__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_5adbus_5sdbus_7Service_10__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Service *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -12926,8 +12873,6 @@ static PyObject *__pyx_pf_5adbus_5sdbus_6Object_12emit_properties_changed(struct
  *             raise SdbusError(f"Failed to emit changed: {errorcode[-ret]}", -ret)
  * 
  *         PyMem_Free(names)             # <<<<<<<<<<<<<<
- * 
- *     def is_connected(self):
  */
   PyMem_Free(__pyx_v_names);
 
@@ -12956,55 +12901,6 @@ static PyObject *__pyx_pf_5adbus_5sdbus_6Object_12emit_properties_changed(struct
   return __pyx_r;
 }
 
-/* "adbus/sdbus/object.pyx":106
- *         PyMem_Free(names)
- * 
- *     def is_connected(self):             # <<<<<<<<<<<<<<
- *         return self.service.connected
- */
-
-/* Python wrapper */
-static PyObject *__pyx_pw_5adbus_5sdbus_6Object_15is_connected(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5adbus_5sdbus_6Object_15is_connected(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
-  PyObject *__pyx_r = 0;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("is_connected (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_5sdbus_6Object_14is_connected(((struct __pyx_obj_5adbus_5sdbus_Object *)__pyx_v_self));
-
-  /* function exit code */
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
-static PyObject *__pyx_pf_5adbus_5sdbus_6Object_14is_connected(struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self) {
-  PyObject *__pyx_r = NULL;
-  __Pyx_RefNannyDeclarations
-  __Pyx_RefNannySetupContext("is_connected", 0);
-
-  /* "adbus/sdbus/object.pyx":107
- * 
- *     def is_connected(self):
- *         return self.service.connected             # <<<<<<<<<<<<<<
- */
-  __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(((PyObject *)__pyx_v_self->service->connected));
-  __pyx_r = ((PyObject *)__pyx_v_self->service->connected);
-  goto __pyx_L0;
-
-  /* "adbus/sdbus/object.pyx":106
- *         PyMem_Free(names)
- * 
- *     def is_connected(self):             # <<<<<<<<<<<<<<
- *         return self.service.connected
- */
-
-  /* function exit code */
-  __pyx_L0:;
-  __Pyx_XGIVEREF(__pyx_r);
-  __Pyx_RefNannyFinishContext();
-  return __pyx_r;
-}
-
 /* "(tree fragment)":1
  * def __reduce_cython__(self):             # <<<<<<<<<<<<<<
  *     raise TypeError("no default __reduce__ due to non-trivial __cinit__")
@@ -13012,19 +12908,19 @@ static PyObject *__pyx_pf_5adbus_5sdbus_6Object_14is_connected(struct __pyx_obj_
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5adbus_5sdbus_6Object_17__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
-static PyObject *__pyx_pw_5adbus_5sdbus_6Object_17__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
+static PyObject *__pyx_pw_5adbus_5sdbus_6Object_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused); /*proto*/
+static PyObject *__pyx_pw_5adbus_5sdbus_6Object_15__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__reduce_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_5sdbus_6Object_16__reduce_cython__(((struct __pyx_obj_5adbus_5sdbus_Object *)__pyx_v_self));
+  __pyx_r = __pyx_pf_5adbus_5sdbus_6Object_14__reduce_cython__(((struct __pyx_obj_5adbus_5sdbus_Object *)__pyx_v_self));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5adbus_5sdbus_6Object_16__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self) {
+static PyObject *__pyx_pf_5adbus_5sdbus_6Object_14__reduce_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -13066,19 +12962,19 @@ static PyObject *__pyx_pf_5adbus_5sdbus_6Object_16__reduce_cython__(CYTHON_UNUSE
  */
 
 /* Python wrapper */
-static PyObject *__pyx_pw_5adbus_5sdbus_6Object_19__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
-static PyObject *__pyx_pw_5adbus_5sdbus_6Object_19__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pw_5adbus_5sdbus_6Object_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state); /*proto*/
+static PyObject *__pyx_pw_5adbus_5sdbus_6Object_17__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__setstate_cython__ (wrapper)", 0);
-  __pyx_r = __pyx_pf_5adbus_5sdbus_6Object_18__setstate_cython__(((struct __pyx_obj_5adbus_5sdbus_Object *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
+  __pyx_r = __pyx_pf_5adbus_5sdbus_6Object_16__setstate_cython__(((struct __pyx_obj_5adbus_5sdbus_Object *)__pyx_v_self), ((PyObject *)__pyx_v___pyx_state));
 
   /* function exit code */
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
 
-static PyObject *__pyx_pf_5adbus_5sdbus_6Object_18__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
+static PyObject *__pyx_pf_5adbus_5sdbus_6Object_16__setstate_cython__(CYTHON_UNUSED struct __pyx_obj_5adbus_5sdbus_Object *__pyx_v_self, CYTHON_UNUSED PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -18230,9 +18126,8 @@ static int __pyx_tp_clear_5adbus_5sdbus_Service(PyObject *o) {
 static PyMethodDef __pyx_methods_5adbus_5sdbus_Service[] = {
   {"process", (PyCFunction)__pyx_pw_5adbus_5sdbus_7Service_5process, METH_NOARGS, __pyx_doc_5adbus_5sdbus_7Service_4process},
   {"get_fd", (PyCFunction)__pyx_pw_5adbus_5sdbus_7Service_7get_fd, METH_NOARGS, __pyx_doc_5adbus_5sdbus_7Service_6get_fd},
-  {"is_connected", (PyCFunction)__pyx_pw_5adbus_5sdbus_7Service_9is_connected, METH_NOARGS, 0},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_5adbus_5sdbus_7Service_11__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_5adbus_5sdbus_7Service_13__setstate_cython__, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_5adbus_5sdbus_7Service_9__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_5adbus_5sdbus_7Service_11__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 
@@ -18376,9 +18271,8 @@ static PyMethodDef __pyx_methods_5adbus_5sdbus_Object[] = {
   {"_populate_vtable", (PyCFunction)__pyx_pw_5adbus_5sdbus_6Object_9_populate_vtable, METH_NOARGS, 0},
   {"_register_vtable", (PyCFunction)__pyx_pw_5adbus_5sdbus_6Object_11_register_vtable, METH_NOARGS, 0},
   {"emit_properties_changed", (PyCFunction)__pyx_pw_5adbus_5sdbus_6Object_13emit_properties_changed, METH_O, 0},
-  {"is_connected", (PyCFunction)__pyx_pw_5adbus_5sdbus_6Object_15is_connected, METH_NOARGS, 0},
-  {"__reduce_cython__", (PyCFunction)__pyx_pw_5adbus_5sdbus_6Object_17__reduce_cython__, METH_NOARGS, 0},
-  {"__setstate_cython__", (PyCFunction)__pyx_pw_5adbus_5sdbus_6Object_19__setstate_cython__, METH_O, 0},
+  {"__reduce_cython__", (PyCFunction)__pyx_pw_5adbus_5sdbus_6Object_15__reduce_cython__, METH_NOARGS, 0},
+  {"__setstate_cython__", (PyCFunction)__pyx_pw_5adbus_5sdbus_6Object_17__setstate_cython__, METH_O, 0},
   {0, 0, 0, 0}
 };
 

@@ -158,35 +158,107 @@
             
   <h1>Source code for adbus.server.property</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright: 2017, CCX Technologies</span>
-
 <span class="sd">&quot;&quot;&quot;D-Bus Property&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">functools</span>
+<span class="kn">import</span> <span class="nn">inspect</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">sdbus</span>
 
-<div class="viewcode-block" id="Property"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.property.Property">[docs]</a><span class="k">class</span> <span class="nc">Property</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;D-Bus Property Descriptor.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">py_object</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">deprectiated</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">unprivledged</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">emits_constant</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">emits_change</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">emits_invalidation</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Property</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">py_object</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">signature</span><span class="p">,</span> <span class="n">read_only</span><span class="p">,</span>
-            <span class="n">deprectiated</span><span class="p">,</span> <span class="n">hidden</span><span class="p">,</span> <span class="n">unprivledged</span><span class="p">,</span> <span class="n">emits_constant</span><span class="p">,</span> <span class="n">emits_change</span><span class="p">,</span>
-            <span class="n">emits_invalidation</span><span class="p">)</span>
+<div class="viewcode-block" id="Property"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.property.Property">[docs]</a><span class="k">class</span> <span class="nc">Property</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Provides an interface between a D-Bus and a Python Property.</span>
+
+<span class="sd">    This class is to be used as a Decorator for arguments (properties) in</span>
+<span class="sd">    an adbus.server.object which will be exported via the D-Bus.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        default: optional, default setting for the property</span>
+<span class="sd">        name (str): optional, property name used in the D-Bus, if None the</span>
+<span class="sd">            property&#39;s label will be used</span>
+<span class="sd">        read_only (bool): if True the property can only be read via D-Bus</span>
+<span class="sd">            (but can still be set locally)</span>
+<span class="sd">        constant (bool): if True the property can only be read via D-Bus or</span>
+<span class="sd">            locally, it also advertises constant in the introspect XML data</span>
+<span class="sd">        depreciated (bool): optional, if true object is labelled</span>
+<span class="sd">            as depreciated in the introspect XML data</span>
+<span class="sd">        hidden (bool): optional, if true object won&#39;t be added</span>
+<span class="sd">            to the introspect XML data</span>
+<span class="sd">        unprivileged (bool): optional, indicates that this method</span>
+<span class="sd">            may have to ask the user for authentication before</span>
+<span class="sd">            executing, which may take a little while</span>
+<span class="sd">        emits_change (bool): optional, when changed emits a signal with</span>
+<span class="sd">            the new value</span>
+<span class="sd">        emits_invalidation (bool): optional, when changed emits a signal but</span>
+<span class="sd">            doesn&#39;t provide the new value, can be used for large, complex</span>
+<span class="sd">            properties, overrides emits_change if it&#39;s set</span>
+<span class="sd">        camel_convert (bool): optional, D-Bus method and property</span>
+<span class="sd">            names are typically defined in Camel Case, but Python</span>
+<span class="sd">            methods and arguments are typically defined in Snake</span>
+<span class="sd">            Case, if this is set the cases will be automatically</span>
+<span class="sd">            converted between the two</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+        <span class="n">read_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">constant</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">depreciated</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">unprivileged</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">emits_change</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">emits_invalidation</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">camel_convert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">read_only</span> <span class="o">=</span> <span class="n">read_only</span> <span class="ow">or</span> <span class="n">constant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">constant</span> <span class="o">=</span> <span class="n">constant</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">depreciated</span> <span class="o">=</span> <span class="n">depreciated</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged</span> <span class="o">=</span> <span class="n">unprivileged</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emits_change</span> <span class="o">=</span> <span class="n">emits_change</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">emits_invalidation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">emits_invalidation</span> <span class="o">=</span> <span class="n">emits_invalidation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camel_convert</span> <span class="o">=</span> <span class="n">camel_convert</span>
 
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
-        <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">py_name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
 
     <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="n">f</span><span class="s1">&#39;expecting integer in </span><span class="si">{self.name}</span><span class="s1">&#39;</span><span class="p">)</span>
-        <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t change the value of a constant.&quot;</span><span class="p">)</span>
 
-    <span class="c1"># this is the new initializer:</span>
+        <span class="k">if</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">py_name</span><span class="p">)</span> <span class="o">!=</span> <span class="n">value</span><span class="p">:</span>
+            <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">py_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="n">instance</span><span class="o">.</span><span class="n">emit_property_changed</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">py_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__set_name__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">py_name</span> <span class="o">=</span> <span class="n">name</span>
 
-<div class="viewcode-block" id="Property.emit_changed"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.property.Property.emit_changed">[docs]</a>    <span class="k">def</span> <span class="nf">emit_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span><span class="o">.</span><span class="n">emits_change</span><span class="p">()</span></div></div>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">(</span><span class="n">owner</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">variant_signature</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">name</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camel_convert</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">snake_to_camel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Property.vt"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.property.Property.vt">[docs]</a>    <span class="k">def</span> <span class="nf">vt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Interface to sd-bus library&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Property</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">py_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">read_only</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">depreciated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">constant</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">emits_change</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">emits_invalidation</span>
+        <span class="p">)</span></div></div>
 </pre></div>
 
            </div>

@@ -59,6 +59,10 @@ This is an example of an object, which can be connected to a service.
       def test_method(self, r: int, gg: str) -> int:
           return r + 10
 
+      def do_something(self):
+          f = 14
+          self.signal1.emit(f)
+
 Setting Multiple Properties
 ---------------------------
 

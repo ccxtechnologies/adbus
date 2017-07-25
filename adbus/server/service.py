@@ -61,3 +61,8 @@ class Service:
             loop = asyncio.get_event_loop()
 
         loop.add_reader(bus_fd, self.sdbus.process)
+
+        self._loop = loop
+
+    def is_running(self):
+        return self._loop.is_running()
