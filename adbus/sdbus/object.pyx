@@ -9,6 +9,7 @@ cdef class Object:
     cdef bytes interface
     cdef list vtable
     cdef list exceptions
+    cdef Service service
 
     def __cinit__(self, service, path, interface, vtable,
             depreciated=False, hidden=False):
@@ -17,6 +18,7 @@ cdef class Object:
         self.interface = interface.encode()
         self.exceptions = (<Service>service).exceptions
         self.bus = (<Service>service).bus
+        self.service = service
 
         self._malloc()
         self._init_vtable(depreciated, hidden)
@@ -83,17 +85,16 @@ cdef class Object:
             raise SdbusError(
                     f"Failed to register vtable: {errorcode[-ret]}", -ret)
 
-    def emit_properties_changed(self, properties):
+    def emit_properties_changed(self, property_names):
         cdef int ret
-        cdef list property_names = [p.get_name() for p in properties]
         cdef char **names = <char**>PyMem_Malloc(
-                (len(properties)+1)*sizeof(char*))
+                (len(property_names)+1)*sizeof(char*))
         if not names:
             raise MemoryError("Failed to allocate names")
 
-        names[len(properties)] = NULL
-        for i, property in enumerate(property_names):
-            names[i] = <bytes>property
+        names[len(property_names)] = NULL
+        for i, name in enumerate(property_names):
+            names[i] = <bytes>name
 
         ret = sdbus_h.sd_bus_emit_properties_changed_strv(self.bus, self.path,
             self.interface, names)
@@ -101,3 +102,6 @@ cdef class Object:
             raise SdbusError(f"Failed to emit changed: {errorcode[-ret]}", -ret)
 
         PyMem_Free(names)
+
+    def is_connected(self):
+        return self.service.connected

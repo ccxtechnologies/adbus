@@ -6,15 +6,21 @@
 import unittest
 import asyncio
 import asyncio.subprocess
+import typing
 
 import adbus.server
 
 service_name = 'adbus.test'
-object_path = '/adbus/test/Methods'
+object_path = '/adbus/test/Tests1'
 object_interface = 'adbus.test'
 
 
 class TestObject(adbus.server.Object):
+
+    property1: str = adbus.server.Property('none')
+    property2: int = adbus.server.Property(100)
+    property3: typing.List[int] = adbus.server.Property([1,2,3])
+
     def __init__(self, service):
         super().__init__(service, object_path, object_interface)
 
@@ -24,10 +30,6 @@ class TestObject(adbus.server.Object):
 
     @adbus.server.method(name="DifferentName", depreciated=True)
     def test_method2(self, r: int, gg: str) -> int:
-        return r + 10 * len(gg)
-
-    @adbus.server.method(name="DifferentName")
-    def test_methodX(self, r: int, gg: str, y: float) -> int:
         return r + 10 * len(gg)
 
     @adbus.server.method()
@@ -100,6 +102,18 @@ class Test(unittest.TestCase):
             )
         )
 
+    def test_property(self):
+        self.obj.property1 = 'brown'
+
+        async def set_props(obj):
+            with obj as o:
+                o.property1 = 'yellow'
+                o.property2 = 42
+                o.property3 = [6,7,10,43,102]
+
+            await self.delay(10)
+
+        self.loop.run_until_complete(set_props(self.obj))
 
 if __name__ == "__main__":
     unittest.main()

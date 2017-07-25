@@ -5,7 +5,6 @@ import functools
 import inspect
 
 from .. import sdbus
-from .. import exceptions
 
 
 class Method:
@@ -72,14 +71,14 @@ class Method:
         sig = inspect.signature(callback)
         for param in sig.parameters.values():
             if param.annotation != inspect.Parameter.empty:
-                self.arg_signature += sdbus.py_signature(param.annotation)
+                self.arg_signature += sdbus.dbus_signature(param.annotation)
             else:
                 self.arg_signature += sdbus.variant_signature()
 
         if dont_block:
             self.return_signature = ''
         elif sig.return_annotation != inspect.Parameter.empty:
-            self.return_signature = sdbus.py_signature(sig.return_annotation)
+            self.return_signature = sdbus.dbus_signature(sig.return_annotation)
         else:
             self.return_signature = sdbus.variant_signature()
 

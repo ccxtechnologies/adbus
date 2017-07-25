@@ -10,6 +10,7 @@ cdef bytes signature_dict_begin = int(sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN).to_b
 cdef bytes signature_dict_end = int(sdbus_h.SD_BUS_TYPE_DICT_ENTRY_END).to_bytes(1, 'big')
 cdef bytes signature_struct_begin = int(sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN).to_bytes(1, 'big')
 cdef bytes signature_struct_end = int(sdbus_h.SD_BUS_TYPE_STRUCT_END).to_bytes(1, 'big')
+cdef bytes signature_invalid = b'E'
 
 cdef bytes _object_signature_basic(object obj):
     if (obj == bool) or isinstance(obj, bool):
@@ -22,18 +23,13 @@ cdef bytes _object_signature_basic(object obj):
         return signature_string
     elif (obj == bytes) or isinstance(obj, bytes):
         return signature_string
-    return b''
+    return signature_invalid
 
 cdef const char* _object_signature(object obj):
     cdef bytes signature = b''
 
     if hasattr(obj, 'dbus_signature'):
-        signature += obj.dbus_signature.encode('utf-8')
-    else:
-        signature += _object_signature_basic(obj)
-
-    if signature:
-        pass
+        return obj.dbus_signature.encode('utf-8')
 
     elif isinstance(obj, dict):
         signature += signature_array
@@ -71,20 +67,38 @@ cdef const char* _object_signature(object obj):
             signature += _object_signature(v)
         signature += signature_struct_end
 
+    elif obj is None:
+        return ''
+
+    else:
+        signature += _object_signature_basic(obj)
+
     return signature
 
 def variant_signature():
     return signature_variant.decode()
 
-def py_signature(obj):
+def dbus_signature(obj):
     """Calculates a D-Bus Signature from a Python object or type.
 
     Args:
-        obj (obj or type): Python object or type,
-            supports bool, int, str, float, bytes, and from the
-            typing library, List, Dict, and Tuple
+        obj (object or type): Python object or type,
+            If the object has a dbus_signature attribute it will
+            be used, otherwise the object or type will be parsed
+            to calculate the D-Bus Signature.
+            Supports bool, int, str, float, bytes, and from the
+            typing library, List, Dict, and Tuple.
 
     Returns:
         A string representing the D-Bus Signature.
+
+    Raises:
+        TypeError: If no D-Bus Equivalent for objects type.
     """
-    return _object_signature(obj).decode()
+
+    signature = _object_signature(obj)
+
+    if signature_invalid in signature:
+        raise TypeError(f"No D-Bus type equivalent for {obj}")
+
+    return signature.decode()

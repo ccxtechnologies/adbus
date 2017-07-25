@@ -46,21 +46,48 @@ class Object:
         hidden=False,
         manager=False
     ):
+        self._defer_properties = False
+        self._deferred_properties = {}
+
         self.vtable = [x.vt() for x in vtable]
         """List of all D-Bus Methods, Properties, and Signals."""
 
         self.vtable += [
-            v.vt(self) for v in type(self).__dict__.values() if hasattr(v, 'vt')
+            v.vt(self)
+            for v in type(self).__dict__.values() if hasattr(v, 'vt')
         ]
 
         self.sdbus = sdbus.Object(
-            service.sdbus, path, interface, self.vtable,
-            depreciated, hidden
+            service.sdbus, path, interface, self.vtable, depreciated, hidden
         )
         """Interface to sd-bus library."""
 
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
 
-    def emit_properties_changed(self, properties):
-        self.sdbus.emit_properties_changed([p.sdbus for p in properties])
+    def emit_property_changed(self, name):
+        if self._defer_properties:
+            self._deferred_properties[name.encode()] = None
+        elif self.sdbus.is_connected():
+            self.sdbus.emit_properties_changed([name.encode()])
+
+    def defer_signals(self, enable):
+        if enable:
+            self._defer_properties = True
+
+        elif self._defer_properties:
+            self._defer_properties = False
+
+            if self._deferred_properties:
+                self.sdbus.emit_properties_changed(
+                    list(self._deferred_properties.keys())
+                )
+                self._deferred_properties = {}
+
+    def __enter__(self):
+        self.defer_signals(True)
+        return self
+
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        self.defer_signals(False)
+

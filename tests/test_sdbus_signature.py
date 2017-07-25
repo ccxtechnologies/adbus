@@ -5,31 +5,33 @@
 
 import unittest
 import typing
-from adbus.sdbus import object_signature
+from adbus.sdbus import dbus_signature
 
 
 class Test(unittest.TestCase):
     """D-Bus Signature Creator test cases."""
 
     def test_objects(self):
-        sig = object_signature('test')
+        sig = dbus_signature('test')
         self.assertEqual(sig, "s")
 
-        sig = object_signature({'test': 1, "brown": 45})
+        sig = dbus_signature({'test': 1, "brown": 45})
         self.assertEqual(sig, "a{si}")
 
-        sig = object_signature([1, 45, 12])
+        sig = dbus_signature([1, 45, 12])
         self.assertEqual(sig, "ai")
 
         def f(g: int, x: typing.List[int]):
             pass
 
-        sig = object_signature(f.__annotations__['g'])
+        sig = dbus_signature(f.__annotations__['g'])
         self.assertEqual(sig, "i")
 
-        sig = object_signature(f.__annotations__['x'])
+        sig = dbus_signature(f.__annotations__['x'])
         self.assertEqual(sig, "ai")
 
+        with self.assertRaises(TypeError):
+            dbus_signature(Test)
 
 if __name__ == "__main__":
     unittest.main()

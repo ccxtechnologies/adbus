@@ -3,6 +3,7 @@
 cdef class Service:
     cdef sdbus_h.sd_bus *bus
     cdef bytes name
+    cdef bool connected
     cdef list exceptions
     cdef stdint.uint64_t flags
 
@@ -12,6 +13,7 @@ cdef class Service:
         self.name = name.encode()
         self.exceptions = []
         self.flags = 0
+        self.connected = False
 
         if bus == 'system':
             if sdbus_h.sd_bus_open_system(&self.bus) < 0:
@@ -47,19 +49,26 @@ cdef class Service:
             Exception: re-raised if raised by any callbacks, or property setters
         """
 
-        while True:
-            r = sdbus_h.sd_bus_process(self.bus, NULL)
+        if self.connected:
+            raise BusError(f"Already processing")
 
-            if r < 0:
-                raise BusError(f"D-Bus Process Error: {errorcode[-r]}")
+        self.connected = True
+        try:
+            while True:
+                r = sdbus_h.sd_bus_process(self.bus, NULL)
 
-            if self.exceptions:
-                for callback_exception in self.exceptions[:]:
-                    self.exceptions.remove(callback_exception)
-                    raise callback_exception
+                if r < 0:
+                    raise BusError(f"D-Bus Process Error: {errorcode[-r]}")
 
-            if r == 0:
-                break
+                if self.exceptions:
+                    for callback_exception in self.exceptions[:]:
+                        self.exceptions.remove(callback_exception)
+                        raise callback_exception
+
+                if r == 0:
+                    break
+        finally:
+            self.connected = False
 
     def get_fd(self):
         """Get the file-descriptor associated with the D-Bus socket.
@@ -68,3 +77,6 @@ cdef class Service:
             A file descriptor (int), which can be used to wait for incoming messages.
         ."""
         return sdbus_h.sd_bus_get_fd(self.bus)
+
+    def is_connected(self):
+        return self.connected

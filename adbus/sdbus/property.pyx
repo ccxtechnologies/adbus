@@ -57,7 +57,7 @@ cdef class Property:
     cdef Object object
 
     def __cinit__(self, name, py_object, attr_name, signature='', read_only=False,
-            depreciated=False, hidden=False, unprivledged=False,
+            depreciated=False, hidden=False, unprivileged=False,
             emits_constant=False, emits_change=False, emits_invalidation=False):
 
         self.name = name.encode()
@@ -79,7 +79,7 @@ cdef class Property:
         if hidden:
             self.flags |= sdbus_h.SD_BUS_VTABLE_HIDDEN
 
-        if unprivledged:
+        if unprivileged:
             self.flags |= sdbus_h.SD_BUS_VTABLE_UNPRIVILEGED
 
         if emits_constant:
@@ -101,9 +101,6 @@ cdef class Property:
 
         self.userdata = <void *>self
 
-    def get_name(self):
-        return self.name
-
     cdef populate_vtable(self, sdbus_h.sd_bus_vtable *vtable):
         vtable.type = self.type
         vtable.flags = self.flags
@@ -116,6 +113,6 @@ cdef class Property:
 
     def emit_changed(self):
         if not self.object:
-            raise SdbusError("Signal not associated")
+            raise SdbusError("Property not associated")
         return self.object.emit_properties_changed([self.name.decode()])
 
