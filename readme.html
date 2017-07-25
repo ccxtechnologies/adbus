@@ -185,6 +185,12 @@
 <h2>Building / Installing<a class="headerlink" href="#building-installing" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li>To build in place for development python ./setup.py build_ext –inplace</li>
+<li>The html documents are stored in gh-pages branch, so that GitHub will
+serve them as a GitHub Pages. To build them:
+1. check out the gh-pages branch into ../python-adbus/html
+2. cd into docs
+3. sphinx-apidoc -o source/ ../adbus
+4. make html</li>
 </ul>
 </div>
 <div class="section" id="unit-tests">
