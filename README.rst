@@ -34,32 +34,52 @@ NOTE: Some test-cases require the busctl tool from systemd.
 -  To run all unit-tests from the root directory: python -m unittest
    discover
 
-Server Example
+Object Example
 --------------
+
+This is an example of an object, which can be connected to a service.
 
 .. code-block:: python
 
   import adbus
+  import typing
 
-  class ExampleClass(adbus.Object):
+  class ExampleClass(adbus.server.Object):
 
-      signal1: int = adbus.Signal()
-      signal2: List[int] = adbus.Signal()
+      signal1: int = adbus.server.Signal()
+      signal2: List[int] = adbus.server.Signal()
 
-      property1: str = adbus.Property('none', read_only=True, hidden=True)
-      property2: List[int] = adbus.Property(['rr', 'ff'],
-                  deprectiated=True, emits=None)
+      property1: str = adbus.server.Property('none', read_only=True, hidden=True)
+      property2: typing.List[int] = adbus.server.Property(['rr', 'ff'], deprectiated=True)
 
       def __init__(self, service):
-          adbus.Object.__init__(self, service, path='xxx', interface='xxx')
+          super().__init__(service, path='/xxx/yyy', interface='yyy.xxx')
 
       @adbus.method(name='test', hidden=True)
       def test_method(self, r: int, gg: str) -> int:
           return r + 10
 
-      def do_something(self):
-          f = 14
-          self.signal1.emit(f)
+Setting Multiple Properties
+---------------------------
+
+It's possible to set multiple properties at the same time, this will defer the property
+update signal, and send one signal for all property changes. It's good practice to use
+this when changing multiple properties, it will reduce traffic on the D-Bus.
+
+NOTE: If the even loop isn't running no signals will be emitted.
+
+.. code-block:: python
+
+  service = adbus.server.Service(service_name, bus='session')
+  obj = TestObject(service)
+
+  async def set_props(obj):
+    with obj as o:
+          o.property1 = 'yellow'
+          o.property2 = 42
+          o.property3 = [6,7,10,43,102]
+
+  asyncio.get_event_loop().run_until_complete(set_props(obj))
 
 Style Guide
 -----------
