@@ -217,10 +217,10 @@
         <span class="sd">&quot;&quot;&quot;Function called when this method is called.&quot;&quot;&quot;</span>
 
         <span class="k">if</span> <span class="n">camel_convert</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">snake_to_camel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">snake_to_camel</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="sd">&quot;&quot;&quot;Method name advertised on the D-Bus.&quot;&quot;&quot;</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">name</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">depreciated</span> <span class="o">=</span> <span class="n">depreciated</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span>
@@ -254,7 +254,7 @@
             <span class="n">callback</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span>
 
         <span class="k">return</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Method</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">arg_signature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_signature</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">arg_signature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_signature</span><span class="p">,</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">depreciated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged</span>
         <span class="p">)</span></div></div>
 

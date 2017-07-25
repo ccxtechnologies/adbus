@@ -1,9 +1,6 @@
 # Copyright: 2017, CCX Technologies
 """D-Bus Property"""
 
-import functools
-import inspect
-
 from .. import sdbus
 
 
@@ -11,7 +8,7 @@ class Property:
     """Provides an interface between a D-Bus and a Python Property.
 
     This class is to be used as a Decorator for arguments (properties) in
-    an adbus.server.object which will be exported via the D-Bus.
+    an adbus.server.Object which will be exported via the D-Bus.
 
     Args:
         default: optional, default setting for the property
@@ -83,7 +80,9 @@ class Property:
         self.py_name = name
 
         try:
-            self.dbus_signature = sdbus.dbus_signature(owner.__annotations__[name])
+            self.dbus_signature = sdbus.dbus_signature(
+                owner.__annotations__[name]
+            )
         except KeyError:
             self.dbus_signature = sdbus.variant_signature()
 

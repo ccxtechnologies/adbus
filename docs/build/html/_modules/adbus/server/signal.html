@@ -158,19 +158,65 @@
             
   <h1>Source code for adbus.server.signal</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright: 2017, CCX Technologies</span>
-
 <span class="sd">&quot;&quot;&quot;D-Bus Signal&quot;&quot;&quot;</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">sdbus</span>
 
-<div class="viewcode-block" id="Signal"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.signal.Signal">[docs]</a><span class="k">class</span> <span class="nc">Signal</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;D-Bus Signal&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">deprectiated</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">signature</span><span class="p">,</span> <span class="n">deprectiated</span><span class="p">,</span> <span class="n">hidden</span><span class="p">)</span>
+<div class="viewcode-block" id="Signal"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.signal.Signal">[docs]</a><span class="k">class</span> <span class="nc">Signal</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Provides a method to emit a signal via D-Bus.</span>
+
+<span class="sd">    This class is to be used as a Decorator for signals in</span>
+<span class="sd">    an adbus.server.Object which will be exported via the D-Bus.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): optional, signal name used in the D-Bus, if None the</span>
+<span class="sd">            signal&#39;s label will be used</span>
+<span class="sd">        depreciated (bool): optional, if true object is labelled</span>
+<span class="sd">            as depreciated in the introspect XML data</span>
+<span class="sd">        hidden (bool): optional, if true object won&#39;t be added</span>
+<span class="sd">            to the introspect XML data</span>
+<span class="sd">        camel_convert (bool): optional, D-Bus method and property</span>
+<span class="sd">            names are typically defined in Camel Case, but Python</span>
+<span class="sd">            methods and arguments are typically defined in Snake</span>
+<span class="sd">            Case, if this is set the cases will be automatically</span>
+<span class="sd">            converted between the two</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">deprectiated</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">camel_convert</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">deprectiated</span> <span class="o">=</span> <span class="n">deprectiated</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camel_convert</span> <span class="o">=</span> <span class="n">camel_convert</span>
+
+    <span class="k">def</span> <span class="nf">__set_name__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">py_name</span> <span class="o">=</span> <span class="n">name</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">(</span>
+                <span class="n">owner</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">variant_signature</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">name</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camel_convert</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">snake_to_camel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deprectiated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span>
+        <span class="p">)</span>
 
 <div class="viewcode-block" id="Signal.emit"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.signal.Signal.emit">[docs]</a>    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Signal.vt"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.signal.Signal.vt">[docs]</a>    <span class="k">def</span> <span class="nf">vt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span></div></div>
 </pre></div>
 
            </div>

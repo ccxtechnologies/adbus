@@ -208,7 +208,7 @@ discover</li>
 <span class="k">class</span> <span class="nc">ExampleClass</span><span class="p">(</span><span class="n">adbus</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Object</span><span class="p">):</span>
 
     <span class="n">signal1</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
-    <span class="n">signal2</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
+    <span class="n">signal2</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Signal</span><span class="p">()</span>
 
     <span class="n">property1</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Property</span><span class="p">(</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">read_only</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
     <span class="n">property2</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Property</span><span class="p">([</span><span class="s1">&#39;rr&#39;</span><span class="p">,</span> <span class="s1">&#39;ff&#39;</span><span class="p">],</span> <span class="n">deprectiated</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
@@ -221,8 +221,7 @@ discover</li>
         <span class="k">return</span> <span class="n">r</span> <span class="o">+</span> <span class="mi">10</span>
 
     <span class="k">def</span> <span class="nf">do_something</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">f</span> <span class="o">=</span> <span class="mi">14</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">signal1</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signal1</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="mi">14</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>

@@ -58,10 +58,10 @@ class Method:
         """Function called when this method is called."""
 
         if camel_convert:
-            self.name = sdbus.snake_to_camel(name)
+            self.dbus_name = sdbus.snake_to_camel(name)
             """Method name advertised on the D-Bus."""
         else:
-            self.name = name
+            self.dbus_name = name
 
         self.depreciated = depreciated
         self.hidden = hidden
@@ -95,7 +95,7 @@ class Method:
             callback = self.callback
 
         return sdbus.Method(
-            self.name, callback, arg_signature, self.return_signature,
+            self.dbus_name, callback, arg_signature, self.return_signature,
             self.depreciated, self.hidden, self.unprivileged
         )
 

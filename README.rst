@@ -47,7 +47,7 @@ This is an example of an object, which can be connected to a service.
   class ExampleClass(adbus.server.Object):
 
       signal1: int = adbus.server.Signal()
-      signal2: List[int] = adbus.server.Signal()
+      signal2: typing.List[int] = adbus.server.Signal()
 
       property1: str = adbus.server.Property('none', read_only=True, hidden=True)
       property2: typing.List[int] = adbus.server.Property(['rr', 'ff'], deprectiated=True)
@@ -60,8 +60,7 @@ This is an example of an object, which can be connected to a service.
           return r + 10
 
       def do_something(self):
-          f = 14
-          self.signal1.emit(f)
+          self.signal1.emit(14)
 
 Setting Multiple Properties
 ---------------------------

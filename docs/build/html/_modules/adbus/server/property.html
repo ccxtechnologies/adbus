@@ -160,9 +160,6 @@
 <span></span><span class="c1"># Copyright: 2017, CCX Technologies</span>
 <span class="sd">&quot;&quot;&quot;D-Bus Property&quot;&quot;&quot;</span>
 
-<span class="kn">import</span> <span class="nn">functools</span>
-<span class="kn">import</span> <span class="nn">inspect</span>
-
 <span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">sdbus</span>
 
 
@@ -170,7 +167,7 @@
     <span class="sd">&quot;&quot;&quot;Provides an interface between a D-Bus and a Python Property.</span>
 
 <span class="sd">    This class is to be used as a Decorator for arguments (properties) in</span>
-<span class="sd">    an adbus.server.object which will be exported via the D-Bus.</span>
+<span class="sd">    an adbus.server.Object which will be exported via the D-Bus.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        default: optional, default setting for the property</span>
@@ -242,7 +239,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">py_name</span> <span class="o">=</span> <span class="n">name</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">(</span><span class="n">owner</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">(</span>
+                <span class="n">owner</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">variant_signature</span><span class="p">()</span>
 

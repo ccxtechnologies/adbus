@@ -19,7 +19,9 @@ class TestObject(adbus.server.Object):
 
     property1: str = adbus.server.Property('none')
     property2: int = adbus.server.Property(100)
-    property3: typing.List[int] = adbus.server.Property([1,2,3])
+    property3: typing.List[int] = adbus.server.Property([1, 2, 3])
+
+    signal1: int = adbus.server.Signal()
 
     def __init__(self, service):
         super().__init__(service, object_path, object_interface)
@@ -109,11 +111,19 @@ class Test(unittest.TestCase):
             with obj as o:
                 o.property1 = 'yellow'
                 o.property2 = 42
-                o.property3 = [6,7,10,43,102]
+                o.property3 = [6, 7, 10, 43, 102]
 
             await self.delay(3)
 
         self.loop.run_until_complete(set_props(self.obj))
+
+    def test_signal(self):
+        async def set_signal(obj):
+            obj.signal1.emit(1056)
+            await self.delay(3)
+
+        self.loop.run_until_complete(set_signal(self.obj))
+
 
 if __name__ == "__main__":
     unittest.main()

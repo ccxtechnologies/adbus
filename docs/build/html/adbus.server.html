@@ -231,8 +231,8 @@ block on the D-Bus, <strong>a value will never be returned</strong></li>
 </dd></dl>
 
 <dl class="attribute">
-<dt id="adbus.server.method.Method.name">
-<code class="descname">name</code><em class="property"> = None</em><a class="headerlink" href="#adbus.server.method.Method.name" title="Permalink to this definition">¶</a></dt>
+<dt id="adbus.server.method.Method.dbus_name">
+<code class="descname">dbus_name</code><em class="property"> = None</em><a class="headerlink" href="#adbus.server.method.Method.dbus_name" title="Permalink to this definition">¶</a></dt>
 <dd><p>Method name advertised on the D-Bus.</p>
 </dd></dl>
 
@@ -366,7 +366,7 @@ properties, single argument is a list of property names</li>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Provides an interface between a D-Bus and a Python Property.</p>
 <p>This class is to be used as a Decorator for arguments (properties) in
-an adbus.server.object which will be exported via the D-Bus.</p>
+an adbus.server.Object which will be exported via the D-Bus.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -467,12 +467,40 @@ name once the existing service relinquishes it</li>
 <p>D-Bus Signal</p>
 <dl class="class">
 <dt id="adbus.server.signal.Signal">
-<em class="property">class </em><code class="descclassname">adbus.server.signal.</code><code class="descname">Signal</code><span class="sig-paren">(</span><em>name</em>, <em>signature=''</em>, <em>deprectiated=False</em>, <em>hidden=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/signal.html#Signal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.signal.Signal" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">adbus.server.signal.</code><code class="descname">Signal</code><span class="sig-paren">(</span><em>name=None</em>, <em>deprectiated=False</em>, <em>hidden=False</em>, <em>camel_convert=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/signal.html#Signal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.signal.Signal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>D-Bus Signal</p>
+<p>Provides a method to emit a signal via D-Bus.</p>
+<p>This class is to be used as a Decorator for signals in
+an adbus.server.Object which will be exported via the D-Bus.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) – optional, signal name used in the D-Bus, if None the
+signal’s label will be used</li>
+<li><strong>depreciated</strong> (<em>bool</em>) – optional, if true object is labelled
+as depreciated in the introspect XML data</li>
+<li><strong>hidden</strong> (<em>bool</em>) – optional, if true object won’t be added
+to the introspect XML data</li>
+<li><strong>camel_convert</strong> (<em>bool</em>) – optional, D-Bus method and property
+names are typically defined in Camel Case, but Python
+methods and arguments are typically defined in Snake
+Case, if this is set the cases will be automatically
+converted between the two</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <dl class="method">
 <dt id="adbus.server.signal.Signal.emit">
 <code class="descname">emit</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/signal.html#Signal.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.signal.Signal.emit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="adbus.server.signal.Signal.vt">
+<code class="descname">vt</code><span class="sig-paren">(</span><em>instance=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/signal.html#Signal.vt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.signal.Signal.vt" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
