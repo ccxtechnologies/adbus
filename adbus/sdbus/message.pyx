@@ -252,7 +252,7 @@ cdef class Message:
             else:
                 raise SdbusError(f"Unsupported signature type {chr(s)} for read")
 
-        if len(values) == 0:
+        if (len(values) == 0) and (signature[0]):
             raise MessageEmptyError(f"No data read in type {signature}")
         else:
             return values

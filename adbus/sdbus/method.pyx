@@ -18,8 +18,14 @@ cdef int method_message_handler(sdbus_h.sd_bus_message *m,
     except Exception as e:
         error = Error()
         error.import_sd_bus_error(err)
-        method.exceptions.append(e)
-        return error.from_exception(e)
+        try:
+            error.reply_from_exception(m, e)
+        except SdbusError as e:
+            return -e.errno
+        else:
+            return 1
+        finally:
+            method.exceptions.append(e)
 
     message.new_method_return(m)
     message.append(method.return_signature, value)

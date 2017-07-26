@@ -7,6 +7,7 @@ import unittest
 import asyncio
 import asyncio.subprocess
 import typing
+import time
 
 import adbus.server
 
@@ -33,6 +34,12 @@ class TestObject(adbus.server.Object):
     @adbus.server.method(name="DifferentName", depreciated=True)
     def test_method2(self, r: int, gg: str) -> int:
         return r + 10 * len(gg)
+
+    @adbus.server.method()
+    def slow_method(self) -> str:
+        raise RuntimeError("Test")
+        time.sleep(10)
+        return "Done"
 
     @adbus.server.method()
     def var_method1(self, arg5: int, arg2: str, arg3, arg4, arg1: float):
@@ -103,6 +110,9 @@ class Test(unittest.TestCase):
                 ], 'v s', '"test_string"'
             )
         )
+
+    def test_method_wait(self):
+        self.loop.run_until_complete(self.delay(60))
 
     def test_property(self):
         self.obj.property1 = 'brown'

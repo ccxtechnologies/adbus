@@ -154,6 +154,7 @@ cdef extern from "systemd/sd-bus.h":
     sd_bus_message* sd_bus_message_unref(sd_bus_message *m)
 
     int sd_bus_error_set(sd_bus_error *e, const char *name, const char *message)
+    int sd_bus_reply_method_errno(sd_bus_message *call, int r, const sd_bus_error *e)
 
     int sd_bus_message_append_basic(sd_bus_message *m, char type, const void *p)
     int sd_bus_send(sd_bus *bus, sd_bus_message *m, stdint.uint64_t *cookie)
