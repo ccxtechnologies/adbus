@@ -8,7 +8,6 @@ cimport sdbus_h
 from typing import GenericMeta
 from typing import TupleMeta
 from asyncio import get_event_loop
-from concurrent.futures import ThreadPoolExecutor
 from errno import errorcode
 from libc cimport stdint
 from libc cimport stdio

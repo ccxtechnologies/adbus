@@ -45,24 +45,9 @@ class Service:
         name_queue=False
     ):
         self.sdbus = sdbus.Service(
-            name, bus, replace_existing, allow_replacement, name_queue
+            name, loop, bus, replace_existing, allow_replacement, name_queue
         )
         """Interface to sd-bus library"""
 
-        self._add_to_loop(loop)
-
-    def _add_to_loop(self, loop):
-
-        bus_fd = self.sdbus.get_fd()
-        if bus_fd <= 0:
-            raise exceptions.BusError("Failed to read sd-bus file descriptor")
-
-        if not loop:
-            loop = asyncio.get_event_loop()
-
-        loop.add_reader(bus_fd, self.sdbus.process)
-
-        self._loop = loop
-
     def is_running(self):
-        return self._loop.is_running()
+        return self.sdbus.is_running()

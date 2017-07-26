@@ -6,14 +6,16 @@ cdef class Service:
     cdef bool connected
     cdef list exceptions
     cdef stdint.uint64_t flags
+    cdef object loop
 
-    def __cinit__(self, name, bus='system',
+    def __cinit__(self, name, loop=None, bus='system',
             replace_existing=False, allow_replacement=False, queue=False):
 
         self.name = name.encode()
         self.exceptions = []
         self.flags = 0
         self.connected = False
+        self.loop = loop
 
         if bus == 'system':
             if sdbus_h.sd_bus_open_system(&self.bus) < 0:
@@ -37,6 +39,21 @@ cdef class Service:
 
         if sdbus_h.sd_bus_request_name(self.bus, self.name, self.flags) < 0:
             raise BusError(f"Failed to acquire name {self.name.decode('utf-8')}")
+
+        bus_fd = sdbus_h.sd_bus_get_fd(self.bus)
+        if bus_fd <= 0:
+            raise BusError("Failed to read sd-bus file descriptor")
+
+        if not loop:
+            loop = get_event_loop()
+
+        loop.add_reader(bus_fd, self.process)
+
+        self.loop = loop
+
+    def is_running(self):
+        """Service is running."""
+        return self.loop.is_running()
 
     def __dealloc__(self):
         self.bus = sdbus_h.sd_bus_unref(self.bus)
@@ -69,11 +86,3 @@ cdef class Service:
                     break
         finally:
             self.connected = False
-
-    def get_fd(self):
-        """Get the file-descriptor associated with the D-Bus socket.
-
-        Returns:
-            A file descriptor (int), which can be used to wait for incoming messages.
-        ."""
-        return sdbus_h.sd_bus_get_fd(self.bus)
