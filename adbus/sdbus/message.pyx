@@ -36,6 +36,14 @@ cdef class Message:
         if ret < 0:
             raise SdbusError(f"New method returned: {errorcode[-ret]}", -ret)
 
+    cdef new_method_error(self, sdbus_h.sd_bus_message *call,
+            Exception exception):
+        cdef int ret
+        self._m = sdbus_h.sd_bus_message_unref(self._m)
+        ret = sdbus_h.sd_bus_message_new_method_return(call, &self._m)
+        if ret < 0:
+            raise SdbusError(f"New method returned: {errorcode[-ret]}", -ret)
+
     cdef new_signal(self, Signal signal):
         cdef int ret
         cdef Object object = signal.object

@@ -1,13 +1,7 @@
 # == Copyright: 2017, CCX Technologies
 
 cdef class Error:
-    cdef sdbus_h.sd_bus_error *_e
-
-    def __cinit__(self):
-        self._e = NULL
-
-    cdef import_sd_bus_error(self, sdbus_h.sd_bus_error *error):
-        self._e = error
+    cdef sdbus_h.sd_bus_error _e
 
     cdef reply_from_exception(self, sdbus_h.sd_bus_message *call,
             Exception exception):
@@ -20,8 +14,7 @@ cdef class Error:
 
         cdef bytes err_message = str(exception).encode('utf-8')
 
-        errno = sdbus_h.sd_bus_error_set(self._e, err_name, err_message)
-
-        ret = sdbus_h.sd_bus_reply_method_errno(call, errno, self._e)
+        sdbus_h.sd_bus_error_set(&self._e, err_name, err_message)
+        ret = sdbus_h.sd_bus_reply_method_error(call, &self._e)
         if ret < 0:
             raise SdbusError(f"Failed to send error reply: {errorcode[-ret]}", -ret)

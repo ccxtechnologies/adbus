@@ -17,7 +17,6 @@ cdef int method_message_handler(sdbus_h.sd_bus_message *m,
         value = method.callback(*args)
     except Exception as e:
         error = Error()
-        error.import_sd_bus_error(err)
         try:
             error.reply_from_exception(m, e)
         except SdbusError as e:

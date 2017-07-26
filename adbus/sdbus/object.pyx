@@ -9,7 +9,7 @@ cdef class Object:
     cdef bytes interface
     cdef list vtable
     cdef list exceptions
-    cdef Service service
+    cdef object loop
 
     def __cinit__(self, service, path, interface, vtable,
             depreciated=False, hidden=False):
@@ -18,7 +18,7 @@ cdef class Object:
         self.interface = interface.encode()
         self.exceptions = (<Service>service).exceptions
         self.bus = (<Service>service).bus
-        self.service = service
+        self.loop = (<Service>service).loop
 
         self._malloc()
         self._init_vtable(depreciated, hidden)

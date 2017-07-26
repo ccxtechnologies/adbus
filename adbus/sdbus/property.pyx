@@ -16,9 +16,14 @@ cdef int property_get_handler(sdbus_h.sd_bus *bus,
         message.append(property.signature, value)
     except Exception as e:
         error = Error()
-        error.import_sd_bus_error(err)
-        property.exceptions.append(e)
-        return error.from_exception(e)
+        try:
+            error.reply_from_exception(m, e)
+        except SdbusError as e:
+            return -e.errno
+        else:
+            return 1
+        finally:
+            property.exceptions.append(e)
 
     return 1
 
@@ -38,9 +43,14 @@ cdef int property_set_handler(sdbus_h.sd_bus *bus,
         setattr(property.py_object, property.attr_name, values[0])
     except Exception as e:
         error = Error()
-        error.import_sd_bus_error(err)
-        property.exceptions.append(e)
-        return error.from_exception(e)
+        try:
+            error.reply_from_exception(m, e)
+        except SdbusError as e:
+            return -e.errno
+        else:
+            return 1
+        finally:
+            property.exceptions.append(e)
 
     return 1
 
