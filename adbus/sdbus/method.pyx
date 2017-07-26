@@ -34,7 +34,7 @@ cdef int method_message_handler(sdbus_h.sd_bus_message *m,
     cdef Message message = Message()
 
     message.import_sd_bus_message(m)
-    _method_message_handler(method, message)
+    method.loop.run_in_executor(None, _method_message_handler, method, message)
     return 1
 
 cdef class Method:
@@ -49,6 +49,7 @@ cdef class Method:
     cdef bytes return_signature
     cdef list exceptions
     cdef Object object
+    cdef object loop
 
     def __cinit__(self, name, callback, arg_signature='', return_signature='',
             depreciated=False, hidden=False, unprivileged=False):
@@ -91,3 +92,4 @@ cdef class Method:
         if self.object:
             raise SdbusError("Method already associated")
         self.object = object
+        self.loop = (<Object>object).loop
