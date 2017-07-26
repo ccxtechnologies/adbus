@@ -1,4 +1,6 @@
 # Copyright: 2017, CCX Technologies
+"""Interface to the systemd sd-bus library, not expected to be directly
+    called by external applications."""
 
 import re
 cimport sdbus_h

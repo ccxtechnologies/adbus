@@ -1,12 +1,13 @@
 python-adbus
 ============
 
-D-Bus Binding for Python based on the asyncio mainloop.
+D-Bus Binding for Python utilizing the asyncio mainloop.
 
 Status
 ------
 
-**NOTE: This project is currently under development**
+**This project is currently under development.** The server implementation is
+ready for testing, the client will be added in the next release.
 
 Links
 ------------------
