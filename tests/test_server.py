@@ -25,7 +25,8 @@ class TestObject(adbus.server.Object):
     signal1: int = adbus.server.Signal()
 
     def __init__(self, service):
-        super().__init__(service, object_path, object_interface)
+        super().__init__(service, object_path, object_interface,
+                changed_callback=self.dummy_cb)
 
     @adbus.server.method()
     def test_method(self, r: int, gg: str) -> int:
@@ -37,8 +38,17 @@ class TestObject(adbus.server.Object):
 
     @adbus.server.method()
     def slow_method(self) -> str:
-        time.sleep(10)
+        for _ in range(0, 5):
+            time.sleep(1)
+            print('-', end='', flush=True)
         return "Done"
+
+    @adbus.server.method()
+    def slow_error(self) -> str:
+        for _ in range(0, 5):
+            time.sleep(1)
+            print('-', end='', flush=True)
+        raise RuntimeError("Slow Test")
 
     @adbus.server.method()
     def error_method(self) -> str:
@@ -49,6 +59,11 @@ class TestObject(adbus.server.Object):
         print(type(arg3))
         return str(arg3)
 
+    def dummy_cb(self, names):
+        if len(names) > 1:
+            print(f"{names} where updated")
+        else:
+            print(f"{names[0]} was updated")
 
 class Test(unittest.TestCase):
     """adbus method test cases."""

@@ -8,7 +8,6 @@ cdef class Object:
     cdef bytes path
     cdef bytes interface
     cdef list vtable
-    cdef list exceptions
     cdef object loop
 
     def __cinit__(self, service, path, interface, vtable,
@@ -16,7 +15,6 @@ cdef class Object:
         self.vtable = vtable
         self.path = path.encode()
         self.interface = interface.encode()
-        self.exceptions = (<Service>service).exceptions
         self.bus = (<Service>service).bus
         self.loop = (<Service>service).loop
 
@@ -63,14 +61,12 @@ cdef class Object:
             if type(v) == Method:
                 (<Method>v).set_object(self)
                 (<Method>v).populate_vtable(&self._vtable[i+1])
-                (<Method>v).exceptions = self.exceptions
                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
                 self._userdata[i] = (<Method>v).userdata
 
             elif type(v) == Property:
                 (<Property>v).set_object(self)
                 (<Property>v).populate_vtable(&self._vtable[i+1])
-                (<Property>v).exceptions = self.exceptions
                 self._vtable[i+1].x.method.offset = i*sizeof(self._userdata[0])
                 self._userdata[i] = (<Property>v).userdata
 

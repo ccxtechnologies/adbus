@@ -85,7 +85,9 @@ class Object:
                 self.sdbus.emit_properties_changed([dbus_name.encode()])
 
             if self.changed_callback:
-                self.changed_callback([py_name])
+                self.service.get_loop().run_in_executor(
+                    None, self.changed_callback, [py_name]
+                )
 
     def defer_signals(self, enable):
         if enable:
@@ -101,7 +103,10 @@ class Object:
                     )
 
             if self.changed_callback:
-                self.changed_callback(list(self._deferred_properties.values()))
+                self.service.get_loop().run_in_executor(
+                    None, self.changed_callback,
+                    list(self._deferred_properties.values())
+                )
 
             self._deferred_properties = {}
 

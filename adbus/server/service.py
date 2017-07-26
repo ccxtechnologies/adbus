@@ -51,3 +51,6 @@ class Service:
 
     def is_running(self):
         return self.sdbus.is_running()
+
+    def get_loop(self):
+        return self.sdbus.get_loop()

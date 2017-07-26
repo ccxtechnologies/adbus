@@ -15,6 +15,7 @@ cdef int property_get_handler(sdbus_h.sd_bus *bus,
         value = getattr(property.py_object, property.attr_name)
         message.append(property.signature, value)
     except Exception as e:
+        property.loop.call_exception_handler({'message': str(e), 'exception': e})
         error = Error()
         try:
             error.reply_from_exception(message, e)
@@ -22,8 +23,6 @@ cdef int property_get_handler(sdbus_h.sd_bus *bus,
             return -e.errno
         else:
             return 1
-        finally:
-            property.exceptions.append(e)
 
     return 1
 
@@ -42,6 +41,7 @@ cdef int property_set_handler(sdbus_h.sd_bus *bus,
     try:
         setattr(property.py_object, property.attr_name, values[0])
     except Exception as e:
+        property.loop.call_exception_handler({'message': str(e), 'exception': e})
         error = Error()
         try:
             error.reply_from_exception(message, e)
@@ -49,8 +49,6 @@ cdef int property_set_handler(sdbus_h.sd_bus *bus,
             return -e.errno
         else:
             return 1
-        finally:
-            property.exceptions.append(e)
 
     return 1
 
@@ -63,8 +61,8 @@ cdef class Property:
     cdef str attr_name
     cdef bytes name
     cdef bytes signature
-    cdef list exceptions
     cdef Object object
+    cdef object loop
 
     def __cinit__(self, name, py_object, attr_name, signature='', read_only=False,
             depreciated=False, hidden=False, unprivileged=False,
@@ -74,7 +72,6 @@ cdef class Property:
         self.py_object = py_object
         self.attr_name = attr_name
         self.signature = signature.encode()
-        self.exceptions = []
         self.object = None
 
         if read_only:
@@ -120,6 +117,7 @@ cdef class Property:
         if self.object:
             raise SdbusError("Property already associated")
         self.object = object
+        self.loop = (<Object>object).loop
 
     def emit_changed(self):
         if not self.object:

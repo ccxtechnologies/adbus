@@ -4,7 +4,6 @@ cdef class Service:
     cdef sdbus_h.sd_bus *bus
     cdef bytes name
     cdef bool connected
-    cdef list exceptions
     cdef stdint.uint64_t flags
     cdef object loop
 
@@ -12,7 +11,6 @@ cdef class Service:
             replace_existing=False, allow_replacement=False, queue=False):
 
         self.name = name.encode()
-        self.exceptions = []
         self.flags = 0
         self.connected = False
         self.loop = loop
@@ -55,6 +53,10 @@ cdef class Service:
         """Service is running."""
         return self.loop.is_running()
 
+    def get_loop(self):
+        """Get the service's asyncio loop."""
+        return self.loop
+
     def __dealloc__(self):
         self.bus = sdbus_h.sd_bus_unref(self.bus)
 
@@ -76,11 +78,6 @@ cdef class Service:
 
                 if r < 0:
                     raise BusError(f"D-Bus Process Error: {errorcode[-r]}")
-
-                if self.exceptions:
-                    for callback_exception in self.exceptions[:]:
-                        self.exceptions.remove(callback_exception)
-                        raise callback_exception
 
                 if r == 0:
                     break

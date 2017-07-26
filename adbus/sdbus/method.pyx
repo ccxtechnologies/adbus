@@ -10,12 +10,12 @@ cdef void _method_message_handler(Method method, Message message):
     try:
         value = method.callback(*args)
     except Exception as e:
-        method.exceptions.append(e)
+        method.loop.call_exception_handler({'message': str(e), 'exception': e})
         error = Error()
         try:
             error.reply_from_exception(message, e)
         except SdbusError as e:
-            method.exceptions.append(e)
+            method.loop.call_exception_handler({'message': str(e), 'exception': e})
         return
 
     message.new_method_return()
@@ -24,7 +24,7 @@ cdef void _method_message_handler(Method method, Message message):
     try:
         message.send()
     except SdbusError as e:
-        method.exceptions.append(e)
+        method.loop.call_exception_handler({'message': str(e), 'exception': e})
 
 cdef int method_message_handler(sdbus_h.sd_bus_message *m,
         void *userdata, sdbus_h.sd_bus_error *err):
@@ -47,7 +47,6 @@ cdef class Method:
     cdef bytes name
     cdef bytes arg_signature
     cdef bytes return_signature
-    cdef list exceptions
     cdef Object object
     cdef object loop
 
@@ -58,7 +57,6 @@ cdef class Method:
         self.arg_signature = arg_signature.encode()
         self.return_signature = return_signature.encode()
         self.callback = callback
-        self.exceptions = []
         self.object = None
 
         self.type = sdbus_h._SD_BUS_VTABLE_METHOD
