@@ -37,9 +37,12 @@ class TestObject(adbus.server.Object):
 
     @adbus.server.method()
     def slow_method(self) -> str:
-        raise RuntimeError("Test")
         time.sleep(10)
         return "Done"
+
+    @adbus.server.method()
+    def error_method(self) -> str:
+        raise RuntimeError("Test")
 
     @adbus.server.method()
     def var_method1(self, arg5: int, arg2: str, arg3, arg4, arg1: float):

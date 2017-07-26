@@ -29,8 +29,9 @@ cdef class Message:
         self._m = sdbus_h.sd_bus_message_unref(self._m)
         self._m = sdbus_h.sd_bus_message_ref(message)
 
-    cdef new_method_return(self, sdbus_h.sd_bus_message *call):
+    cdef new_method_return(self):
         cdef int ret
+        cdef sdbus_h.sd_bus_message *call = self._m
         self._m = sdbus_h.sd_bus_message_unref(self._m)
         ret = sdbus_h.sd_bus_message_new_method_return(call, &self._m)
         if ret < 0:

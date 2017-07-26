@@ -17,7 +17,7 @@ cdef int property_get_handler(sdbus_h.sd_bus *bus,
     except Exception as e:
         error = Error()
         try:
-            error.reply_from_exception(m, e)
+            error.reply_from_exception(message, e)
         except SdbusError as e:
             return -e.errno
         else:
@@ -44,7 +44,7 @@ cdef int property_set_handler(sdbus_h.sd_bus *bus,
     except Exception as e:
         error = Error()
         try:
-            error.reply_from_exception(m, e)
+            error.reply_from_exception(message, e)
         except SdbusError as e:
             return -e.errno
         else:

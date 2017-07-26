@@ -1,40 +1,41 @@
 # == Copyright: 2017, CCX Technologies
 
+cdef void _method_message_handler(Method method, Message message):
+    cdef Error error
+    cdef list args
+    cdef object value
+
+    args = message.read(method.arg_signature)
+
+    try:
+        value = method.callback(*args)
+    except Exception as e:
+        method.exceptions.append(e)
+        error = Error()
+        try:
+            error.reply_from_exception(message, e)
+        except SdbusError as e:
+            method.exceptions.append(e)
+        return
+
+    message.new_method_return()
+    message.append(method.return_signature, value)
+
+    try:
+        message.send()
+    except SdbusError as e:
+        method.exceptions.append(e)
+
 cdef int method_message_handler(sdbus_h.sd_bus_message *m,
         void *userdata, sdbus_h.sd_bus_error *err):
 
     cdef PyObject *method_ptr = (((<PyObject**>userdata)[0]))
     cdef Method method = <Method>method_ptr
     cdef Message message = Message()
-    cdef Error error
-    cdef list args
-    cdef object value
 
     message.import_sd_bus_message(m)
-    args = message.read(method.arg_signature)
-
-    try:
-        value = method.callback(*args)
-    except Exception as e:
-        error = Error()
-        try:
-            error.reply_from_exception(m, e)
-        except SdbusError as e:
-            return -e.errno
-        else:
-            return 1
-        finally:
-            method.exceptions.append(e)
-
-    message.new_method_return(m)
-    message.append(method.return_signature, value)
-
-    try:
-        message.send()
-    except SdbusError as e:
-        return -e.errno
-    else:
-        return 1
+    _method_message_handler(method, message)
+    return 1
 
 cdef class Method:
 

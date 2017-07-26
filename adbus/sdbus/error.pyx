@@ -3,8 +3,7 @@
 cdef class Error:
     cdef sdbus_h.sd_bus_error _e
 
-    cdef reply_from_exception(self, sdbus_h.sd_bus_message *call,
-            Exception exception):
+    cdef reply_from_exception(self, Message call, Exception exception):
         cdef int errno
         cdef int ret
 
@@ -15,6 +14,6 @@ cdef class Error:
         cdef bytes err_message = str(exception).encode('utf-8')
 
         sdbus_h.sd_bus_error_set(&self._e, err_name, err_message)
-        ret = sdbus_h.sd_bus_reply_method_error(call, &self._e)
+        ret = sdbus_h.sd_bus_reply_method_error(call._m, &self._e)
         if ret < 0:
             raise SdbusError(f"Failed to send error reply: {errorcode[-ret]}", -ret)
