@@ -244,7 +244,9 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span><span class="o">.</span><span class="n">emit_properties_changed</span><span class="p">([</span><span class="n">dbus_name</span><span class="o">.</span><span class="n">encode</span><span class="p">()])</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">changed_callback</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">changed_callback</span><span class="p">([</span><span class="n">py_name</span><span class="p">])</span></div>
+                <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">get_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+                    <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">changed_callback</span><span class="p">,</span> <span class="p">[</span><span class="n">py_name</span><span class="p">]</span>
+                <span class="p">)</span></div>
 
 <div class="viewcode-block" id="Object.defer_signals"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.object.Object.defer_signals">[docs]</a>    <span class="k">def</span> <span class="nf">defer_signals</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enable</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">enable</span><span class="p">:</span>
@@ -260,7 +262,10 @@
                     <span class="p">)</span>
 
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">changed_callback</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">changed_callback</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deferred_properties</span><span class="o">.</span><span class="n">values</span><span class="p">()))</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="o">.</span><span class="n">get_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_in_executor</span><span class="p">(</span>
+                    <span class="kc">None</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">changed_callback</span><span class="p">,</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_deferred_properties</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+                <span class="p">)</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_deferred_properties</span> <span class="o">=</span> <span class="p">{}</span></div>
 

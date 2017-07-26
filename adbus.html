@@ -216,6 +216,8 @@
 </div>
 <div class="section" id="module-adbus.sdbus">
 <span id="adbus-sdbus-module"></span><h2>adbus.sdbus module<a class="headerlink" href="#module-adbus.sdbus" title="Permalink to this headline">¶</a></h2>
+<p>Interface to the systemd sd-bus library, not expected to be directly
+called by external applications.</p>
 <dl class="class">
 <dt id="adbus.sdbus.Error">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Error</code><a class="headerlink" href="#adbus.sdbus.Error" title="Permalink to this definition">¶</a></dt>
@@ -281,18 +283,15 @@
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Service</code><a class="headerlink" href="#adbus.sdbus.Service" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <dl class="method">
-<dt id="adbus.sdbus.Service.get_fd">
-<code class="descname">get_fd</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Service.get_fd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the file-descriptor associated with the D-Bus socket.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">A file descriptor (int), which can be used to wait for incoming messages.</td>
-</tr>
-</tbody>
-</table>
-<p>.</p>
+<dt id="adbus.sdbus.Service.get_loop">
+<code class="descname">get_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Service.get_loop" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the service’s asyncio loop.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="adbus.sdbus.Service.is_running">
+<code class="descname">is_running</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Service.is_running" title="Permalink to this definition">¶</a></dt>
+<dd><p>Service is running.</p>
 </dd></dl>
 
 <dl class="method">

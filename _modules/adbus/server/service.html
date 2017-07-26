@@ -204,27 +204,15 @@
         <span class="n">name_queue</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span>
-            <span class="n">name</span><span class="p">,</span> <span class="n">bus</span><span class="p">,</span> <span class="n">replace_existing</span><span class="p">,</span> <span class="n">allow_replacement</span><span class="p">,</span> <span class="n">name_queue</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">loop</span><span class="p">,</span> <span class="n">bus</span><span class="p">,</span> <span class="n">replace_existing</span><span class="p">,</span> <span class="n">allow_replacement</span><span class="p">,</span> <span class="n">name_queue</span>
         <span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;Interface to sd-bus library&quot;&quot;&quot;</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_add_to_loop</span><span class="p">(</span><span class="n">loop</span><span class="p">)</span>
-
-    <span class="k">def</span> <span class="nf">_add_to_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loop</span><span class="p">):</span>
-
-        <span class="n">bus_fd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span><span class="o">.</span><span class="n">get_fd</span><span class="p">()</span>
-        <span class="k">if</span> <span class="n">bus_fd</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">BusError</span><span class="p">(</span><span class="s2">&quot;Failed to read sd-bus file descriptor&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">loop</span><span class="p">:</span>
-            <span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
-
-        <span class="n">loop</span><span class="o">.</span><span class="n">add_reader</span><span class="p">(</span><span class="n">bus_fd</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span><span class="o">.</span><span class="n">process</span><span class="p">)</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span> <span class="o">=</span> <span class="n">loop</span>
-
 <div class="viewcode-block" id="Service.is_running"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.service.Service.is_running">[docs]</a>    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loop</span><span class="o">.</span><span class="n">is_running</span><span class="p">()</span></div></div>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span><span class="o">.</span><span class="n">is_running</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Service.get_loop"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.service.Service.get_loop">[docs]</a>    <span class="k">def</span> <span class="nf">get_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span><span class="o">.</span><span class="n">get_loop</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>
