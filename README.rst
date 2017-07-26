@@ -11,9 +11,9 @@ ready for testing, the client will be added in the next release.
 
 Links
 ------------------
-`Documentation <https://ccxtechnologies.github.io/python-adbus>`_
-`Project Page <https://github.com/ccxtechnologies/python-adbus>`_
-`Issues <https://github.com/ccxtechnologies/python-adbus/issues>`_
+- `Documentation <https://ccxtechnologies.github.io/python-adbus>`_
+- `Project Page <https://github.com/ccxtechnologies/python-adbus>`_
+- `Issues <https://github.com/ccxtechnologies/python-adbus/issues>`_
 
 Dependencies
 ------------
