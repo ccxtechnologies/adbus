@@ -10,7 +10,7 @@ Status
 ready for testing, the client will be added in the next release.
 
 Links
-------------------
+-----
 - `Documentation <https://ccxtechnologies.github.io/python-adbus>`_
 - `Project Page <https://github.com/ccxtechnologies/python-adbus>`_
 - `Issues <https://github.com/ccxtechnologies/python-adbus/issues>`_
@@ -47,8 +47,11 @@ NOTE: Some test-cases require the busctl tool from systemd.
 -  To run all unit-tests from the root directory: python -m unittest
    discover
 
+Server Examples
+---------------
+
 Object Example
---------------
+~~~~~~~~~~~~~~
 
 This is an example of an object, which can be connected to a service.
 
@@ -76,7 +79,7 @@ This is an example of an object, which can be connected to a service.
           self.signal1.emit(14)
 
 Setting Multiple Properties
----------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 It's possible to set multiple properties at the same time, this will defer the property
 update signal, and send one signal for all property changes. It's good practice to use
@@ -84,18 +87,62 @@ this when changing multiple properties, it will reduce traffic on the D-Bus.
 
 NOTE: If the even loop isn't running no signals will be emitted.
 
+**This is an protoype to see how it looks, it hasn't been implimented yet.**
+
 .. code-block:: python
 
-  service = adbus.server.Service(service_name, bus='session')
-  obj = TestObject(service)
+  service = adbus.client.Service('com.example.service', bus='session')
+  proxy = adbus.client.Proxy(service, '/com/example/Service1',
+      interface='com.example.service.unit')
 
-  async def set_props(obj):
-    with obj as o:
-          o.property1 = 'yellow'
-          o.property2 = 42
-          o.property3 = [6,7,10,43,102]
+  # == Access Properties
+  proxy.remote_propertyX = 45
+  print(proxy.remote_propertyY)
 
-  asyncio.get_event_loop().run_until_complete(set_props(obj))
+  # == Access Methods
+  proxy.remote_method_foo("some info")
+  x = proxy.remote_method_bar(100, 12, -45)
+
+  # == Add a Call-Back to a Signal
+  def local_method(signal_data: int):
+    print(signal_data)
+
+  proxy.remote_signal.connect(local_method)
+
+  # == Remove a Call-Back to a Signal
+  proxy.remote_signal.disconnect(local_method)
+
+  # == Access a method using a different interface name
+  proxy['com.example.service.serve'].remote_method_800(b"data")
+
+  # == Change a Proxies default interface
+  proxy = proxy['com.example.service.serve']
+
+  # == Create a new proxy from a node in the proxy
+  proxy_new = proxy('Test')['com.example.test']
+
+  # == Create list of all nodes in the proxy
+  proxies = proxy()['com.example.test']
+
+  sum_cnt = 0
+  for proxy in proxies:
+      try:
+          sum_cnt += proxy.count
+      except AttributeError:
+          pass
+
+Client Examples
+---------------
+
+Accessing Remote Interface via a Proxy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It's possible to map a remote interface to a local instantiated class using a Proxy.
+
+NOTE: If the even loop isn't running no signals will caught, and properties will not
+cache (i.e. will read on every access instead of tracking the property changes signals)
+
+
 
 Style Guide
 -----------

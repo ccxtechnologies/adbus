@@ -14,8 +14,8 @@ class Object:
     This object must be added to a service, which provides the D-Bus interface.
 
     It also provides a Context Manager so that multiple properties can be set,
-    or one property can be set multiple times, with a single D-Bus changed signal
-    being sent for all property updates once the context is closed.
+    or one property can be set multiple times, with a single D-Bus changed
+    signal being sent for all property updates once the context is closed.
 
     Args:
         service (adbus.server.Service): service to connect to
@@ -35,7 +35,8 @@ class Object:
         manager (bool): optional, if True add a device manager to this object,
             as defined by the D-Bus Spec from freedesktop.org
         changed_callback: optional, callback called with a list of changed
-            properties, single argument is a list of property names
+            properties, single argument is a list of property names, this is
+            the internal equivalent to the emit changed D-Bus signal
 
     Raises:
         BusError: if an error occurs during initialization

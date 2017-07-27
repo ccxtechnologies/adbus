@@ -19,16 +19,16 @@ def build():
 
     setup(
         name='adbus',
-        version='0.1.1',
+        version='0.2.0',
         description='asyncio based dbus interface',
         license='MIT',
         author='CCX Technologies',
         author_email='charles@ccxtechnologies.com',
         url='http://github.com/ccxtechnologies/python-adbus',
-        download_url='https://github.com/ccxtechnologies/python-adbus/archive/v0.1.1.tar.gz',
+        download_url='https://github.com/ccxtechnologies/python-adbus/archive/v0.2.0.tar.gz',
         platforms=['linux'],
         provides=['adbus'],
-        packages=['adbus', 'adbus.server'],
+        packages=['adbus', 'adbus.server', 'adbus.client'],
         ext_modules=sdbus
     )
 
