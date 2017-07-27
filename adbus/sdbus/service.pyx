@@ -3,14 +3,19 @@
 cdef class Service:
     cdef sdbus_h.sd_bus *bus
     cdef bytes name
+    cdef bytes unique_name
     cdef bool connected
     cdef stdint.uint64_t flags
     cdef object loop
 
-    def __cinit__(self, name, loop=None, bus='system',
+    def __cinit__(self, name=None, loop=None, bus='system',
             replace_existing=False, allow_replacement=False, queue=False):
+        cdef const char *unique
 
-        self.name = name.encode()
+        if name:
+            self.name = name.encode()
+        else:
+            self.name = b''
         self.flags = 0
         self.connected = False
         self.loop = loop
@@ -35,8 +40,13 @@ cdef class Service:
         if queue:
             self.flags |= sdbus_h.SD_BUS_NAME_QUEUE
 
-        if sdbus_h.sd_bus_request_name(self.bus, self.name, self.flags) < 0:
-            raise BusError(f"Failed to acquire name {self.name.decode('utf-8')}")
+        if self.name:
+            if sdbus_h.sd_bus_request_name(self.bus, self.name, self.flags) < 0:
+                raise BusError(f"Failed to acquire name {self.name.decode('utf-8')}")
+
+        if sdbus_h.sd_bus_get_unique_name(self.bus, &unique) < 0:
+            raise BusError("Failed to read unique name")
+        self.unique_name = unique
 
         bus_fd = sdbus_h.sd_bus_get_fd(self.bus)
         if bus_fd <= 0:

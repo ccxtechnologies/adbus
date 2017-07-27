@@ -1,21 +1,15 @@
 # Copyright: 2017, CCX Technologies
 """D-Bus Service"""
 
-from .. import sdbus
-from .. import exceptions
-import asyncio
+from . import sdbus
 
 
 class Service:
     """Serves objects onto a D-Bus, runs within an asyncio loop.
 
     This is a class can be used to create a server that attaches the to
-    D-Bus and serves objects. To process requests it must be run within an
-    asyncio loop.
-
-    Objects are added by initializing them with an instantiated service.
-    More than one object can be attached to a service as long as they
-    don't have the same path.
+    D-Bus and either serves objects or provides and interface for a client
+    proxy. To process requests it must be run within an asyncio loop.
 
     Args:
         name (str): name to be used on the D-Bus, ie. org.test
@@ -37,7 +31,7 @@ class Service:
 
     def __init__(
         self,
-        name,
+        name=None,
         loop=None,
         bus='system',
         replace_existing=False,

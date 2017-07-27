@@ -11,8 +11,10 @@ if "--cythonize" in sys.argv:
     sdbus = cythonize(
         [Extension("adbus.sdbus", ["adbus/sdbus.pyx"], libraries=["systemd"])]
     )
+    sys.argv.remove("--cythonize")
 else:
     sdbus = [Extension("adbus.sdbus", ["adbus/sdbus.c"], libraries=["systemd"])]
+
 
 def build():
     """Build Package."""
@@ -25,12 +27,14 @@ def build():
         author='CCX Technologies',
         author_email='charles@ccxtechnologies.com',
         url='http://github.com/ccxtechnologies/python-adbus',
-        download_url='https://github.com/ccxtechnologies/python-adbus/archive/v0.2.0.tar.gz',
+        download_url=
+        'https://github.com/ccxtechnologies/python-adbus/archive/v0.2.0.tar.gz',
         platforms=['linux'],
         provides=['adbus'],
         packages=['adbus', 'adbus.server', 'adbus.client'],
         ext_modules=sdbus
     )
+
 
 if __name__ == "__main__":
     build()

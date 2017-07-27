@@ -85,51 +85,56 @@ It's possible to set multiple properties at the same time, this will defer the p
 update signal, and send one signal for all property changes. It's good practice to use
 this when changing multiple properties, it will reduce traffic on the D-Bus.
 
-NOTE: If the even loop isn't running no signals will be emitted.
+NOTE: Must be running in a loop.
 
-**This is an protoype to see how it looks, it hasn't been implimented yet.**
+**This is a protoype to see how it looks, it hasn't been implimented yet.**
 
 .. code-block:: python
 
-  service = adbus.client.Service('com.example.service', bus='session')
-  proxy = adbus.client.Proxy(service, '/com/example/Service1',
+  service = adbus.Service(bus='session')
+  proxy = adbus.client.Proxy(service, 'com.example.xxx', '/com/example/Service1',
       interface='com.example.service.unit')
 
-  # == Access Properties
-  proxy.remote_propertyX = 45
-  print(proxy.remote_propertyY)
+  async def proxy_examples():
+    # == Access Properties
+    proxy.remote_propertyX = 45
+    print(proxy.remote_propertyY)
 
-  # == Access Methods
-  proxy.remote_method_foo("some info")
-  x = proxy.remote_method_bar(100, 12, -45)
+    # == Access Methods
+    proxy.remote_method_foo("some info")
+    x = proxy.remote_method_bar(100, 12, -45)
 
-  # == Add a Call-Back to a Signal
-  def local_method(signal_data: int):
-    print(signal_data)
+    # == Add a Call-Back to a Signal
+    def local_method(signal_data: int):
+      print(signal_data)
 
-  proxy.remote_signal.connect(local_method)
+    proxy.remote_signal.connect(local_method)
 
-  # == Remove a Call-Back to a Signal
-  proxy.remote_signal.disconnect(local_method)
+    # == Remove a Call-Back to a Signal
+    proxy.remote_signal.disconnect(local_method)
 
-  # == Access a method using a different interface name
-  proxy['com.example.service.serve'].remote_method_800(b"data")
+    # == Access a method using a different interface name
+    proxy['com.example.service.serve'].remote_method_800(b"data")
 
-  # == Change a Proxies default interface
-  proxy = proxy['com.example.service.serve']
+    # == Change a Proxies default interface
+    proxy = proxy['com.example.service.serve']
 
-  # == Create a new proxy from a node in the proxy
-  proxy_new = proxy('Test')['com.example.test']
+    # == Create a new proxy from a node in the proxy
+    proxy_new = proxy('Test')['com.example.test']
 
-  # == Create list of all nodes in the proxy
-  proxies = proxy()['com.example.test']
+    # == Create list of all nodes in the proxy
+    proxies = proxy()['com.example.test']
 
-  sum_cnt = 0
-  for proxy in proxies:
-      try:
-          sum_cnt += proxy.count
-      except AttributeError:
-          pass
+    sum_cnt = 0
+    for proxy in proxies:
+        try:
+            sum_cnt += proxy.count
+        except AttributeError:
+            pass
+
+  loop = asyncio.get_event_loop()
+  loop.run_until_complete(proxy_examples())
+  loop.close()
 
 Client Examples
 ---------------

@@ -9,7 +9,7 @@ import asyncio.subprocess
 import typing
 import time
 
-import adbus.server
+import adbus
 
 service_name = 'adbus.test'
 object_path = '/adbus/test/Tests1'
@@ -25,8 +25,12 @@ class TestObject(adbus.server.Object):
     signal1: int = adbus.server.Signal()
 
     def __init__(self, service):
-        super().__init__(service, object_path, object_interface,
-                changed_callback=self.dummy_cb)
+        super().__init__(
+            service,
+            object_path,
+            object_interface,
+            changed_callback=self.dummy_cb
+        )
 
     @adbus.server.method()
     def test_method(self, r: int, gg: str) -> int:
@@ -65,13 +69,14 @@ class TestObject(adbus.server.Object):
         else:
             print(f"{names[0]} was updated")
 
+
 class Test(unittest.TestCase):
     """adbus method test cases."""
 
     @classmethod
     def setUpClass(cls):
         cls.loop = asyncio.get_event_loop()
-        cls.service = adbus.server.Service(service_name, bus='session')
+        cls.service = adbus.Service(service_name, bus='session')
         cls.obj = TestObject(cls.service)
 
     @classmethod
