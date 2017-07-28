@@ -340,9 +340,12 @@ cdef class Message:
         cdef char s
         cdef bytes v_str
 
+        if hasattr(value, 'dbus_value'):
+            value = value.dbus_value
+
         s = signature[0]
 
-        if s ==  sdbus_h._SD_BUS_TYPE_INVALID:
+        if s == sdbus_h._SD_BUS_TYPE_INVALID:
             raise MessageEmptyError(f"No data append in type {signature}")
 
         elif s == sdbus_h.SD_BUS_TYPE_ARRAY:

@@ -78,6 +78,14 @@ cdef const char* _object_signature(object obj):
 def variant_signature():
     return signature_variant.decode()
 
+cdef bytes _dbus_signature(obj):
+    signature = _object_signature(obj)
+
+    if signature_invalid in signature:
+        raise TypeError(f"No D-Bus type equivalent for {obj}")
+
+    return signature
+
 def dbus_signature(obj):
     """Calculates a D-Bus Signature from a Python object or type.
 
@@ -95,10 +103,4 @@ def dbus_signature(obj):
     Raises:
         TypeError: If no D-Bus Equivalent for objects type.
     """
-
-    signature = _object_signature(obj)
-
-    if signature_invalid in signature:
-        raise TypeError(f"No D-Bus type equivalent for {obj}")
-
-    return signature.decode()
+    return _dbus_signature(obj).decode()

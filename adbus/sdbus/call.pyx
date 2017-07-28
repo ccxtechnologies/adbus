@@ -32,7 +32,7 @@ cdef class Call:
     cdef object response
     cdef char *response_signature
 
-    def __init__(self, Service service, address, path, interface, method,
+    def __cinit__(self, Service service, address, path, interface, method,
             args=None, response_signature=b''):
 
         self.event = Event(loop=service.loop)
@@ -44,7 +44,7 @@ cdef class Call:
 
         if args:
             for arg in args:
-                signature = dbus_signature(arg)
+                signature = _dbus_signature(arg)
                 self.message.append(signature, arg)
 
     def send(self, stdint.uint64_t timout_ms):

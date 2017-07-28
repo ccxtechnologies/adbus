@@ -6,15 +6,17 @@
 import unittest
 import asyncio
 import asyncio.subprocess
-import typing
-import time
 
 import adbus
 from adbus.client.call import call
+from adbus.client.getset import get
+from adbus.client.getset import set
+from adbus.client.getset import get_all
 
 service_name = 'adbus.test'
 object_path = '/adbus/test/Tests1'
 object_interface = 'adbus.test'
+
 
 class Test(unittest.TestCase):
     """adbus method test cases."""
@@ -37,18 +39,67 @@ class Test(unittest.TestCase):
         print('\n' + '=' * loops)
 
     def test_call_basic(self):
-
         async def call_basic():
             print("Calling...")
-            value = await call(self.service, "adbus.test", "/adbus/test/Tests1",
-                    "adbus.test", "SlowMethod", response_signature="",
-                    timeout_ms=6000)
+            value = await call(
+                self.service,
+                "adbus.test",
+                "/adbus/test/Tests1",
+                "adbus.test",
+                "SlowMethod",
+                response_signature="",
+                timeout_ms=6000
+            )
             print(f"Returned {value}")
 
         self.loop.run_until_complete(asyncio.gather(
-                call_basic(),
-                )
-        )
+            call_basic(),
+        ))
+
+    def test_get(self):
+        async def call_basic():
+            value = await get(
+                self.service,
+                "adbus.test",
+                "/adbus/test/Tests1",
+                "adbus.test",
+                "Property2",
+            )
+            print(f"Returned {value}")
+
+        self.loop.run_until_complete(asyncio.gather(
+            call_basic(),
+        ))
+
+    def test_get_all(self):
+        async def call_basic():
+            value = await get_all(
+                self.service,
+                "adbus.test",
+                "/adbus/test/Tests1",
+                "adbus.test",
+            )
+            print(f"Returned {value}")
+
+        self.loop.run_until_complete(asyncio.gather(
+            call_basic(),
+        ))
+
+    def test_set(self):
+        async def call_basic():
+            value = await set(
+                self.service,
+                "adbus.test",
+                "/adbus/test/Tests1",
+                "adbus.test",
+                "Property1",
+                "CRUD",
+            )
+
+        self.loop.run_until_complete(asyncio.gather(
+            call_basic(),
+        ))
+
 
 if __name__ == "__main__":
     unittest.main()
