@@ -26,6 +26,14 @@ cdef class Message:
         self.message = sdbus_h.sd_bus_message_unref(self.message)
 
     cdef import_sd_bus_message(self, sdbus_h.sd_bus_message *message):
+        cdef errno
+        cdef const sdbus_h.sd_bus_error *err
+
+        err = sdbus_h.sd_bus_message_get_error(message)
+        if err:
+            errno = sdbus_h.sd_bus_message_get_errno(message)
+            raise SdbusError(f"{err.name.decode()}: {err.message.decode()}", -errno)
+
         self.message = sdbus_h.sd_bus_message_unref(self.message)
         self.message = sdbus_h.sd_bus_message_ref(message)
 
@@ -102,7 +110,8 @@ cdef class Message:
         ret = sdbus_h.sd_bus_message_read_basic(self.message, sig, value)
         if ret < 0:
             raise SdbusError(
-                    f"Failed to read value {chr(sig)}: {errorcode[-ret]}", -ret)
+                    f"Failed to read value with signature {chr(sig)}: {errorcode[-ret]}",
+                    -ret)
         if ret == 0:
             raise MessageEmptyError(f"No data to read of type {chr(sig)}")
 

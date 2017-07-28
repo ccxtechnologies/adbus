@@ -6,17 +6,23 @@ cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
     cdef Call call = <Call>call_ptr
     cdef Message message = Message()
 
-    message.import_sd_bus_message(m)
+    sdbus_h.sd_bus_slot_unref(call._slot)
 
+    try:
+        message.import_sd_bus_message(m)
+        response = message.read(call.response_signature)
+        if response:
+            call.response = response[0]
+        else:
+            call.response = None
+        return 0
 
-    # process response, refer to async_polkit_callback in
-    # systemd-232/src/shared/bus-util.c
+    except SdbusError as e:
+        call.response = e
+        return -e.errno
 
-    # wake up sleeping call
-
-    call.wake()
-
-    return 0
+    finally:
+        call.wake()
 
 cdef class Call:
     cdef Message message
@@ -24,14 +30,17 @@ cdef class Call:
     cdef sdbus_h.sd_bus_slot *_slot
     cdef object event
     cdef object response
+    cdef char *response_signature
 
-    def __init__(self, Service service, address, path, interface, method, args=None):
+    def __init__(self, Service service, address, path, interface, method,
+            args=None, response_signature=b''):
 
         self.event = Event(loop=service.loop)
         self.service = service
         self.response = None
         self.message = Message()
         self.message.new_method_call(service, address, path, interface, method)
+        self.response_signature = response_signature
 
         if args:
             for arg in args:

@@ -86,8 +86,8 @@ cdef class Method:
         vtable.flags = self.flags
         memcpy(&vtable.x, &self.x, sizeof(self.x))
 
-    cdef set_object(self, object):
+    cdef set_object(self, Object object):
         if self.object:
             raise SdbusError("Method already associated")
         self.object = object
-        self.loop = (<Object>object).loop
+        self.loop = object.loop

@@ -41,12 +41,12 @@ class Test(unittest.TestCase):
         async def call_basic():
             print("Calling...")
             value = await call(self.service, "adbus.test", "/adbus/test/Tests1",
-                    "adbus.test", "SlowMethod")
+                    "adbus.test", "SlowMethod", response_signature="",
+                    timeout_ms=6000)
             print(f"Returned {value}")
 
         self.loop.run_until_complete(asyncio.gather(
                 call_basic(),
-                self.delay(10),
                 )
         )
 
