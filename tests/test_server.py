@@ -33,6 +33,10 @@ class TestObject(adbus.server.Object):
         )
 
     @adbus.server.method()
+    def simple_method(self) -> int:
+        return 1000
+
+    @adbus.server.method()
     def test_method(self, r: int, gg: str) -> int:
         return r + len(gg)
 
@@ -135,7 +139,7 @@ class Test(unittest.TestCase):
         )
 
     def test_method_wait(self):
-        self.loop.run_until_complete(self.delay(60))
+        self.loop.run_until_complete(self.delay(6000))
 
     def test_property(self):
         self.obj.property1 = 'brown'

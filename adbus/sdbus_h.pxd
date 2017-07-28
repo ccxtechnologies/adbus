@@ -140,6 +140,9 @@ cdef extern from "systemd/sd-bus.h":
             sd_bus_message **m)
     int sd_bus_message_new_signal(sd_bus *bus, sd_bus_message **m,
             const char *path, const char *interface, const char *member)
+    int sd_bus_message_new_method_call(sd_bus *bus, sd_bus_message **m,
+            const char *destination, const char *path, const char *interface,
+            const char *member)
 
     const char *sd_bus_message_get_signature(sd_bus_message *m, int complete)
     int sd_bus_message_read_basic(sd_bus_message *m, char type, void *p)
@@ -150,6 +153,10 @@ cdef extern from "systemd/sd-bus.h":
             const char *contents)
     int sd_bus_message_exit_container(sd_bus_message *m)
     int sd_bus_message_close_container(sd_bus_message *m)
+
+    int sd_bus_call_async(sd_bus *bus, sd_bus_slot **slot, sd_bus_message *m,
+            sd_bus_message_handler_t callback, void *userdata,
+            stdint.uint64_t usec)
 
     sd_bus_message* sd_bus_message_ref(sd_bus_message *m)
     sd_bus_message* sd_bus_message_unref(sd_bus_message *m)

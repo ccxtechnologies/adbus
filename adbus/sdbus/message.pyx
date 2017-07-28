@@ -17,42 +17,56 @@ cdef class MessageEmptyError(Exception):
     pass
 
 cdef class Message:
-    cdef sdbus_h.sd_bus_message *_m
+    cdef sdbus_h.sd_bus_message *message
 
     def __cinit__(self):
-        self._m = NULL
+        self.message = NULL
 
     def __dealloc__(self):
-        self._m = sdbus_h.sd_bus_message_unref(self._m)
+        self.message = sdbus_h.sd_bus_message_unref(self.message)
 
     cdef import_sd_bus_message(self, sdbus_h.sd_bus_message *message):
-        self._m = sdbus_h.sd_bus_message_unref(self._m)
-        self._m = sdbus_h.sd_bus_message_ref(message)
+        self.message = sdbus_h.sd_bus_message_unref(self.message)
+        self.message = sdbus_h.sd_bus_message_ref(message)
+
+    cdef new_method_call(self, Service service, char *destination,
+            char *path, char *interface, const char *member):
+        cdef int ret
+
+        self.message = sdbus_h.sd_bus_message_unref(self.message)
+        ret = sdbus_h.sd_bus_message_new_method_call(service.bus,
+            &self.message, destination, path, interface, member)
+        if ret < 0:
+            raise SdbusError(
+                f"Failed to create new method call: {errorcode[-ret]}", -ret)
 
     cdef new_method_return(self):
         cdef int ret
-        cdef sdbus_h.sd_bus_message *call = self._m
-        ret = sdbus_h.sd_bus_message_new_method_return(call, &self._m)
+        cdef sdbus_h.sd_bus_message *call = self.message
+        ret = sdbus_h.sd_bus_message_new_method_return(call, &self.message)
         if ret < 0:
-            raise SdbusError(f"New method returned: {errorcode[-ret]}", -ret)
+            raise SdbusError(
+                f"Failed to create new method return: {errorcode[-ret]}", -ret)
         sdbus_h.sd_bus_message_unref(call)
 
     cdef new_method_error(self, sdbus_h.sd_bus_message *call,
             Exception exception):
         cdef int ret
-        self._m = sdbus_h.sd_bus_message_unref(self._m)
-        ret = sdbus_h.sd_bus_message_new_method_return(call, &self._m)
+        self.message = sdbus_h.sd_bus_message_unref(self.message)
+        ret = sdbus_h.sd_bus_message_new_method_return(call, &self.message)
         if ret < 0:
-            raise SdbusError(f"New method returned: {errorcode[-ret]}", -ret)
+            raise SdbusError(
+                f"Failed to create new method error: {errorcode[-ret]}", -ret)
 
     cdef new_signal(self, Signal signal):
         cdef int ret
         cdef Object object = signal.object
-        self._m = sdbus_h.sd_bus_message_unref(self._m)
-        ret = sdbus_h.sd_bus_message_new_signal(object.bus, &self._m,
+        self.message = sdbus_h.sd_bus_message_unref(self.message)
+        ret = sdbus_h.sd_bus_message_new_signal(object.bus, &self.message,
                 object.path, object.interface, signal.name)
         if ret < 0:
-            raise SdbusError(f"New signal returned: {errorcode[-ret]}", -ret)
+            raise SdbusError(
+                f"Failed to create new signal: {errorcode[-ret]}", -ret)
 
     # ------------
 
@@ -85,7 +99,7 @@ cdef class Message:
 
     cdef _read_basic(self, char sig, void *value):
         cdef int ret
-        ret = sdbus_h.sd_bus_message_read_basic(self._m, sig, value)
+        ret = sdbus_h.sd_bus_message_read_basic(self.message, sig, value)
         if ret < 0:
             raise SdbusError(
                     f"Failed to read value {chr(sig)}: {errorcode[-ret]}", -ret)
@@ -101,7 +115,7 @@ cdef class Message:
 
         index[0] += elength
 
-        if sdbus_h.sd_bus_message_enter_container(self._m,
+        if sdbus_h.sd_bus_message_enter_container(self.message,
                 sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
             raise SdbusError(f"Failed to enter array {esignature}")
 
@@ -115,7 +129,7 @@ cdef class Message:
             except MessageEmptyError:
                 break
 
-        if sdbus_h.sd_bus_message_exit_container(self._m) < 0:
+        if sdbus_h.sd_bus_message_exit_container(self.message) < 0:
             raise SdbusError(f"Failed to exit array {esignature}")
 
         # A dictionary is always an array with two elements (based on D-Bus
@@ -129,14 +143,14 @@ cdef class Message:
         cdef const char *esignature
         cdef list value
 
-        if sdbus_h.sd_bus_message_enter_container(self._m,
+        if sdbus_h.sd_bus_message_enter_container(self.message,
                 sdbus_h.SD_BUS_TYPE_VARIANT, NULL) < 0:
             raise SdbusError("Failed to enter variant")
 
-        esignature = sdbus_h.sd_bus_message_get_signature(self._m, 0)
+        esignature = sdbus_h.sd_bus_message_get_signature(self.message, 0)
         value = self.read(esignature)
 
-        if sdbus_h.sd_bus_message_exit_container(self._m) < 0:
+        if sdbus_h.sd_bus_message_exit_container(self.message) < 0:
             raise SdbusError(f"Failed to exit variant {esignature}")
 
         # variant only has one type
@@ -150,13 +164,13 @@ cdef class Message:
 
         index[0] += elength + 1
 
-        if sdbus_h.sd_bus_message_enter_container(self._m,
+        if sdbus_h.sd_bus_message_enter_container(self.message,
                 sdbus_h.SD_BUS_TYPE_STRUCT, esignature) < 0:
             raise SdbusError(f"Failed to enter structure {esignature}")
 
         value = self.read(esignature)
 
-        if sdbus_h.sd_bus_message_exit_container(self._m) < 0:
+        if sdbus_h.sd_bus_message_exit_container(self.message) < 0:
             raise SdbusError(f"Failed to exit structure {esignature}")
 
         return value
@@ -168,13 +182,13 @@ cdef class Message:
 
         index[0] += elength + 1
 
-        if sdbus_h.sd_bus_message_enter_container(self._m,
+        if sdbus_h.sd_bus_message_enter_container(self.message,
                 sdbus_h.SD_BUS_TYPE_DICT_ENTRY, esignature) < 0:
             raise SdbusError(f"Failed to enter dictionary {esignature}")
 
         value = self.read(esignature)
 
-        if sdbus_h.sd_bus_message_exit_container(self._m) < 0:
+        if sdbus_h.sd_bus_message_exit_container(self.message) < 0:
             raise SdbusError(f"Failed to exit dictionary {esignature}")
 
         return value
@@ -270,7 +284,7 @@ cdef class Message:
 
     cdef _append_basic(self, char sig, const void *value):
         cdef int ret
-        ret = sdbus_h.sd_bus_message_append_basic(self._m, sig, value)
+        ret = sdbus_h.sd_bus_message_append_basic(self.message, sig, value)
         if ret < 0:
             raise SdbusError(
                     f"Failed to append value {chr(sig)}: {errorcode[-ret]}", -ret)
@@ -280,7 +294,7 @@ cdef class Message:
         cdef bytes psignature = signature[1:elength+1] + bytes(1)
         cdef char *esignature = psignature
 
-        if sdbus_h.sd_bus_message_open_container(self._m,
+        if sdbus_h.sd_bus_message_open_container(self.message,
                 sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
             raise SdbusError(f"Failed to open array {esignature}")
 
@@ -293,7 +307,7 @@ cdef class Message:
             for v in <list>value:
                 self.append(esignature, v)
 
-        if sdbus_h.sd_bus_message_close_container(self._m) < 0:
+        if sdbus_h.sd_bus_message_close_container(self.message) < 0:
             raise SdbusError(f"Failed to close array {esignature}")
 
     cdef _append_variant(self, object value):
@@ -301,13 +315,13 @@ cdef class Message:
 
         esignature = _object_signature(value)
 
-        if sdbus_h.sd_bus_message_open_container(self._m,
+        if sdbus_h.sd_bus_message_open_container(self.message,
                 sdbus_h.SD_BUS_TYPE_VARIANT, esignature) < 0:
             raise SdbusError(f"Failed to open variant {esignature}")
 
         self.append(esignature, value)
 
-        if sdbus_h.sd_bus_message_close_container(self._m) < 0:
+        if sdbus_h.sd_bus_message_close_container(self.message) < 0:
             raise SdbusError(f"Failed to close variant {esignature}")
 
     cdef append(self, const char *signature, object value):
@@ -396,6 +410,7 @@ cdef class Message:
 
     cdef send(self):
         cdef int ret
-        ret = sdbus_h.sd_bus_send(NULL, self._m, NULL)
+        ret = sdbus_h.sd_bus_send(NULL, self.message, NULL)
         if ret < 0:
             raise SdbusError(f"Failed to send message: {errorcode[-ret]}", -ret)
+

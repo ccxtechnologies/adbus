@@ -1,31 +1,60 @@
 # == Copyright: 2017, CCX Technologies
 
-cdef int async_polkit_callback(sd_bus_message *reply,
-        void *userdata, sd_bus_error *error):
+cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
+        sdbus_h.sd_bus_error *err):
+    cdef PyObject *call_ptr = <PyObject*>userdata
+    cdef Call call = <Call>call_ptr
+    cdef Message message = Message()
+
+    message.import_sd_bus_message(m)
+
 
     # process response, refer to async_polkit_callback in
     # systemd-232/src/shared/bus-util.c
 
     # wake up sleeping call
 
-async def call(service, address, path, interface, method, args=None,
-        timeout_ms=30000):
+    call.wake()
 
-    # ---- add message stuff to existing Message Class
-    # 1. create message (need to store message)
-    int sd_bus_message_new_method_call(sd_bus *bus, sd_bus_message **m,
-            const char *destination, const char *path, const char *interface,
-            const char *member);
+    return 0
 
-    # 2. add arguments to message
+cdef class Call:
+    cdef Message message
+    cdef Service service
+    cdef sdbus_h.sd_bus_slot *_slot
+    cdef object event
+    cdef object response
 
-    # 3. send message
-    int sd_bus_call_async(sd_bus *bus, sd_bus_slot **slot, sd_bus_message *m,
-            sd_bus_message_handler_t callback, void *userdata, uint64_t usec);
+    def __init__(self, Service service, address, path, interface, method, args=None):
 
-    # 4. await for the response (using a queue)?
+        self.event = Event(loop=service.loop)
+        self.service = service
+        self.response = None
+        self.message = Message()
+        self.message.new_method_call(service, address, path, interface, method)
 
-    # 5. return response
+        if args:
+            for arg in args:
+                signature = dbus_signature(arg)
+                self.message.append(signature, arg)
 
-    pass
+    def send(self, stdint.uint64_t timout_ms):
+        cdef int ret
+        self.event.clear()
 
+        ret = sdbus_h.sd_bus_call_async(self.service.bus, &self._slot,
+                self.message.message, call_callback, <void *>self,
+                timout_ms*1000)
+        if ret < 0:
+            raise SdbusError(f"Failed to send call: {errorcode[-ret]}", -ret)
+
+    cdef wake(self):
+        self.event.set()
+
+    def wait_for_response(self):
+        """A couroutine that will wait for a response."""
+        return self.event.wait()
+
+    def get_response(self):
+        """Return the response."""
+        return self.response
