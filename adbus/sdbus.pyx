@@ -7,6 +7,7 @@ cimport sdbus_h
 
 from typing import GenericMeta
 from typing import TupleMeta
+from typing import Any
 from asyncio import get_event_loop
 from asyncio import Event
 from asyncio import wait_for

@@ -100,20 +100,20 @@ class Test(unittest.TestCase):
     def test_listen(self):
         def test_cb(
             interface: str,
-            changed: typing.Dict[str, object],
+            changed: typing.Dict[str, typing.Any],
             invalidated: typing.List[str]
         ):
             print("Poperties Changed")
             print((interface, changed, invalidated))
 
-        listen = adbus.client.Listen(
+        self.listen = adbus.client.Listen(
             self.service, "adbus.test", "/adbus/test/Tests1",
             "org.freedesktop.DBus.Properties", "PropertiesChanged", test_cb
         )
 
-        self.loop.run_until_complete(asyncio.gather(
+        self.loop.run_until_complete(
             self.delay(30),
-        ))
+        )
 
 
 if __name__ == "__main__":
