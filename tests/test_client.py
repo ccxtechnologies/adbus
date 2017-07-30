@@ -4,14 +4,11 @@
 """Test the method wrapper and decorators."""
 
 import unittest
+import typing
 import asyncio
 import asyncio.subprocess
 
 import adbus
-from adbus.client.call import call
-from adbus.client.getset import get
-from adbus.client.getset import set
-from adbus.client.getset import get_all
 
 service_name = 'adbus.test'
 object_path = '/adbus/test/Tests1'
@@ -41,7 +38,7 @@ class Test(unittest.TestCase):
     def test_call_basic(self):
         async def call_basic():
             print("Calling...")
-            value = await call(
+            value = await adbus.client.call(
                 self.service,
                 "adbus.test",
                 "/adbus/test/Tests1",
@@ -58,7 +55,7 @@ class Test(unittest.TestCase):
 
     def test_get(self):
         async def call_basic():
-            value = await get(
+            value = await adbus.client.get(
                 self.service,
                 "adbus.test",
                 "/adbus/test/Tests1",
@@ -73,7 +70,7 @@ class Test(unittest.TestCase):
 
     def test_get_all(self):
         async def call_basic():
-            value = await get_all(
+            value = await adbus.client.get_all(
                 self.service,
                 "adbus.test",
                 "/adbus/test/Tests1",
@@ -87,7 +84,7 @@ class Test(unittest.TestCase):
 
     def test_set(self):
         async def call_basic():
-            value = await set(
+            await set(
                 self.service,
                 "adbus.test",
                 "/adbus/test/Tests1",
@@ -98,6 +95,24 @@ class Test(unittest.TestCase):
 
         self.loop.run_until_complete(asyncio.gather(
             call_basic(),
+        ))
+
+    def test_listen(self):
+        def test_cb(
+            interface: str,
+            changed: typing.Dict[str, object],
+            invalidated: typing.List[str]
+        ):
+            print("Poperties Changed")
+            print((interface, changed, invalidated))
+
+        listen = adbus.client.Listen(
+            self.service, "adbus.test", "/adbus/test/Tests1",
+            "org.freedesktop.DBus.Properties", "PropertiesChanged", test_cb
+        )
+
+        self.loop.run_until_complete(asyncio.gather(
+            self.delay(30),
         ))
 
 

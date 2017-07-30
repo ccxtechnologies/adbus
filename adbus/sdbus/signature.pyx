@@ -25,6 +25,12 @@ cdef bytes _object_signature_basic(object obj):
         return signature_string
     return signature_invalid
 
+cdef bytes _object_signature_value(object obj):
+    value = _object_signature_basic(obj)
+    if value == signature_invalid:
+        return signature_variant
+    return value
+
 cdef const char* _object_signature(object obj):
     cdef bytes signature = b''
 
@@ -35,7 +41,7 @@ cdef const char* _object_signature(object obj):
         signature += signature_array
         signature += signature_dict_begin
         signature += _object_signature_basic(next(iter(obj.keys())))
-        signature += _object_signature_basic(next(iter(obj.values())))
+        signature += _object_signature_value(next(iter(obj.values())))
         signature += signature_dict_end
 
     elif isinstance(obj, list):
@@ -54,7 +60,7 @@ cdef const char* _object_signature(object obj):
         signature += signature_array
         signature += signature_dict_begin
         signature += _object_signature_basic(obj.__args__[0])
-        signature += _object_signature_basic(obj.__args__[1])
+        signature += _object_signature_value(obj.__args__[1])
         signature += signature_dict_end
 
     elif isinstance(obj, GenericMeta) and (obj.__extra__ == list):

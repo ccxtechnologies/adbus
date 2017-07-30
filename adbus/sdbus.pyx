@@ -22,16 +22,12 @@ from cpython.ref cimport PyObject
 from cpython cimport bool
 from .exceptions import BusError
 
-# -----------
-
 cdef class SdbusError(Exception):
     """SD-Bus Library Configuration Error"""
 
     def __init__(self, message, errno=1):
         Exception.__init__(self, message)
         self.errno = errno
-
-# -----------
 
 include "sdbus/snake.pyx"
 include "sdbus/signature.pyx"
@@ -44,3 +40,4 @@ include "sdbus/method.pyx"
 include "sdbus/property.pyx"
 include "sdbus/signal.pyx"
 include "sdbus/call.pyx"
+include "sdbus/listen.pyx"

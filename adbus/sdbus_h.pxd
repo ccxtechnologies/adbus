@@ -173,3 +173,6 @@ cdef extern from "systemd/sd-bus.h":
 
     int sd_bus_emit_properties_changed_strv(sd_bus *bus, const char *path,
             const char *interface, char **names)
+
+    int sd_bus_add_match(sd_bus *bus, sd_bus_slot **slot, const char *match,
+            sd_bus_message_handler_t callback, void *userdata)
