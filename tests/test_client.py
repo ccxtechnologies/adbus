@@ -7,6 +7,8 @@ import unittest
 import typing
 import asyncio
 import asyncio.subprocess
+import random
+import string
 
 import adbus
 
@@ -19,12 +21,24 @@ class Test(unittest.TestCase):
     """adbus method test cases."""
 
     @classmethod
+    def rnd_str(cls, N=8):
+        return ''.join(
+            random.choice(string.ascii_uppercase + string.digits)
+            for _ in range(N)
+        )
+
+    @classmethod
+    def rnd_int(cls):
+        return random.randint(-2000, 2000)
+
+    @classmethod
     def setUpClass(cls):
         cls.loop = asyncio.get_event_loop()
         cls.service = adbus.Service(bus='session')
 
     @classmethod
     def tearDownClass(cls):
+        cls.loop.stop()
         cls.loop.close()
 
     @staticmethod
@@ -98,12 +112,12 @@ class Test(unittest.TestCase):
         ))
 
     def test_listen(self):
-        def test_cb(
+        async def test_cb(
             interface: str,
             changed: typing.Dict[str, typing.Any],
             invalidated: typing.List[str]
         ):
-            print("Poperties Changed")
+            print("Properties Changed")
             print((interface, changed, invalidated))
 
         self.listen = adbus.client.Listen(
@@ -116,12 +130,21 @@ class Test(unittest.TestCase):
         )
 
     def test_proxy(self):
-        proxy = adbus.client.Proxy(self.service, "adbus.test",
-                "/adbus/test/Tests1", "adbus.test")
-
-        self.loop.run_until_complete(
-            proxy.introspect(),
+        proxy = adbus.client.Proxy(
+            self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
         )
+
+        async def _test():
+            await proxy.update()
+            print(await proxy.test_method(100, "crud"))
+            print(await proxy.property1.get())
+            await proxy.property1.set(self.rnd_str())
+            print(await proxy.property1())
+            print(await proxy.property2())
+            await proxy.property2(self.rnd_int())
+            print(await proxy.property2())
+
+        self.loop.run_until_complete(_test())
 
 
 if __name__ == "__main__":

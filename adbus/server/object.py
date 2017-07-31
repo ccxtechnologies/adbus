@@ -83,29 +83,42 @@ class Object:
         if self._defer_properties:
             self._deferred_properties[dbus_name.encode()] = py_name
 
-        else:
-            if self.service.is_running():
-                self.sdbus.emit_properties_changed([dbus_name.encode()])
+        elif self.service.is_running():
+            asyncio.ensure_future(
+                self.sdbus.emit_properties_changed([dbus_name.encode()]),
+                loop=self.service.get_loop()
+            )
 
             if self.changed_coroutine:
-                asyncio.ensure_future(self.changed_coroutine([py_name]))
+                asyncio.ensure_future(
+                    self.changed_coroutine([py_name]),
+                    loop=self.service.get_loop()
+                )
 
     def defer_signals(self, enable):
         if enable:
             self._defer_properties = True
 
         elif self._defer_properties:
-            self._defer_properties = False
+            if not self.service.is_running():
+                return
 
+            self._defer_properties = False
             if self._deferred_properties:
-                if self.service.is_running():
+                asyncio.ensure_future(
                     self.sdbus.emit_properties_changed(
                         list(self._deferred_properties.keys())
-                    )
+                    ),
+                    loop=self.service.get_loop()
+                )
 
-            if self.changed_coroutine:
-                asyncio.ensure_future(self.changed_coroutine(
-                    list(self._deferred_properties.values())))
+                if self.changed_coroutine:
+                    asyncio.ensure_future(
+                        self.changed_coroutine(
+                            list(self._deferred_properties.values())
+                        ),
+                        loop=self.service.get_loop()
+                    )
 
             self._deferred_properties = {}
 

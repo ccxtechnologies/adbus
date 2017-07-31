@@ -12,8 +12,6 @@ cdef class Signal:
 
     def __cinit__(self, name, signature=(), depreciated=False, hidden=False):
 
-        print(signature)
-
         self.name = name.encode()
         self.signature = [s.encode() for s in signature]
         self.arg_signature = (''.join(signature)).encode()

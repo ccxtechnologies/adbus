@@ -19,11 +19,14 @@ object_interface = 'adbus.test'
 class TestObject(adbus.server.Object):
 
     property1: str = adbus.server.Property('none')
-    property2: int = adbus.server.Property(100)
-    property3: typing.List[int] = adbus.server.Property([1, 2, 3])
+    property2: int = adbus.server.Property(100, emits_change=False)
+    property3: typing.List[int] = adbus.server.Property(
+        [1, 2, 3]
+    )
 
     signal1: (int, str) = adbus.server.Signal()
     signal2: int = adbus.server.Signal()
+    signal_cnt: int = adbus.server.Signal()
 
     def __init__(self, service):
         super().__init__(
@@ -140,7 +143,15 @@ class Test(unittest.TestCase):
         )
 
     def test_method_wait(self):
-        self.loop.run_until_complete(self.delay(6000))
+        async def _ping():
+            cnt = 0
+            while True:
+                print("Ping")
+                self.obj.signal_cnt.emit(cnt)
+                await asyncio.sleep(3)
+                cnt += 1
+
+        self.loop.run_until_complete(_ping())
 
     def test_property(self):
         self.obj.property1 = 'brown'

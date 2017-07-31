@@ -16,6 +16,7 @@ class Listen:
         path (str): path of method to call, ie. /com/awesome/Settings1
         interface (str): interface label to call, ie. com.awesome.settings
         signal (str): name of the signal to listen to, ie. TestSignal
+        coroutine (coroutine): coroutine to schedule when signal is received
         args (list or tuple): optional, list of argument values to match,
             the argument must be a string, useful for listening to property
             changes
@@ -28,12 +29,12 @@ class Listen:
         path,
         interface,
         signal,
-        callback,
+        coroutine,
         args=(),
     ):
 
         self.signature = ''
-        sig = inspect.signature(callback)
+        sig = inspect.signature(coroutine)
         for param in sig.parameters.values():
             if param.annotation != inspect.Parameter.empty:
                 self.signature += sdbus.dbus_signature(param.annotation)
@@ -41,6 +42,6 @@ class Listen:
                 self.signature += sdbus.variant_signature()
 
         self.sdbus = sdbus.Listen(
-            service.sdbus, address, path, interface, signal, callback, args,
+            service.sdbus, address, path, interface, signal, coroutine, args,
             self.signature
         )

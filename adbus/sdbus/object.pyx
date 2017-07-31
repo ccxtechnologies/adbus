@@ -81,7 +81,7 @@ cdef class Object:
             raise SdbusError(
                     f"Failed to register vtable: {errorcode[-ret]}", -ret)
 
-    def emit_properties_changed(self, property_names):
+    async def emit_properties_changed(self, property_names):
         cdef int ret
         cdef char **names = <char**>PyMem_Malloc(
                 (len(property_names)+1)*sizeof(char*))

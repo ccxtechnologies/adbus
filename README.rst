@@ -96,21 +96,33 @@ NOTE: Must be running in a loop.
       interface='com.example.service.unit')
 
   async def proxy_examples():
+    proxy.update() # initialize the proxy
+
     # == Access Properties
-    proxy.remote_propertyX = 45
-    print(proxy.remote_propertyY)
+    await proxy.remote_propertyX.set(45)
+    print(await proxy.remote_propertyY.get())
+
+    # == or
+    await proxy.remote_propertyX(45)
+    print(await proxy.remote_propertyY())
 
     # == Access Methods
-    proxy.remote_method_foo("some info")
-    x = proxy.remote_method_bar(100, 12, -45)
+    asyncio.ensure_future(proxy.remote_method_foo("some info")) # don't wait for result
+    x = await proxy.remote_method_bar(100, 12, -45) # wait for result
 
-    # == Add a Call-Back to a Signal
-    def local_method(signal_data: int):
+    # == Add a Coroutine to a Signal
+    async def local_method(signal_data: int):
       print(signal_data)
-    proxy.remote_signal.connect(local_method)
+    proxy.remote_signal.add(local_method)
 
-    # == Remove a Call-Back to a Signal
-    proxy.remote_signal.disconnect(local_method)
+    # == or
+    proxy.remote_signal(local_method)
+
+    # == Remove a Coroutine to a Signal
+    proxy.remote_signal.remove(local_method)
+
+    # == or (if already added)
+    proxy.remote_signal(local_method)
 
     # == Access a method using a different interface name
     proxy['com.example.service.serve'].remote_method_800(b"data")

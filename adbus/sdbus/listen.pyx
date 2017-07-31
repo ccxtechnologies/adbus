@@ -1,15 +1,5 @@
 # == Copyright: 2017, CCX Technologies
 
-cdef void _listen_message_handler(Listen listen, Message message):
-    cdef list args
-
-    args = message.read(listen.signature)
-
-    try:
-        listen.callback(*args)
-    except Exception as e:
-        listen.loop.call_exception_handler({'message': str(e), 'exception': e})
-
 cdef int listen_message_handler(sdbus_h.sd_bus_message *m,
         void *userdata, sdbus_h.sd_bus_error *err):
     cdef PyObject *listen_ptr = <PyObject*>userdata
@@ -17,19 +7,20 @@ cdef int listen_message_handler(sdbus_h.sd_bus_message *m,
     cdef Message message = Message()
 
     message.import_sd_bus_message(m)
-    listen.loop.run_in_executor(None, _listen_message_handler, listen, message)
+    args = message.read(listen.signature)
+    ensure_future(listen.coroutine(*args), loop=listen.loop)
     return 1
 
 cdef class Listen:
     cdef bytes match
-    cdef object callback
+    cdef object coroutine
     cdef bytes signature
 
     cdef sdbus_h.sd_bus_slot *_slot
     cdef object loop
 
     def __cinit__(self, Service service, address, path, interface, member,
-            callback, args=(), signature=''):
+            coroutine, args=(), signature=''):
 
         match = []
         match.append(f"sender='{address}'")
@@ -40,7 +31,7 @@ cdef class Listen:
         match += [f"arg{i}='{a}'" for i,a in enumerate(args)]
 
         self.match = (','.join(match)).encode()
-        self.callback = callback
+        self.coroutine = coroutine
         self.signature = signature.encode()
         self.loop = service.loop
 
