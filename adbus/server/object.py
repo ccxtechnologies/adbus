@@ -1,6 +1,8 @@
 # Copyright: 2017, CCX Technologies
 """D-Bus Object"""
 
+import asyncio
+
 from .. import sdbus
 
 
@@ -34,7 +36,7 @@ class Object:
             to the introspect XML data
         manager (bool): optional, if True add a device manager to this object,
             as defined by the D-Bus Spec from freedesktop.org
-        changed_callback: optional, callback called with a list of changed
+        changed_coroutine: optional, coroutine called with a list of changed
             properties, single argument is a list of property names, this is
             the internal equivalent to the emit changed D-Bus signal
 
@@ -52,7 +54,7 @@ class Object:
         depreciated=False,
         hidden=False,
         manager=False,
-        changed_callback=None,
+        changed_coroutine=None,
     ):
         self._defer_properties = False
         self._deferred_properties = {}
@@ -75,7 +77,7 @@ class Object:
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
 
-        self.changed_callback = changed_callback
+        self.changed_coroutine = changed_coroutine
 
     def emit_property_changed(self, py_name, dbus_name):
         if self._defer_properties:
@@ -85,10 +87,8 @@ class Object:
             if self.service.is_running():
                 self.sdbus.emit_properties_changed([dbus_name.encode()])
 
-            if self.changed_callback:
-                self.service.get_loop().run_in_executor(
-                    None, self.changed_callback, [py_name]
-                )
+            if self.changed_coroutine:
+                asyncio.ensure_future(self.changed_coroutine([py_name]))
 
     def defer_signals(self, enable):
         if enable:
@@ -103,11 +103,9 @@ class Object:
                         list(self._deferred_properties.keys())
                     )
 
-            if self.changed_callback:
-                self.service.get_loop().run_in_executor(
-                    None, self.changed_callback,
-                    list(self._deferred_properties.values())
-                )
+            if self.changed_coroutine:
+                asyncio.ensure_future(self.changed_coroutine(
+                    list(self._deferred_properties.values())))
 
             self._deferred_properties = {}
 

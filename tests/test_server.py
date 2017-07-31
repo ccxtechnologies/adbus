@@ -29,7 +29,7 @@ class TestObject(adbus.server.Object):
             service,
             object_path,
             object_interface,
-            changed_callback=self.dummy_cb
+            changed_coroutine=self.dummy_co
         )
 
     @adbus.server.method()
@@ -67,7 +67,7 @@ class TestObject(adbus.server.Object):
         print(type(arg3))
         return str(arg3)
 
-    def dummy_cb(self, names):
+    async def dummy_co(self, names):
         if len(names) > 1:
             print(f"{names} where updated")
         else:

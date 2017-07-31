@@ -107,7 +107,6 @@ NOTE: Must be running in a loop.
     # == Add a Call-Back to a Signal
     def local_method(signal_data: int):
       print(signal_data)
-
     proxy.remote_signal.connect(local_method)
 
     # == Remove a Call-Back to a Signal
