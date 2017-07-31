@@ -1,0 +1,8 @@
+__pycache__
+*.swp
+*.so
+build
+docs/source/adbus.client.rst
+docs/source/adbus.rst
+docs/source/adbus.server.rst
+docs/source/modules.rst
