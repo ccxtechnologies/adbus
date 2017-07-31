@@ -22,7 +22,8 @@ class TestObject(adbus.server.Object):
     property2: int = adbus.server.Property(100)
     property3: typing.List[int] = adbus.server.Property([1, 2, 3])
 
-    signal1: int = adbus.server.Signal()
+    signal1: (int, str) = adbus.server.Signal()
+    signal2: int = adbus.server.Signal()
 
     def __init__(self, service):
         super().__init__(
@@ -156,7 +157,8 @@ class Test(unittest.TestCase):
 
     def test_signal(self):
         async def set_signal(obj):
-            obj.signal1.emit(1056)
+            obj.signal1.emit(1056, "Hello")
+            obj.signal2.emit(-100)
             await self.delay(3)
 
         self.loop.run_until_complete(set_signal(self.obj))

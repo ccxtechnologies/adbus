@@ -37,11 +37,15 @@ class Signal:
         self.py_name = name
 
         try:
-            self.dbus_signature = sdbus.dbus_signature(
-                owner.__annotations__[name]
+            signature = iter(owner.__annotations__[name])
+        except TypeError:
+            self.dbus_signature = (
+                sdbus.dbus_signature(owner.__annotations__[name]),
             )
         except KeyError:
             self.dbus_signature = sdbus.variant_signature()
+        else:
+            self.dbus_signature = [sdbus.dbus_signature(s) for s in signature]
 
         if not self.dbus_name:
             self.dbus_name = name
@@ -53,8 +57,8 @@ class Signal:
             self.dbus_name, self.dbus_signature, self.deprectiated, self.hidden
         )
 
-    def emit(self, value):
-        self._signal.emit(value)
+    def emit(self, *values):
+        self._signal.emit(*values)
 
     def vt(self, instance=None):
         return self._signal

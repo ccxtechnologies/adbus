@@ -6,13 +6,17 @@ cdef class Signal:
     cdef sdbus_h.sd_bus_vtable_signal x
     cdef void *userdata
     cdef bytes name
-    cdef bytes signature
+    cdef list signature
+    cdef bytes arg_signature
     cdef Object object
 
-    def __cinit__(self, name, signature='', depreciated=False, hidden=False):
+    def __cinit__(self, name, signature=(), depreciated=False, hidden=False):
+
+        print(signature)
 
         self.name = name.encode()
-        self.signature = signature.encode()
+        self.signature = [s.encode() for s in signature]
+        self.arg_signature = (''.join(signature)).encode()
         self.type = sdbus_h._SD_BUS_VTABLE_SIGNAL
         self.object = None
 
@@ -24,7 +28,7 @@ cdef class Signal:
             self.flags |= sdbus_h.SD_BUS_VTABLE_HIDDEN
 
         self.x.member = self.name
-        self.x.signature = self.signature
+        self.x.signature = self.arg_signature
 
     cdef populate_vtable(self, sdbus_h.sd_bus_vtable *vtable):
         vtable.type = self.type
@@ -36,9 +40,15 @@ cdef class Signal:
             raise SdbusError("Signal already associated")
         self.object = object
 
-    def emit(self, value):
+    def emit(self, *values):
         message = Message()
         message.new_signal(self)
-        message.append(self.signature, value)
+        for i, value in enumerate(values):
+            try:
+                message.append(self.signature[i], value)
+            except IndexError:
+                raise SdbusError(
+                        f"Signal expects {len(self.signature)} arguments "
+                        f"but received {len(values)}.")
         message.send()
 

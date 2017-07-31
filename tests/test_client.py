@@ -115,6 +115,14 @@ class Test(unittest.TestCase):
             self.delay(30),
         )
 
+    def test_proxy(self):
+        proxy = adbus.client.Proxy(self.service, "adbus.test",
+                "/adbus/test/Tests1", "adbus.test")
+
+        self.loop.run_until_complete(
+            proxy.introspect(),
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
