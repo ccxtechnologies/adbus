@@ -3,6 +3,7 @@
 import inspect
 
 from .. import sdbus
+from .. import exceptions
 
 
 class Listen:
@@ -20,6 +21,8 @@ class Listen:
         args (list or tuple): optional, list of argument values to match,
             the argument must be a string, useful for listening to property
             changes
+        signature (str): optional, signature of the signal, used to verify
+            that the coroutine is correct, if None disables check
     """
 
     def __init__(
@@ -31,6 +34,7 @@ class Listen:
         signal,
         coroutine,
         args=(),
+        signature=None,
     ):
 
         self.signature = ''
@@ -40,6 +44,11 @@ class Listen:
                 self.signature += sdbus.dbus_signature(param.annotation)
             else:
                 self.signature += sdbus.variant_signature()
+
+        if (signature is not None) and (signature != self.signature):
+            raise exceptions.BusError(
+                    f"Coroutine signature {self.signature} doesn't "
+                    f"match signal signature {signature}.")
 
         self.sdbus = sdbus.Listen(
             service.sdbus, address, path, interface, signal, coroutine, args,

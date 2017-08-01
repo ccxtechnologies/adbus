@@ -3,7 +3,6 @@
 
 import xml.etree.ElementTree as etree
 import typing
-import asyncio
 
 from .. import sdbus
 from . import call
@@ -20,26 +19,26 @@ class Signal:
         self.path = path
         self.interface = interface
         self.timeout_ms = timeout_ms
-        self.signatures = []
+        self.signature = ''
         self.listens = {}
 
         for x in etree.iter():
             if x.tag == 'signal':
                 self.name = x.attrib['name']
             if x.tag == 'arg':
-                self.signatures.append(x.attrib['type'])
+                self.signature += x.attrib['type']
 
     def add(self, coroutine):
         self.listens[coroutine.__name__] = Listen(
             self.service, self.address, self.path, self.interface, self.name,
-            coroutine, self.signatures
+            coroutine, signature=self.signature
         )
 
     def remove(self, coroutine):
         del self.listens[coroutine.__name__]
 
     def __call__(self, coroutine, remove=True):
-        if remove and coroutine.__name__ in self.listens:
+        if remove and (coroutine.__name__ in self.listens):
             self.remove(coroutine)
         else:
             self.add(coroutine)
@@ -246,6 +245,11 @@ class Proxy:
 
         try:
             return self._interfaces[self._interface].properties[name]
+        except KeyError:
+            pass
+
+        try:
+            return self._interfaces[self._interface].signals[name]
         except KeyError:
             pass
 

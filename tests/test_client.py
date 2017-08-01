@@ -134,15 +134,23 @@ class Test(unittest.TestCase):
             self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
         )
 
+        async def test_cb(count: int):
+            print(f"Counter Changed {count}")
+
         async def _test():
             await proxy.update()
+
             print(await proxy.test_method(100, "crud"))
             print(await proxy.property1.get())
             await proxy.property1.set(self.rnd_str())
             print(await proxy.property1())
+
             print(await proxy.property2())
             await proxy.property2(self.rnd_int())
             print(await proxy.property2())
+
+            proxy.signal_cnt(test_cb)
+            await asyncio.sleep(20)
 
         self.loop.run_until_complete(_test())
 
