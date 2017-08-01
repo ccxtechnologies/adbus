@@ -45,11 +45,6 @@ cdef class Call:
         if args:
             for arg in args:
                 signature = _dbus_signature(arg)
-                try:
-                    arg = arg.dbus_value
-                except AttributeError:
-                    pass
-                print((signature, arg))
                 self.message.append(signature, arg)
 
     def send(self, stdint.uint64_t timout_ms):
