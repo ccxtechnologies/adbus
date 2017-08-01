@@ -87,6 +87,18 @@ this when changing multiple properties, it will reduce traffic on the D-Bus.
 
 NOTE: Must be running in a loop.
 
+
+Client Examples
+---------------
+
+Accessing Remote Interface via a Proxy
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It's possible to map a remote interface to a local instantiated class using a Proxy.
+
+NOTE: If the even loop isn't running no signals will caught, and properties will not
+cache (i.e. will read on every access instead of tracking the property changes signals)
+
 **This is a protoype to see how it looks, it hasn't been implimented yet.**
 
 .. code-block:: python
@@ -131,34 +143,19 @@ NOTE: Must be running in a loop.
     proxy = proxy['com.example.service.serve']
 
     # == Create a new proxy from a node in the proxy
-    proxy_new = proxy('Test')['com.example.test']
+    proxy_new = await proxy('Test')['com.example.test']
 
-    # == Create list of all nodes in the proxy
-    proxies = proxy()
-
+    # == Loop through all nodes in a proxy
     sum_cnt = 0
-    for proxy in proxies:
+    async for node in proxy:
         try:
-            sum_cnt += proxy.count
+            sum_cnt += await node.count
         except AttributeError:
             pass
 
   loop = asyncio.get_event_loop()
   loop.run_until_complete(proxy_examples())
   loop.close()
-
-Client Examples
----------------
-
-Accessing Remote Interface via a Proxy
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-It's possible to map a remote interface to a local instantiated class using a Proxy.
-
-NOTE: If the even loop isn't running no signals will caught, and properties will not
-cache (i.e. will read on every access instead of tracking the property changes signals)
-
-
 
 Style Guide
 -----------

@@ -39,6 +39,8 @@ class Object:
         changed_coroutine: optional, coroutine called with a list of changed
             properties, single argument is a list of property names, this is
             the internal equivalent to the emit changed D-Bus signal
+        ccx: optional, add the additional ccx.DBus interface, which adds
+            some useful methods like SetMulti
 
     Raises:
         BusError: if an error occurs during initialization
@@ -55,6 +57,7 @@ class Object:
         hidden=False,
         manager=False,
         changed_coroutine=None,
+        ccx=True,
     ):
         self._defer_properties = False
         self._deferred_properties = {}

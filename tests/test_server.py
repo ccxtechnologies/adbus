@@ -147,7 +147,7 @@ class Test(unittest.TestCase):
             cnt = 0
             while True:
                 print("Ping")
-                self.obj.signal_cnt.emit(cnt)
+                self.obj.signal_cnt = cnt
                 await asyncio.sleep(3)
                 cnt += 1
 
@@ -168,8 +168,8 @@ class Test(unittest.TestCase):
 
     def test_signal(self):
         async def set_signal(obj):
-            obj.signal1.emit(1056, "Hello")
-            obj.signal2.emit(-100)
+            obj.signal1 = (1056, "Hello")
+            obj.signal2 = -100
             await self.delay(3)
 
         self.loop.run_until_complete(set_signal(self.obj))

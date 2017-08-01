@@ -143,12 +143,14 @@ class Method:
 
 class _Interface:
     def __init__(
-        self, service, address, path, etree, camel_convert, timeout_ms
+        self, service, address, path, etree, camel_convert, timeout_ms,
+        changed_coroutine
     ):
         interface = etree.attrib['name']
         self.methods = {}
         self.signals = {}
         self.properties = {}
+        self.changed_coroutine = changed_coroutine
 
         def _add_snake_and_camel(d, n, v):
             d[n] = v
@@ -202,11 +204,15 @@ class _Interface:
         for p in invalidated:
             self.properties[p].cached_value = None
 
+        if self.changed_coroutine:
+            changed = list(changed.keys()) + invalidated
+            if self.camel_convert:
+                changed = [sdbus.camel_to_snake(x) for x in changed]
+            self.changed_coroutine(changed)
 
 class Proxy:
 
     _interface = None
-    _interfaces = {}
     _introspect_xml = None
 
     def __init__(
@@ -219,6 +225,9 @@ class Proxy:
         timeout_ms=30000,
         camel_convert=True,
     ):
+        self._node_i = 0
+        self._interfaces = {}
+        self._nodes = []
 
         self._service = service
         self._address = address
@@ -283,6 +292,32 @@ class Proxy:
 
         return new
 
+    async def __call__(self, node, changed_coroutine=None):
+        if self._camel_convert:
+            node = sdbus.snake_to_camel(node)
+
+        if node not in self._nodes:
+            raise AttributeError(f"Node {node} not in proxy")
+
+        new = type(self)(
+            self._service, self._address, f"{self._path}/{node}", None,
+            changed_coroutine, self._timeout_ms, self._camel_convert
+        )
+
+        await new.update()
+        return new
+
+    def __aiter__(self):
+        return self
+
+    async def __anext__(self):
+        i = self._node_i
+        if i >= len(self._nodes):
+            raise StopAsyncIteration
+        proxy = await self(self._nodes[self._node_i])
+        self._node_i += 1
+        return proxy
+
     async def update(self):
         self._introspect_xml = await call(
             self._service,
@@ -304,5 +339,11 @@ class Proxy:
         for e in root.iter('interface'):
             self._interfaces[e.attrib['name']] = _Interface(
                 self._service, self._address, self._path, e,
-                self._camel_convert, self._timeout_ms
+                self._camel_convert, self._timeout_ms, self._changed_coroutine
             )
+
+        for e in root.iter('node'):
+            try:
+                self._nodes.append(e.attrib['name'])
+            except KeyError:
+                pass

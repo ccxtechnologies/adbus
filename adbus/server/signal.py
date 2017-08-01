@@ -33,6 +33,17 @@ class Signal:
         self.hidden = hidden
         self.camel_convert = camel_convert
 
+    def __get__(self, instance, owner):
+        raise RuntimeError("Can't read from a signal")
+
+    def __set__(self, instance, value):
+        signal = instance.__dict__[self.py_name]
+
+        if type(self.dbus_signature) is list:
+            signal.emit(*value)
+        else:
+            signal.emit(value)
+
     def __set_name__(self, owner, name):
         self.py_name = name
 
@@ -53,12 +64,9 @@ class Signal:
         if self.camel_convert:
             self.dbus_name = sdbus.snake_to_camel(self.dbus_name)
 
-        self._signal = sdbus.Signal(
+    def vt(self, instance):
+        signal = sdbus.Signal(
             self.dbus_name, self.dbus_signature, self.deprectiated, self.hidden
         )
-
-    def emit(self, *values):
-        self._signal.emit(*values)
-
-    def vt(self, instance=None):
-        return self._signal
+        instance.__dict__[self.py_name] = signal
+        return signal
