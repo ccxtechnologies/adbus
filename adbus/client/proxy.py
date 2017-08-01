@@ -3,6 +3,7 @@
 
 import xml.etree.ElementTree as etree
 import typing
+import copy
 
 from .. import sdbus
 from . import call
@@ -30,8 +31,13 @@ class Signal:
 
     def add(self, coroutine):
         self.listens[coroutine.__name__] = Listen(
-            self.service, self.address, self.path, self.interface, self.name,
-            coroutine, signature=self.signature
+            self.service,
+            self.address,
+            self.path,
+            self.interface,
+            self.name,
+            coroutine,
+            signature=self.signature
         )
 
     def remove(self, coroutine):
@@ -256,6 +262,26 @@ class Proxy:
         raise AttributeError(
             f"'{type(self)}' interface has no attribute '{name}'"
         )
+
+    def __getitem__(self, interface):
+        if interface not in self._interfaces:
+            raise KeyError(f"Interface {interface} not in proxy")
+
+        new = copy.copy(self)
+        new._interface = interface
+        return new
+
+    def __copy__(self):
+        new = type(self)(
+            self._service, self._address, self._path, self._interface,
+            self._changed_coroutine, self._timeout_ms, self._camel_convert
+        )
+
+        new._interface = self._interface
+        new._interfaces = self._interfaces
+        new._introspect_xml = self._introspect_xml
+
+        return new
 
     async def update(self):
         self._introspect_xml = await call(

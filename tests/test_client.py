@@ -129,13 +129,10 @@ class Test(unittest.TestCase):
             self.delay(30),
         )
 
-    def test_proxy(self):
+    def test_proxy_props(self):
         proxy = adbus.client.Proxy(
             self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
         )
-
-        async def test_cb(count: int):
-            print(f"Counter Changed {count}")
 
         async def _test():
             await proxy.update()
@@ -149,8 +146,39 @@ class Test(unittest.TestCase):
             await proxy.property2(self.rnd_int())
             print(await proxy.property2())
 
+        self.loop.run_until_complete(_test())
+
+    def test_proxy_signal(self):
+        proxy = adbus.client.Proxy(
+            self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
+        )
+
+        async def test_cb(count: int):
+            print(f"Counter Changed {count}")
+
+        async def _test():
+            await proxy.update()
+
             proxy.signal_cnt(test_cb)
-            await asyncio.sleep(20)
+            await asyncio.sleep(9)
+
+        self.loop.run_until_complete(_test())
+
+    def test_proxy_devel(self):
+        proxy = adbus.client.Proxy(
+            self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
+        )
+
+        async def test_cb(count: int):
+            print(f"Counter Changed {count}")
+
+        async def _test():
+            await proxy.update()
+
+            print(await proxy.test_method(100, "crud"))
+
+            proxy1 = proxy["org.freedesktop.DBus.Peer"]
+            print(await proxy1.get_machine_id())
 
         self.loop.run_until_complete(_test())
 

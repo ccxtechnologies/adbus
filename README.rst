@@ -134,7 +134,7 @@ NOTE: Must be running in a loop.
     proxy_new = proxy('Test')['com.example.test']
 
     # == Create list of all nodes in the proxy
-    proxies = proxy()['com.example.test']
+    proxies = proxy()
 
     sum_cnt = 0
     for proxy in proxies:
