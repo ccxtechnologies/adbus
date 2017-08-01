@@ -63,6 +63,7 @@ class Object:
         self._deferred_properties = {}
 
         self.service = service
+        self.path = path
 
         self.vtable = [x.vt() for x in vtable]
         """List of all D-Bus Methods, Properties, and Signals."""
@@ -81,6 +82,14 @@ class Object:
             self.manager = sdbus.Manager(service.sdbus, path)
 
         self.changed_coroutine = changed_coroutine
+
+        self.ccx = ccx
+        if self.ccx:
+            self.service._add_ccx(self.path)
+
+    def __dealloc__(self):
+        if self.ccx:
+            self.service._remove_ccx(self.path)
 
     def emit_property_changed(self, py_name, dbus_name):
         if self._defer_properties:

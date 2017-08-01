@@ -210,6 +210,7 @@ class _Interface:
                 changed = [sdbus.camel_to_snake(x) for x in changed]
             self.changed_coroutine(changed)
 
+
 class Proxy:
 
     _interface = None
@@ -307,7 +308,46 @@ class Proxy:
         await new.update()
         return new
 
-    def __aiter__(self):
+    async def __aenter__(self):
+        class _AsyncProps:
+            dbus_signature = 'a{sv}'
+
+            def __init__(self, camel_convert):
+                self._camel_convert = camel_convert
+
+            async def __await__(self):
+                pass
+
+            @property
+            def dbus_value(self):
+                if self._camel_convert:
+                    return {
+                        sdbus.snake_to_camel(p): v
+                        for p, v in self.__dict__.items()
+                        if p != "_camel_convert"
+                    }
+                else:
+                    return {
+                        p: v
+                        for p, v in self.__dict__.items()
+                        if p != "_camel_convert"
+                    }
+
+        self._property_multi = _AsyncProps(self._camel_convert)
+        return self._property_multi
+
+    async def __aexit__(
+        self, exception_type, exception_value, exception_traceback
+    ):
+        try:
+            await self._interfaces["ccx.DBus"].methods["SetMulti"](
+                self._interface, self._property_multi
+            )
+        except KeyError:
+            for p, v in self._property_multi.dbus_value.items():
+                await self._interfaces[self._interface].properties[p].set(v)
+
+    async def __aiter__(self):
         return self
 
     async def __anext__(self):

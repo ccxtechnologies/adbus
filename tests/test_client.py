@@ -197,12 +197,18 @@ class Test(unittest.TestCase):
 
     def test_proxy_devel(self):
         proxy = adbus.client.Proxy(
-            self.service, "adbus.test", "/adbus/test", "adbus.test"
+            self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
         )
 
         async def _test():
             await proxy.update()
-            await self.delay(60)
+            print(await proxy.property1())
+            print(await proxy.property2())
+            async with proxy as p:
+                p.property1 = self.rnd_str()
+                p.property2 = self.rnd_int()
+            print(await proxy.property1())
+            print(await proxy.property2())
 
         self.loop.run_until_complete(_test())
 

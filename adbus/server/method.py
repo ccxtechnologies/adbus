@@ -75,7 +75,8 @@ class Method:
             else:
                 self.arg_signature += sdbus.variant_signature()
 
-        if dont_block:
+        self.dont_block = dont_block
+        if self.dont_block:
             self.return_signature = ''
         elif sig.return_annotation != inspect.Parameter.empty:
             self.return_signature = sdbus.dbus_signature(sig.return_annotation)
@@ -96,7 +97,7 @@ class Method:
 
         return sdbus.Method(
             self.dbus_name, callback, arg_signature, self.return_signature,
-            self.depreciated, self.hidden, self.unprivileged
+            self.depreciated, self.hidden, self.unprivileged, self.dont_block
         )
 
 

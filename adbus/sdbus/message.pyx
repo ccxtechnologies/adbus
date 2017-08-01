@@ -346,7 +346,7 @@ cdef class Message:
         s = signature[0]
 
         if s == sdbus_h._SD_BUS_TYPE_INVALID:
-            raise MessageEmptyError(f"No data append in type {signature}")
+            return
 
         elif s == sdbus_h.SD_BUS_TYPE_ARRAY:
             self._append_array(signature, value)

@@ -2,6 +2,7 @@
 """D-Bus Service"""
 
 from . import sdbus
+from .server.ccx import _CCXInterface
 
 
 class Service:
@@ -37,6 +38,8 @@ class Service:
         allow_replacement=False,
         name_queue=False
     ):
+        self.ccxs = {}
+
         self.sdbus = sdbus.Service(
             name, loop, bus, replace_existing, allow_replacement, name_queue
         )
@@ -47,3 +50,15 @@ class Service:
 
     def get_loop(self):
         return self.sdbus.get_loop()
+
+    def _add_ccx(self, path):
+        if path not in self.ccxs:
+            self.ccxs[path] = _CCXInterface(self, path)
+        else:
+            self.ccxs[path].refernce_count += 1
+
+    def _remove_ccx(self, path):
+        if path in self.ccxs:
+            self.ccxs[path].refernce_count -= 1
+            if self.ccxs[path].refernce_count <= 0:
+                del self.ccxs[path]
