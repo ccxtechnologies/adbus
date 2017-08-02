@@ -153,6 +153,11 @@ cache (i.e. will read on every access instead of tracking the property changes s
         except AttributeError:
             pass
 
+    # == set multiple properties in one message (if linked to an adbus based server)
+    async with proxy as p:
+        p.property1 = "some data"
+        p.property2 = [1,2,3,4,5]
+
   loop = asyncio.get_event_loop()
   loop.run_until_complete(proxy_examples())
   loop.close()

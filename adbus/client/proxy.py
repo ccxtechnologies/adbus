@@ -141,7 +141,7 @@ class Method:
         )
 
 
-class _Interface:
+class Interface:
     def __init__(
         self, service, address, path, etree, camel_convert, timeout_ms,
         changed_coroutine
@@ -212,6 +212,83 @@ class _Interface:
 
 
 class Proxy:
+    """Creates a Python Object that maps to an Interface that already
+    exists on the D-Bus.
+
+    Args:
+        service (adbus.server.Service): service to connect to
+        address (str): address (name) of the application to connect to
+            on the D-Bus.
+        path (str): path to create on the service
+            ie. /com/awesome/Settings1
+        interface (str): optional, default interface to access, if None will
+            use address
+        changed_coroutine: optional, coroutine called with a list of changed
+            properties, single argument is a list of property names, this is
+            the internal equivalent to the emit changed D-Bus signal
+        timeout_ms (int): optional, maximum time to wait for a response in
+            milli-seconds
+        camel_convert (bool): optional, D-Bus method and property
+            names are typically defined in Camel Case, but Python
+            methods and arguments are typically defined in Snake
+            Case, if this is set the cases will be automatically
+            converted between the two
+
+    Examples:
+        async def proxy_examples():
+            proxy.update() # initialize the proxy
+
+            # == Access Properties
+            await proxy.remote_propertyX.set(45)
+            print(await proxy.remote_propertyY.get())
+
+            # == or
+            await proxy.remote_propertyX(45)
+            print(await proxy.remote_propertyY())
+
+            # == Access Methods
+            # don't wait for result
+            asyncio.ensure_future(proxy.remote_method_foo("some info"))
+            # wait for result
+            x = await proxy.remote_method_bar(100, 12, -45)
+
+            # == Add a Coroutine to a Signal
+            async def local_method(signal_data: int):
+              print(signal_data)
+            proxy.remote_signal.add(local_method)
+
+            # == or
+            proxy.remote_signal(local_method)
+
+            # == Remove a Coroutine to a Signal
+            proxy.remote_signal.remove(local_method)
+
+            # == or (if already added)
+            proxy.remote_signal(local_method)
+
+            # == Access a method using a different interface name
+            proxy['com.example.service.serve'].remote_method_800(b"data")
+
+            # == Change a Proxies default interface
+            proxy = proxy['com.example.service.serve']
+
+            # == Create a new proxy from a node in the proxy
+            proxy_new = await proxy('Test')['com.example.test']
+
+            # == Loop through all nodes in a proxy
+            sum_cnt = 0
+            async for node in proxy:
+                try:
+                    sum_cnt += await node.count
+                except AttributeError:
+                    pass
+
+            # == set multiple properties in one message (if linked to an
+                    adbus based server)
+            async with proxy as p:
+                p.property1 = "some data"
+                p.property2 = [1,2,3,4,5]
+    """
 
     _interface = None
     _introspect_xml = None
@@ -359,6 +436,9 @@ class Proxy:
         return proxy
 
     async def update(self):
+        """Use Introspection on remote server to update the proxy.
+            **Must be run once before using the Proxy.**
+        """
         self._introspect_xml = await call(
             self._service,
             self._address,
@@ -377,7 +457,7 @@ class Proxy:
 
         root = etree.fromstring(self._introspect_xml)
         for e in root.iter('interface'):
-            self._interfaces[e.attrib['name']] = _Interface(
+            self._interfaces[e.attrib['name']] = Interface(
                 self._service, self._address, self._path, e,
                 self._camel_convert, self._timeout_ms, self._changed_coroutine
             )
