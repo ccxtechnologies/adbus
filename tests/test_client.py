@@ -195,7 +195,7 @@ class Test(unittest.TestCase):
 
         self.loop.run_until_complete(_test())
 
-    def test_proxy_devel(self):
+    def test_proxy_multi_prop(self):
         proxy = adbus.client.Proxy(
             self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
         )
