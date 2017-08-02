@@ -234,60 +234,6 @@ class Proxy:
             Case, if this is set the cases will be automatically
             converted between the two
 
-    Examples:
-        async def proxy_examples():
-            proxy.update() # initialize the proxy
-
-            # == Access Properties
-            await proxy.remote_propertyX.set(45)
-            print(await proxy.remote_propertyY.get())
-
-            # == or
-            await proxy.remote_propertyX(45)
-            print(await proxy.remote_propertyY())
-
-            # == Access Methods
-            # don't wait for result
-            asyncio.ensure_future(proxy.remote_method_foo("some info"))
-            # wait for result
-            x = await proxy.remote_method_bar(100, 12, -45)
-
-            # == Add a Coroutine to a Signal
-            async def local_method(signal_data: int):
-              print(signal_data)
-            proxy.remote_signal.add(local_method)
-
-            # == or
-            proxy.remote_signal(local_method)
-
-            # == Remove a Coroutine to a Signal
-            proxy.remote_signal.remove(local_method)
-
-            # == or (if already added)
-            proxy.remote_signal(local_method)
-
-            # == Access a method using a different interface name
-            proxy['com.example.service.serve'].remote_method_800(b"data")
-
-            # == Change a Proxies default interface
-            proxy = proxy['com.example.service.serve']
-
-            # == Create a new proxy from a node in the proxy
-            proxy_new = await proxy('Test')['com.example.test']
-
-            # == Loop through all nodes in a proxy
-            sum_cnt = 0
-            async for node in proxy:
-                try:
-                    sum_cnt += await node.count
-                except AttributeError:
-                    pass
-
-            # == set multiple properties in one message (if linked to an
-                    adbus based server)
-            async with proxy as p:
-                p.property1 = "some data"
-                p.property2 = [1,2,3,4,5]
     """
 
     _interface = None
