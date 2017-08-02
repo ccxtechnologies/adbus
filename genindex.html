@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; python-adbus 0.1.0 documentation</title>
+  <title>Index &mdash; python-adbus 0.2.0 documentation</title>
   
 
   
@@ -36,7 +36,7 @@
         <link rel="index" title="Index"
               href="#"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="python-adbus 0.1.0 documentation" href="index.html"/> 
+    <link rel="top" title="python-adbus 0.2.0 documentation" href="index.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -165,11 +165,15 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
  | <a href="#I"><strong>I</strong></a>
+ | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
+ | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -177,23 +181,37 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adbus.html#module-adbus">adbus (module)</a>
 </li>
+      <li><a href="adbus.client.html#module-adbus.client">adbus.client (module)</a>
+</li>
+      <li><a href="adbus.client.html#module-adbus.client.call">adbus.client.call (module)</a>
+</li>
+      <li><a href="adbus.client.html#module-adbus.client.getset">adbus.client.getset (module)</a>
+</li>
+      <li><a href="adbus.client.html#module-adbus.client.listen">adbus.client.listen (module)</a>
+</li>
+      <li><a href="adbus.client.html#module-adbus.client.proxy">adbus.client.proxy (module)</a>
+</li>
       <li><a href="adbus.html#module-adbus.exceptions">adbus.exceptions (module)</a>
 </li>
       <li><a href="adbus.html#module-adbus.sdbus">adbus.sdbus (module)</a>
 </li>
-      <li><a href="adbus.server.html#module-adbus.server">adbus.server (module)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.server.html#module-adbus.server">adbus.server (module)</a>
+</li>
+      <li><a href="adbus.server.html#module-adbus.server.ccx">adbus.server.ccx (module)</a>
+</li>
       <li><a href="adbus.server.html#module-adbus.server.method">adbus.server.method (module)</a>
 </li>
       <li><a href="adbus.server.html#module-adbus.server.object">adbus.server.object (module)</a>
 </li>
       <li><a href="adbus.server.html#module-adbus.server.property">adbus.server.property (module)</a>
 </li>
-      <li><a href="adbus.server.html#module-adbus.server.service">adbus.server.service (module)</a>
-</li>
       <li><a href="adbus.server.html#module-adbus.server.signal">adbus.server.signal (module)</a>
+</li>
+      <li><a href="adbus.html#module-adbus.service">adbus.service (module)</a>
+</li>
+      <li><a href="adbus.client.html#adbus.client.proxy.Signal.add">add() (adbus.client.proxy.Signal method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -209,10 +227,16 @@
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.server.html#adbus.server.method.Method.callback">callback (adbus.server.method.Method attribute)</a>
+      <li><a href="adbus.client.html#adbus.client.proxy.Property.cached_value">cached_value (adbus.client.proxy.Property attribute)</a>
+</li>
+      <li><a href="adbus.html#adbus.sdbus.Call">Call (class in adbus.sdbus)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.call.call">call() (in module adbus.client.call)</a>
+</li>
+      <li><a href="adbus.server.html#adbus.server.method.Method.callback">callback (adbus.server.method.Method attribute)</a>
+</li>
       <li><a href="adbus.html#adbus.sdbus.camel_to_snake">camel_to_snake() (in module adbus.sdbus)</a>
 </li>
   </ul></td>
@@ -236,18 +260,16 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adbus.html#adbus.sdbus.Signal.emit">emit() (adbus.sdbus.Signal method)</a>
-
-      <ul>
-        <li><a href="adbus.server.html#adbus.server.signal.Signal.emit">(adbus.server.signal.Signal method)</a>
 </li>
-      </ul></li>
       <li><a href="adbus.html#adbus.sdbus.Property.emit_changed">emit_changed() (adbus.sdbus.Property method)</a>
+</li>
+      <li><a href="adbus.html#adbus.sdbus.Object.emit_properties_changed">emit_properties_changed() (adbus.sdbus.Object method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.html#adbus.sdbus.Object.emit_properties_changed">emit_properties_changed() (adbus.sdbus.Object method)</a>
-</li>
       <li><a href="adbus.server.html#adbus.server.object.Object.emit_property_changed">emit_property_changed() (adbus.server.object.Object method)</a>
+</li>
+      <li><a href="adbus.client.html#adbus.client.proxy.Property.emits_changed_signal">emits_changed_signal (adbus.client.proxy.Property attribute)</a>
 </li>
       <li><a href="adbus.html#adbus.sdbus.Error">Error (class in adbus.sdbus)</a>
 </li>
@@ -257,22 +279,50 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.proxy.Property.get">get() (adbus.client.proxy.Property method)</a>
+
+      <ul>
+        <li><a href="adbus.client.html#adbus.client.getset.get">(in module adbus.client.getset)</a>
+</li>
+      </ul></li>
+      <li><a href="adbus.client.html#adbus.client.getset.get_all">get_all() (in module adbus.client.getset)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adbus.html#adbus.sdbus.Service.get_loop">get_loop() (adbus.sdbus.Service method)</a>
 
       <ul>
-        <li><a href="adbus.server.html#adbus.server.service.Service.get_loop">(adbus.server.service.Service method)</a>
+        <li><a href="adbus.html#adbus.service.Service.get_loop">(adbus.service.Service method)</a>
 </li>
       </ul></li>
+      <li><a href="adbus.html#adbus.sdbus.Call.get_response">get_response() (adbus.sdbus.Call method)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.proxy.Interface">Interface (class in adbus.client.proxy)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adbus.html#adbus.sdbus.Service.is_running">is_running() (adbus.sdbus.Service method)</a>
 
       <ul>
-        <li><a href="adbus.server.html#adbus.server.service.Service.is_running">(adbus.server.service.Service method)</a>
+        <li><a href="adbus.html#adbus.service.Service.is_running">(adbus.service.Service method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.listen.Listen">Listen (class in adbus.client.listen)</a>
+
+      <ul>
+        <li><a href="adbus.html#adbus.sdbus.Listen">(class in adbus.sdbus)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -289,9 +339,11 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.html#adbus.sdbus.Method">Method (class in adbus.sdbus)</a>
+      <li><a href="adbus.client.html#adbus.client.proxy.Method">Method (class in adbus.client.proxy)</a>
 
       <ul>
+        <li><a href="adbus.html#adbus.sdbus.Method">(class in adbus.sdbus)</a>
+</li>
         <li><a href="adbus.server.html#adbus.server.method.Method">(class in adbus.server.method)</a>
 </li>
       </ul></li>
@@ -317,14 +369,28 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adbus.html#adbus.sdbus.Service.process">process() (adbus.sdbus.Service method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.html#adbus.sdbus.Property">Property (class in adbus.sdbus)</a>
+      <li><a href="adbus.client.html#adbus.client.proxy.Interface.properties_changed">properties_changed() (adbus.client.proxy.Interface method)</a>
+</li>
+      <li><a href="adbus.client.html#adbus.client.proxy.Property">Property (class in adbus.client.proxy)</a>
 
       <ul>
+        <li><a href="adbus.html#adbus.sdbus.Property">(class in adbus.sdbus)</a>
+</li>
         <li><a href="adbus.server.html#adbus.server.property.Property">(class in adbus.server.property)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.proxy.Proxy">Proxy (class in adbus.client.proxy)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.proxy.Signal.remove">remove() (adbus.client.proxy.Signal method)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -334,26 +400,48 @@
       <li><a href="adbus.server.html#adbus.server.object.Object.sdbus">sdbus (adbus.server.object.Object attribute)</a>
 
       <ul>
-        <li><a href="adbus.server.html#adbus.server.service.Service.sdbus">(adbus.server.service.Service attribute)</a>
+        <li><a href="adbus.html#adbus.service.Service.sdbus">(adbus.service.Service attribute)</a>
 </li>
       </ul></li>
       <li><a href="adbus.html#adbus.sdbus.SdbusError">SdbusError</a>
 </li>
+      <li><a href="adbus.html#adbus.sdbus.Call.send">send() (adbus.sdbus.Call method)</a>
+</li>
       <li><a href="adbus.html#adbus.sdbus.Service">Service (class in adbus.sdbus)</a>
 
       <ul>
-        <li><a href="adbus.server.html#adbus.server.service.Service">(class in adbus.server.service)</a>
+        <li><a href="adbus.html#adbus.service.Service">(class in adbus.service)</a>
 </li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.html#adbus.sdbus.Signal">Signal (class in adbus.sdbus)</a>
+      <li><a href="adbus.client.html#adbus.client.proxy.Property.set">set() (adbus.client.proxy.Property method)</a>
 
       <ul>
+        <li><a href="adbus.client.html#adbus.client.getset.set">(in module adbus.client.getset)</a>
+</li>
+      </ul></li>
+      <li><a href="adbus.client.html#adbus.client.proxy.Signal">Signal (class in adbus.client.proxy)</a>
+
+      <ul>
+        <li><a href="adbus.html#adbus.sdbus.Signal">(class in adbus.sdbus)</a>
+</li>
         <li><a href="adbus.server.html#adbus.server.signal.Signal">(class in adbus.server.signal)</a>
 </li>
       </ul></li>
       <li><a href="adbus.html#adbus.sdbus.snake_to_camel">snake_to_camel() (in module adbus.sdbus)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.proxy.Proxy.update">update() (adbus.client.proxy.Proxy method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.proxy.Interface.update_properties">update_properties() (adbus.client.proxy.Interface method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -378,6 +466,14 @@
   </ul></td>
 </tr></table>
 
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.html#adbus.sdbus.Call.wait_for_response">wait_for_response() (adbus.sdbus.Call method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 
 
            </div>
@@ -392,7 +488,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Charles Eidsness.
+        &copy; Copyright 2017, CCX Technolgies.
 
     </p>
   </div>
@@ -414,7 +510,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.0',
+            VERSION:'0.2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

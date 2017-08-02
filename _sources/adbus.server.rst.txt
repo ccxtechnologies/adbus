@@ -4,6 +4,14 @@ adbus\.server package
 Submodules
 ----------
 
+adbus\.server\.ccx module
+-------------------------
+
+.. automodule:: adbus.server.ccx
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 adbus\.server\.method module
 ----------------------------
 
@@ -24,14 +32,6 @@ adbus\.server\.property module
 ------------------------------
 
 .. automodule:: adbus.server.property
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-adbus\.server\.service module
------------------------------
-
-.. automodule:: adbus.server.service
     :members:
     :undoc-members:
     :show-inheritance:

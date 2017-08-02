@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>adbus.server.signal &mdash; python-adbus 0.1.0 documentation</title>
+  <title>adbus.server.signal &mdash; python-adbus 0.2.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="python-adbus 0.1.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="python-adbus 0.2.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -192,15 +192,30 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span> <span class="o">=</span> <span class="n">hidden</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">camel_convert</span> <span class="o">=</span> <span class="n">camel_convert</span>
 
+    <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">owner</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Can&#39;t read from a signal&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__set__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">py_name</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">list</span><span class="p">:</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="o">*</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">signal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
     <span class="k">def</span> <span class="nf">__set_name__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">owner</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">py_name</span> <span class="o">=</span> <span class="n">name</span>
 
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">(</span>
-                <span class="n">owner</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+            <span class="n">signature</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="n">owner</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">(</span><span class="n">owner</span><span class="o">.</span><span class="vm">__annotations__</span><span class="p">[</span><span class="n">name</span><span class="p">]),</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">variant_signature</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="p">[</span><span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">signature</span><span class="p">]</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">name</span>
@@ -208,15 +223,12 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camel_convert</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">snake_to_camel</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">)</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span>
+<div class="viewcode-block" id="Signal.vt"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.signal.Signal.vt">[docs]</a>    <span class="k">def</span> <span class="nf">vt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">):</span>
+        <span class="n">signal</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Signal</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">deprectiated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span>
         <span class="p">)</span>
-
-<div class="viewcode-block" id="Signal.emit"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.signal.Signal.emit">[docs]</a>    <span class="k">def</span> <span class="nf">emit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span><span class="o">.</span><span class="n">emit</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
-
-<div class="viewcode-block" id="Signal.vt"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.signal.Signal.vt">[docs]</a>    <span class="k">def</span> <span class="nf">vt</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_signal</span></div></div>
+        <span class="n">instance</span><span class="o">.</span><span class="vm">__dict__</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">py_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">signal</span>
+        <span class="k">return</span> <span class="n">signal</span></div></div>
 </pre></div>
 
            </div>
@@ -231,7 +243,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Charles Eidsness.
+        &copy; Copyright 2017, CCX Technolgies.
 
     </p>
   </div>
@@ -253,7 +265,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.1.0',
+            VERSION:'0.2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>python-adbus &mdash; python-adbus 0.1.0 documentation</title>
+  <title>python-adbus &mdash; python-adbus 0.2.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="python-adbus 0.1.0 documentation" href="index.html"/>
+    <link rel="top" title="python-adbus 0.2.0 documentation" href="index.html"/>
         <link rel="next" title="adbus" href="modules.html"/>
         <link rel="prev" title="Welcome to python-adbus’s documentation!" href="index.html"/> 
 
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -98,8 +98,15 @@
 <li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#building-installing">Building / Installing</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#unit-tests">Unit-Tests</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#object-example">Object Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#setting-multiple-properties">Setting Multiple Properties</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#server-examples">Server Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#object-example">Object Example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#setting-multiple-properties">Setting Multiple Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#client-examples">Client Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-remote-interface-via-a-proxy">Accessing Remote Interface via a Proxy</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#style-guide">Style Guide</a></li>
 </ul>
 </li>
@@ -177,9 +184,11 @@ ready for testing, the client will be added in the next release.</p>
 </div>
 <div class="section" id="links">
 <h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference external" href="https://ccxtechnologies.github.io/python-adbus">Documentation</a>
-<a class="reference external" href="https://github.com/ccxtechnologies/python-adbus">Project Page</a>
-<a class="reference external" href="https://github.com/ccxtechnologies/python-adbus/issues">Issues</a></p>
+<ul class="simple">
+<li><a class="reference external" href="https://ccxtechnologies.github.io/python-adbus">Documentation</a></li>
+<li><a class="reference external" href="https://github.com/ccxtechnologies/python-adbus">Project Page</a></li>
+<li><a class="reference external" href="https://github.com/ccxtechnologies/python-adbus/issues">Issues</a></li>
+</ul>
 </div>
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
@@ -213,8 +222,10 @@ python -m unittest tests.test_sdbus_method</li>
 discover</li>
 </ul>
 </div>
+<div class="section" id="server-examples">
+<h2>Server Examples<a class="headerlink" href="#server-examples" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="object-example">
-<h2>Object Example<a class="headerlink" href="#object-example" title="Permalink to this headline">¶</a></h2>
+<h3>Object Example<a class="headerlink" href="#object-example" title="Permalink to this headline">¶</a></h3>
 <p>This is an example of an object, which can be connected to a service.</p>
 <div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">adbus</span>
 <span class="kn">import</span> <span class="nn">typing</span>
@@ -240,22 +251,81 @@ discover</li>
 </div>
 </div>
 <div class="section" id="setting-multiple-properties">
-<h2>Setting Multiple Properties<a class="headerlink" href="#setting-multiple-properties" title="Permalink to this headline">¶</a></h2>
+<h3>Setting Multiple Properties<a class="headerlink" href="#setting-multiple-properties" title="Permalink to this headline">¶</a></h3>
 <p>It’s possible to set multiple properties at the same time, this will defer the property
 update signal, and send one signal for all property changes. It’s good practice to use
 this when changing multiple properties, it will reduce traffic on the D-Bus.</p>
-<p>NOTE: If the even loop isn’t running no signals will be emitted.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="n">service_name</span><span class="p">,</span> <span class="n">bus</span><span class="o">=</span><span class="s1">&#39;session&#39;</span><span class="p">)</span>
-<span class="n">obj</span> <span class="o">=</span> <span class="n">TestObject</span><span class="p">(</span><span class="n">service</span><span class="p">)</span>
+<p>NOTE: Must be running in a loop.</p>
+</div>
+</div>
+<div class="section" id="client-examples">
+<h2>Client Examples<a class="headerlink" href="#client-examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="accessing-remote-interface-via-a-proxy">
+<h3>Accessing Remote Interface via a Proxy<a class="headerlink" href="#accessing-remote-interface-via-a-proxy" title="Permalink to this headline">¶</a></h3>
+<p>It’s possible to map a remote interface to a local instantiated class using a Proxy.</p>
+<p>NOTE: If the even loop isn’t running no signals will caught, and properties will not
+cache (i.e. will read on every access instead of tracking the property changes signals)</p>
+<p><strong>This is a protoype to see how it looks, it hasn’t been implimented yet.</strong></p>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="n">bus</span><span class="o">=</span><span class="s1">&#39;session&#39;</span><span class="p">)</span>
+<span class="n">proxy</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Proxy</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="s1">&#39;com.example.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;/com/example/Service1&#39;</span><span class="p">,</span>
+    <span class="n">interface</span><span class="o">=</span><span class="s1">&#39;com.example.service.unit&#39;</span><span class="p">)</span>
 
-<span class="n">async</span> <span class="k">def</span> <span class="nf">set_props</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
-  <span class="k">with</span> <span class="n">obj</span> <span class="k">as</span> <span class="n">o</span><span class="p">:</span>
-        <span class="n">o</span><span class="o">.</span><span class="n">property1</span> <span class="o">=</span> <span class="s1">&#39;yellow&#39;</span>
-        <span class="n">o</span><span class="o">.</span><span class="n">property2</span> <span class="o">=</span> <span class="mi">42</span>
-        <span class="n">o</span><span class="o">.</span><span class="n">property3</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">7</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">43</span><span class="p">,</span><span class="mi">102</span><span class="p">]</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">proxy_examples</span><span class="p">():</span>
+  <span class="n">proxy</span><span class="o">.</span><span class="n">update</span><span class="p">()</span> <span class="c1"># initialize the proxy</span>
 
-<span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">set_props</span><span class="p">(</span><span class="n">obj</span><span class="p">))</span>
+  <span class="c1"># == Access Properties</span>
+  <span class="n">await</span> <span class="n">proxy</span><span class="o">.</span><span class="n">remote_propertyX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">await</span> <span class="n">proxy</span><span class="o">.</span><span class="n">remote_propertyY</span><span class="o">.</span><span class="n">get</span><span class="p">())</span>
+
+  <span class="c1"># == or</span>
+  <span class="n">await</span> <span class="n">proxy</span><span class="o">.</span><span class="n">remote_propertyX</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
+  <span class="k">print</span><span class="p">(</span><span class="n">await</span> <span class="n">proxy</span><span class="o">.</span><span class="n">remote_propertyY</span><span class="p">())</span>
+
+  <span class="c1"># == Access Methods</span>
+  <span class="n">asyncio</span><span class="o">.</span><span class="n">ensure_future</span><span class="p">(</span><span class="n">proxy</span><span class="o">.</span><span class="n">remote_method_foo</span><span class="p">(</span><span class="s2">&quot;some info&quot;</span><span class="p">))</span> <span class="c1"># don&#39;t wait for result</span>
+  <span class="n">x</span> <span class="o">=</span> <span class="n">await</span> <span class="n">proxy</span><span class="o">.</span><span class="n">remote_method_bar</span><span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="o">-</span><span class="mi">45</span><span class="p">)</span> <span class="c1"># wait for result</span>
+
+  <span class="c1"># == Add a Coroutine to a Signal</span>
+  <span class="n">async</span> <span class="k">def</span> <span class="nf">local_method</span><span class="p">(</span><span class="n">signal_data</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">signal_data</span><span class="p">)</span>
+  <span class="n">proxy</span><span class="o">.</span><span class="n">remote_signal</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">local_method</span><span class="p">)</span>
+
+  <span class="c1"># == or</span>
+  <span class="n">proxy</span><span class="o">.</span><span class="n">remote_signal</span><span class="p">(</span><span class="n">local_method</span><span class="p">)</span>
+
+  <span class="c1"># == Remove a Coroutine to a Signal</span>
+  <span class="n">proxy</span><span class="o">.</span><span class="n">remote_signal</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">local_method</span><span class="p">)</span>
+
+  <span class="c1"># == or (if already added)</span>
+  <span class="n">proxy</span><span class="o">.</span><span class="n">remote_signal</span><span class="p">(</span><span class="n">local_method</span><span class="p">)</span>
+
+  <span class="c1"># == Access a method using a different interface name</span>
+  <span class="n">proxy</span><span class="p">[</span><span class="s1">&#39;com.example.service.serve&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">remote_method_800</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
+
+  <span class="c1"># == Change a Proxies default interface</span>
+  <span class="n">proxy</span> <span class="o">=</span> <span class="n">proxy</span><span class="p">[</span><span class="s1">&#39;com.example.service.serve&#39;</span><span class="p">]</span>
+
+  <span class="c1"># == Create a new proxy from a node in the proxy</span>
+  <span class="n">proxy_new</span> <span class="o">=</span> <span class="n">await</span> <span class="n">proxy</span><span class="p">(</span><span class="s1">&#39;Test&#39;</span><span class="p">)[</span><span class="s1">&#39;com.example.test&#39;</span><span class="p">]</span>
+
+  <span class="c1"># == Loop through all nodes in a proxy</span>
+  <span class="n">sum_cnt</span> <span class="o">=</span> <span class="mi">0</span>
+  <span class="n">async</span> <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">proxy</span><span class="p">:</span>
+      <span class="k">try</span><span class="p">:</span>
+          <span class="n">sum_cnt</span> <span class="o">+=</span> <span class="n">await</span> <span class="n">node</span><span class="o">.</span><span class="n">count</span>
+      <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+          <span class="k">pass</span>
+
+  <span class="c1"># == set multiple properties in one message (if linked to an adbus based server)</span>
+  <span class="n">async</span> <span class="k">with</span> <span class="n">proxy</span> <span class="k">as</span> <span class="n">p</span><span class="p">:</span>
+      <span class="n">p</span><span class="o">.</span><span class="n">property1</span> <span class="o">=</span> <span class="s2">&quot;some data&quot;</span>
+      <span class="n">p</span><span class="o">.</span><span class="n">property2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">]</span>
+
+<span class="n">loop</span> <span class="o">=</span> <span class="n">asyncio</span><span class="o">.</span><span class="n">get_event_loop</span><span class="p">()</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">run_until_complete</span><span class="p">(</span><span class="n">proxy_examples</span><span class="p">())</span>
+<span class="n">loop</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
+</div>
 </div>
 </div>
 <div class="section" id="style-guide">
@@ -287,7 +357,7 @@ this when changing multiple properties, it will reduce traffic on the D-Bus.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Charles Eidsness.
+        &copy; Copyright 2017, CCX Technolgies.
 
     </p>
   </div>
@@ -309,7 +379,7 @@ this when changing multiple properties, it will reduce traffic on the D-Bus.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.0',
+            VERSION:'0.2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

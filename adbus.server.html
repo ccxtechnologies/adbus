@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>adbus.server package &mdash; python-adbus 0.1.0 documentation</title>
+  <title>adbus.server package &mdash; python-adbus 0.2.0 documentation</title>
   
 
   
@@ -35,9 +35,9 @@
         <link rel="index" title="Index"
               href="genindex.html"/>
         <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="python-adbus 0.1.0 documentation" href="index.html"/>
+    <link rel="top" title="python-adbus 0.2.0 documentation" href="index.html"/>
         <link rel="up" title="adbus package" href="adbus.html"/>
-        <link rel="prev" title="adbus package" href="adbus.html"/> 
+        <link rel="prev" title="adbus.client package" href="adbus.client.html"/> 
 
   
   <script src="_static/js/modernizr.min.js"></script>
@@ -66,7 +66,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -96,12 +96,14 @@
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">adbus</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="adbus.html">adbus package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="adbus.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="adbus.client.html">adbus.client package</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">adbus.server package</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="adbus.html#submodules">Submodules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus.exceptions">adbus.exceptions module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus.sdbus">adbus.sdbus module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus.service">adbus.service module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus">Module contents</a></li>
 </ul>
 </li>
@@ -178,6 +180,10 @@
 <h1>adbus.server package<a class="headerlink" href="#adbus-server-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-adbus.server.ccx">
+<span id="adbus-server-ccx-module"></span><h2>adbus.server.ccx module<a class="headerlink" href="#module-adbus.server.ccx" title="Permalink to this headline">¶</a></h2>
+<p>D-Bus Object</p>
 </div>
 <div class="section" id="module-adbus.server.method">
 <span id="adbus-server-method-module"></span><h2>adbus.server.method module<a class="headerlink" href="#module-adbus.server.method" title="Permalink to this headline">¶</a></h2>
@@ -291,7 +297,7 @@ or function.</p>
 <p>D-Bus Object</p>
 <dl class="class">
 <dt id="adbus.server.object.Object">
-<em class="property">class </em><code class="descclassname">adbus.server.object.</code><code class="descname">Object</code><span class="sig-paren">(</span><em>service</em>, <em>path</em>, <em>interface</em>, <em>vtable=[]</em>, <em>depreciated=False</em>, <em>hidden=False</em>, <em>manager=False</em>, <em>changed_callback=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/object.html#Object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.object.Object" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">adbus.server.object.</code><code class="descname">Object</code><span class="sig-paren">(</span><em>service</em>, <em>path</em>, <em>interface</em>, <em>vtable=[]</em>, <em>depreciated=False</em>, <em>hidden=False</em>, <em>manager=False</em>, <em>changed_coroutine=None</em>, <em>ccx=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/object.html#Object"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.object.Object" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
 <p>Provides an interface between a D-Bus and a Python Object.</p>
 <p>Though this class can be used on its own it is intended to be inherited
@@ -299,8 +305,8 @@ by another object which uses decorators to define methods, properties,
 and signals which are exposed on the D-Bus.</p>
 <p>This object must be added to a service, which provides the D-Bus interface.</p>
 <p>It also provides a Context Manager so that multiple properties can be set,
-or one property can be set multiple times, with a single D-Bus changed signal
-being sent for all property updates once the context is closed.</p>
+or one property can be set multiple times, with a single D-Bus changed
+signal being sent for all property updates once the context is closed.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -322,8 +328,11 @@ as depreciated in the introspect XML data</li>
 to the introspect XML data</li>
 <li><strong>manager</strong> (<em>bool</em>) – optional, if True add a device manager to this object,
 as defined by the D-Bus Spec from freedesktop.org</li>
-<li><strong>changed_callback</strong> – optional, callback called with a list of changed
-properties, single argument is a list of property names</li>
+<li><strong>changed_coroutine</strong> – optional, coroutine called with a list of changed
+properties, single argument is a list of property names, this is
+the internal equivalent to the emit changed D-Bus signal</li>
+<li><strong>ccx</strong> – optional, add the additional ccx.DBus interface, which adds
+some useful methods like SetMulti</li>
 </ul>
 </td>
 </tr>
@@ -410,63 +419,6 @@ converted between the two</li>
 </dd></dl>
 
 </div>
-<div class="section" id="module-adbus.server.service">
-<span id="adbus-server-service-module"></span><h2>adbus.server.service module<a class="headerlink" href="#module-adbus.server.service" title="Permalink to this headline">¶</a></h2>
-<p>D-Bus Service</p>
-<dl class="class">
-<dt id="adbus.server.service.Service">
-<em class="property">class </em><code class="descclassname">adbus.server.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>name</em>, <em>loop=None</em>, <em>bus='system'</em>, <em>replace_existing=False</em>, <em>allow_replacement=False</em>, <em>name_queue=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.service.Service" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<p>Serves objects onto a D-Bus, runs within an asyncio loop.</p>
-<p>This is a class can be used to create a server that attaches the to
-D-Bus and serves objects. To process requests it must be run within an
-asyncio loop.</p>
-<p>Objects are added by initializing them with an instantiated service.
-More than one object can be attached to a service as long as they
-don’t have the same path.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>name</strong> (<em>str</em>) – name to be used on the D-Bus, ie. org.test</li>
-<li><strong>loop</strong> – optional, asyncio loop to attach to, if not
-defined will use asyncio.get_event_loop()</li>
-<li><strong>bus</strong> (<em>str</em>) – optional, Bus to attach to either ‘system’, or ‘session’</li>
-<li><strong>replace_existing</strong> (<em>bool</em>) – optional, if true and there is a
-D-Bus service with the same name, try to replace it</li>
-<li><strong>allow_replacement</strong> (<em>bool</em>) – optional, if true and another service
-tries to steal our name, let it</li>
-<li><strong>name_queue</strong> (<em>bool</em>) – optional, if our name is in use by another
-service put ourselves in the D-Bus name queue, we will get
-name once the existing service relinquishes it</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">BusError</span></code> – if an error occurs during initialization</p>
-</td>
-</tr>
-</tbody>
-</table>
-<dl class="method">
-<dt id="adbus.server.service.Service.get_loop">
-<code class="descname">get_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/service.html#Service.get_loop"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.service.Service.get_loop" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="adbus.server.service.Service.is_running">
-<code class="descname">is_running</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/service.html#Service.is_running"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.service.Service.is_running" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="attribute">
-<dt id="adbus.server.service.Service.sdbus">
-<code class="descname">sdbus</code><em class="property"> = None</em><a class="headerlink" href="#adbus.server.service.Service.sdbus" title="Permalink to this definition">¶</a></dt>
-<dd><p>Interface to sd-bus library</p>
-</dd></dl>
-
-</dd></dl>
-
-</div>
 <div class="section" id="module-adbus.server.signal">
 <span id="adbus-server-signal-module"></span><h2>adbus.server.signal module<a class="headerlink" href="#module-adbus.server.signal" title="Permalink to this headline">¶</a></h2>
 <p>D-Bus Signal</p>
@@ -499,13 +451,8 @@ converted between the two</li>
 </tbody>
 </table>
 <dl class="method">
-<dt id="adbus.server.signal.Signal.emit">
-<code class="descname">emit</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/signal.html#Signal.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.signal.Signal.emit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
 <dt id="adbus.server.signal.Signal.vt">
-<code class="descname">vt</code><span class="sig-paren">(</span><em>instance=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/signal.html#Signal.vt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.signal.Signal.vt" title="Permalink to this definition">¶</a></dt>
+<code class="descname">vt</code><span class="sig-paren">(</span><em>instance</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/server/signal.html#Signal.vt"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.server.signal.Signal.vt" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -527,7 +474,7 @@ converted between the two</li>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
       
-        <a href="adbus.html" class="btn btn-neutral" title="adbus package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="adbus.client.html" class="btn btn-neutral" title="adbus.client package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -536,7 +483,7 @@ converted between the two</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Charles Eidsness.
+        &copy; Copyright 2017, CCX Technolgies.
 
     </p>
   </div>
@@ -558,7 +505,7 @@ converted between the two</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'0.1.0',
+            VERSION:'0.2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,

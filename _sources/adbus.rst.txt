@@ -6,6 +6,7 @@ Subpackages
 
 .. toctree::
 
+    adbus.client
     adbus.server
 
 Submodules
@@ -23,6 +24,14 @@ adbus\.sdbus module
 -------------------
 
 .. automodule:: adbus.sdbus
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+adbus\.service module
+---------------------
+
+.. automodule:: adbus.service
     :members:
     :undoc-members:
     :show-inheritance:

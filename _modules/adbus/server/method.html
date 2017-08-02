@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>adbus.server.method &mdash; python-adbus 0.1.0 documentation</title>
+  <title>adbus.server.method &mdash; python-adbus 0.2.0 documentation</title>
   
 
   
@@ -35,7 +35,7 @@
         <link rel="index" title="Index"
               href="../../../genindex.html"/>
         <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="python-adbus 0.1.0 documentation" href="../../../index.html"/>
+    <link rel="top" title="python-adbus 0.2.0 documentation" href="../../../index.html"/>
         <link rel="up" title="Module code" href="../../index.html"/> 
 
   
@@ -65,7 +65,7 @@
             
             
               <div class="version">
-                0.1
+                0.2
               </div>
             
           
@@ -234,7 +234,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">arg_signature</span> <span class="o">+=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">variant_signature</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="n">dont_block</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dont_block</span> <span class="o">=</span> <span class="n">dont_block</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">dont_block</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">return_signature</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
         <span class="k">elif</span> <span class="n">sig</span><span class="o">.</span><span class="n">return_annotation</span> <span class="o">!=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">return_signature</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">(</span><span class="n">sig</span><span class="o">.</span><span class="n">return_annotation</span><span class="p">)</span>
@@ -255,7 +256,7 @@
 
         <span class="k">return</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Method</span><span class="p">(</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">dbus_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">arg_signature</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_signature</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">depreciated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">depreciated</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">hidden</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">unprivileged</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dont_block</span>
         <span class="p">)</span></div></div>
 
 
@@ -315,7 +316,7 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, Charles Eidsness.
+        &copy; Copyright 2017, CCX Technolgies.
 
     </p>
   </div>
@@ -337,7 +338,7 @@
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../../',
-            VERSION:'0.1.0',
+            VERSION:'0.2.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true,
