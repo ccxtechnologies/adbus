@@ -30,8 +30,6 @@ class _CCXInterface(Object):
     ) -> None:
         """Set multiple properties with a single call, similar to GetAll."""
 
-        print((interface, properties))
-
         with self as s:
             for name, value in properties.items():
                 setattr(s, name, value)
