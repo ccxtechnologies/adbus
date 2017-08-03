@@ -5,6 +5,7 @@
 from distutils.core import setup
 from distutils.core import Extension
 from Cython.Build import cythonize
+from adbus import __version__
 import sys
 
 if "--cythonize" in sys.argv:
@@ -21,7 +22,7 @@ def build():
 
     setup(
         name='adbus',
-        version='0.2.1',
+        version=__version__,
         description='asyncio based dbus interface',
         license='MIT',
         author='CCX Technologies',
