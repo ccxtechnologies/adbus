@@ -374,7 +374,10 @@ cdef class Message:
         cdef char s
         cdef object value
 
-        values = list(values)
+        try:
+            values = list(values)
+        except TypeError:
+            values = [values]
 
         while values:
             s = signature[i]

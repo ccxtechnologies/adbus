@@ -52,7 +52,7 @@ class Object:
         service,
         path,
         interface,
-        vtable=[],
+        vtable=(),
         depreciated=False,
         hidden=False,
         manager=False,

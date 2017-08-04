@@ -9,7 +9,7 @@ from .. import sdbus
 from . import call
 from . import get
 from . import get_all
-from . import set
+from . import set_
 from . import Listen
 
 
@@ -91,7 +91,7 @@ class Property:
         if self.emits_changed_signal == 'const':
             raise AttributeError(f"Can't set read-only property {self.name}")
         else:
-            await set(
+            await set_(
                 self.service,
                 self.address,
                 self.path,
@@ -370,7 +370,7 @@ class Proxy:
             for p, v in self._property_multi.dbus_value.items():
                 await self._interfaces[self._interface].properties[p].set(v)
 
-    async def __aiter__(self):
+    def __aiter__(self):
         return self
 
     async def __anext__(self):

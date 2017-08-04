@@ -39,7 +39,7 @@ class Signal:
     def __set__(self, instance, value):
         signal = instance.__dict__[self.py_name]
 
-        if type(self.dbus_signature) is list:
+        if isinstance(self.dbus_signature, list):
             signal.emit(*value)
         else:
             signal.emit(value)

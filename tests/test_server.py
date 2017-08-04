@@ -8,6 +8,7 @@ import asyncio
 import asyncio.subprocess
 import typing
 import time
+import sys
 
 import adbus
 
@@ -20,9 +21,7 @@ class TestObject(adbus.server.Object):
 
     property1: str = adbus.server.Property('none')
     property2: int = adbus.server.Property(100, emits_change=False)
-    property3: typing.List[int] = adbus.server.Property(
-        [1, 2, 3]
-    )
+    property3: typing.List[int] = adbus.server.Property([1, 2, 3])
 
     signal1: (int, str) = adbus.server.Signal()
     signal2: int = adbus.server.Signal()
@@ -84,12 +83,13 @@ class Test(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.loop = asyncio.get_event_loop()
-        cls.service = adbus.Service(service_name, bus='session')
+        cls.service = adbus.Service(
+            service_name,
+            bus='session',
+            replace_existing=True,
+            allow_replacement=True
+        )
         cls.obj = TestObject(cls.service)
-
-    @classmethod
-    def tearDownClass(cls):
-        cls.loop.close()
 
     @staticmethod
     async def delay(loops=10):
@@ -142,6 +142,10 @@ class Test(unittest.TestCase):
             )
         )
 
+    @unittest.skipIf(
+        "tests.test_server.Test.test_method_wait" not in sys.argv,
+        "long test used for development"
+    )
     def test_method_wait(self):
         async def _ping():
             cnt = 0

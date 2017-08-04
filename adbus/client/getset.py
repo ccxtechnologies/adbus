@@ -4,28 +4,28 @@ from asyncio import wait_for
 from .. import sdbus
 
 
-async def get(service, address, path, interface, property, timeout_ms=30000):
+async def get(service, address, path, interface, name, timeout_ms=30000):
     """Gets a D-Bus Property from another process.
 
     This is a co-routine, so must be await-ed from within a asyncio mainloop.
 
     Args:
         service (adbus.server.Service): service to connect to
-        address (str): address (property) of the D-Bus Service to call
+        address (str): address (name) of the D-Bus Service to call
         path (str): path of method to call, ie. /com/awesome/Settings1
         interface (str): interface label to call, ie. com.awesome.settings
-        property (str): name of the property to get, ie. TestProperty
+        name (str): name of the name to get, ie. TestProperty
         timeout_ms (int): maximum time to wait for a response in milli-seconds
 
     Returns:
-        Value of the property.
+        Value of the name.
     """
 
     call = sdbus.Call(
         service.sdbus,
         address.encode(),
         path.encode(), b"org.freedesktop.DBus.Properties", b"Get",
-        (interface, property), b"v"
+        (interface, name), b"v"
     )
 
     call.send(timeout_ms)
@@ -45,13 +45,13 @@ async def get_all(service, address, path, interface, timeout_ms=30000):
 
     Args:
         service (adbus.server.Service): service to connect to
-        address (str): address (property) of the D-Bus Service to call
+        address (str): address (name) of the D-Bus Service to call
         path (str): path of method to call, ie. /com/awesome/Settings1
         interface (str): interface label to call, ie. com.awesome.settings
         timeout_ms (int): maximum time to wait for a response in milli-seconds
 
     Returns:
-        A dictionary, keys are the property names and values are the property
+        A dictionary, keys are the name names and values are the name
         values.
     """
 
@@ -78,8 +78,8 @@ class _variant_wrapper:
         self.dbus_signature = "v"
 
 
-async def set(
-    service, address, path, interface, property, value, timeout_ms=30000
+async def set_(
+    service, address, path, interface, name, value, timeout_ms=30000
 ):
     """Sets a D-Bus Property in another process.
 
@@ -87,11 +87,11 @@ async def set(
 
     Args:
         service (adbus.server.Service): service to connect to
-        address (str): address (property) of the D-Bus Service to call
+        address (str): address (name) of the D-Bus Service to call
         path (str): path of method to call, ie. /com/awesome/Settings1
         interface (str): interface label to call, ie. com.awesome.settings
-        property (str): name of the property to get, ie. TestProperty
-        value (object): value to set the property to, must be compatible
+        name (str): name of the name to get, ie. TestProperty
+        value (object): value to set the name to, must be compatible
             with the defined D-Bus Property type
         timeout_ms (int): maximum time to wait for a response in milli-seconds
     """
@@ -100,7 +100,7 @@ async def set(
         service.sdbus,
         address.encode(),
         path.encode(), b"org.freedesktop.DBus.Properties", b"Set",
-        (interface, property, _variant_wrapper(value))
+        (interface, name, _variant_wrapper(value))
     )
 
     call.send(timeout_ms)

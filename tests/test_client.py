@@ -9,6 +9,8 @@ import asyncio
 import asyncio.subprocess
 import random
 import string
+import subprocess
+import time
 
 import adbus
 
@@ -33,13 +35,20 @@ class Test(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        cls.server = subprocess.Popen(
+            [
+                'python', '-m', 'unittest',
+                'tests.test_server.Test.test_method_wait'
+            ]
+        )
+        time.sleep(3)
+
         cls.loop = asyncio.get_event_loop()
         cls.service = adbus.Service(bus='session')
 
     @classmethod
     def tearDownClass(cls):
-        cls.loop.stop()
-        cls.loop.close()
+        cls.server.terminate()
 
     @staticmethod
     async def delay(loops=10):
@@ -98,7 +107,7 @@ class Test(unittest.TestCase):
 
     def test_set(self):
         async def call_basic():
-            await set(
+            await adbus.client.set_(
                 self.service,
                 "adbus.test",
                 "/adbus/test/Tests1",
@@ -111,6 +120,7 @@ class Test(unittest.TestCase):
             call_basic(),
         ))
 
+    @unittest.skip("long test used for development")
     def test_listen(self):
         async def test_cb(
             interface: str,
