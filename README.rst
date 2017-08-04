@@ -9,6 +9,10 @@ Status
 **This project is currently under development.** The server implementation is
 ready for testing, the client will be added in the next release.
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c66c19cdcadd4c83bc4b70596d65aa7a)](https://www.codacy.com/app/ccxtechnologies/python-adbus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ccxtechnologies/python-adbus&amp;utm_campaign=Badge_Grade)
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/c66c19cdcadd4c83bc4b70596d65aa7a)](https://www.codacy.com/app/ccxtechnologies/python-adbus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ccxtechnologies/python-adbus&amp;utm_campaign=Badge_Grade)
+
 Links
 -----
 - `Documentation <https://ccxtechnologies.github.io/python-adbus>`_
