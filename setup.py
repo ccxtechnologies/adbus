@@ -5,8 +5,9 @@
 from distutils.core import setup
 from distutils.core import Extension
 from Cython.Build import cythonize
-from adbus import __version__
 import sys
+
+exec(open('adbus/__version__.py').read())
 
 if "--cythonize" in sys.argv:
     sdbus = cythonize(
