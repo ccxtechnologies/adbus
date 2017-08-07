@@ -113,7 +113,7 @@ def method(
     Note:
         The decorated method should use new style type annotations
         to define the types of all arguments, and the return value,
-        ie. function(x: int, y: str) -> bool:
+        ie function(x: int, y: str) -> bool:
         if no type is defined a D-Bus Variant will be used
 
     Args:

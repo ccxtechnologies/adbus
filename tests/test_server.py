@@ -29,10 +29,9 @@ class TestObject(adbus.server.Object):
 
     def __init__(self, service):
         super().__init__(
-            service,
-            object_path,
-            object_interface,
-            changed_coroutine=self.dummy_co
+                service,
+                object_path,
+                object_interface,
         )
 
     @adbus.server.method()
@@ -70,12 +69,6 @@ class TestObject(adbus.server.Object):
         print(type(arg3))
         return str(arg3)
 
-    async def dummy_co(self, names):
-        if len(names) > 1:
-            print(f"{names} where updated")
-        else:
-            print(f"{names[0]} was updated")
-
 
 class Test(unittest.TestCase):
     """adbus method test cases."""
@@ -84,10 +77,10 @@ class Test(unittest.TestCase):
     def setUpClass(cls):
         cls.loop = asyncio.get_event_loop()
         cls.service = adbus.Service(
-            service_name,
-            bus='session',
-            replace_existing=True,
-            allow_replacement=True
+                service_name,
+                bus='session',
+                replace_existing=True,
+                allow_replacement=True
         )
         cls.obj = TestObject(cls.service)
 
@@ -100,7 +93,7 @@ class Test(unittest.TestCase):
         print('\n' + '=' * loops)
 
     async def call_method(
-        self, method, arg_signature, args, return_signature, returns
+            self, method, arg_signature, args, return_signature, returns
     ):
         cmd = 'busctl --user -- call '
         cmd += f'{service_name} {object_path} {object_interface} {method}'
@@ -109,7 +102,7 @@ class Test(unittest.TestCase):
             cmd += f' {i}'
 
         create = asyncio.create_subprocess_shell(
-            cmd, stdout=asyncio.subprocess.PIPE
+                cmd, stdout=asyncio.subprocess.PIPE
         )
 
         proc = await create
@@ -124,27 +117,30 @@ class Test(unittest.TestCase):
 
     def test_method_basic(self):
         self.loop.run_until_complete(
-            self.call_method("TestMethod", "is", [-100, "doggie"], 'i', -94)
+                self.
+                call_method("TestMethod", "is", [-100, "doggie"], 'i', -94)
         )
 
     def test_method_rename(self):
         self.loop.run_until_complete(
-            self.
-            call_method("DifferentName", "is", [-100, "different"], 'i', -10)
+                self.call_method(
+                        "DifferentName", "is", [-100, "different"], 'i', -10
+                )
         )
 
     def test_method_variants(self):
         self.loop.run_until_complete(
-            self.call_method(
-                "VarMethod1", "isvvd", [
-                    -100, "different", 's', "test_string", 'i', 100, 12.5
-                ], 'v s', '"test_string"'
-            )
+                self.call_method(
+                        "VarMethod1", "isvvd", [
+                                -100, "different", 's', "test_string", 'i',
+                                100, 12.5
+                        ], 'v s', '"test_string"'
+                )
         )
 
     @unittest.skipIf(
-        "tests.test_server.Test.test_method_wait" not in sys.argv,
-        "long test used for development"
+            "tests.test_server.Test.test_method_wait" not in sys.argv,
+            "long test used for development"
     )
     def test_method_wait(self):
         async def _ping():

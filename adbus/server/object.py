@@ -22,7 +22,7 @@ class Object:
     Args:
         service (adbus.server.Service): service to connect to
         path (str): path to create on the service
-            ie. /com/awesome/Settings1
+            ie. /com/awesome/Settings
         interface (str): interface label to use for all of this
             objects methods and properties, ie. com.awesome.settings
         vtable (list): optional, list of signals, methods, and
@@ -36,9 +36,6 @@ class Object:
             to the introspect XML data
         manager (bool): optional, if True add a device manager to this object,
             as defined by the D-Bus Spec from freedesktop.org
-        changed_coroutine: optional, coroutine called with a list of changed
-            properties, single argument is a list of property names, this is
-            the internal equivalent to the emit changed D-Bus signal
         ccx: optional, add the additional ccx.DBus interface, which adds
             some useful methods like SetMulti
 
@@ -48,16 +45,15 @@ class Object:
     """
 
     def __init__(
-        self,
-        service,
-        path,
-        interface,
-        vtable=(),
-        depreciated=False,
-        hidden=False,
-        manager=False,
-        changed_coroutine=None,
-        ccx=True,
+            self,
+            service,
+            path,
+            interface,
+            vtable=(),
+            depreciated=False,
+            hidden=False,
+            manager=False,
+            ccx=True,
     ):
         self._defer_properties = False
         self._deferred_properties = {}
@@ -69,19 +65,18 @@ class Object:
         """List of all D-Bus Methods, Properties, and Signals."""
 
         self.vtable += [
-            v.vt(self)
-            for v in type(self).__dict__.values() if hasattr(v, 'vt')
+                v.vt(self) for v in type(self).__dict__.values()
+                if hasattr(v, 'vt')
         ]
 
         self.sdbus = sdbus.Object(
-            service.sdbus, path, interface, self.vtable, depreciated, hidden
+                service.sdbus, path, interface, self.vtable, depreciated,
+                hidden
         )
         """Interface to sd-bus library."""
 
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
-
-        self.changed_coroutine = changed_coroutine
 
         self.ccx = ccx
         if self.ccx:
@@ -97,15 +92,9 @@ class Object:
 
         elif self.service.is_running():
             asyncio.ensure_future(
-                self.sdbus.emit_properties_changed([dbus_name.encode()]),
-                loop=self.service.get_loop()
-            )
-
-            if self.changed_coroutine:
-                asyncio.ensure_future(
-                    self.changed_coroutine([py_name]),
+                    self.sdbus.emit_properties_changed([dbus_name.encode()]),
                     loop=self.service.get_loop()
-                )
+            )
 
     def defer_signals(self, enable):
         if enable:
@@ -118,19 +107,11 @@ class Object:
             self._defer_properties = False
             if self._deferred_properties:
                 asyncio.ensure_future(
-                    self.sdbus.emit_properties_changed(
-                        list(self._deferred_properties.keys())
-                    ),
-                    loop=self.service.get_loop()
-                )
-
-                if self.changed_coroutine:
-                    asyncio.ensure_future(
-                        self.changed_coroutine(
-                            list(self._deferred_properties.values())
+                        self.sdbus.emit_properties_changed(
+                                list(self._deferred_properties.keys())
                         ),
                         loop=self.service.get_loop()
-                    )
+                )
 
             self._deferred_properties = {}
 
