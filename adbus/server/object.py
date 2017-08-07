@@ -56,7 +56,7 @@ class Object:
             ccx=True,
     ):
         self._defer_properties = False
-        self._deferred_properties = {}
+        self._deferred_property_signals = {}
 
         self.service = service
         self.path = path
@@ -88,7 +88,7 @@ class Object:
 
     def emit_property_changed(self, dbus_name):
         if self._defer_properties:
-            self._deferred_properties[dbus_name.encode()] = True
+            self._deferred_property_signals[dbus_name.encode()] = True
 
         elif self.service.is_running():
             asyncio.ensure_future(
@@ -96,7 +96,7 @@ class Object:
                     loop=self.service.get_loop()
             )
 
-    def defer_signals(self, enable):
+    def defer_property_updates(self, enable):
         if enable:
             self._defer_properties = True
 
@@ -105,19 +105,19 @@ class Object:
                 return
 
             self._defer_properties = False
-            if self._deferred_properties:
+            if self._deferred_property_signals:
                 asyncio.ensure_future(
                         self.sdbus.emit_properties_changed(
-                                list(self._deferred_properties.keys())
+                                list(self._deferred_property_signals.keys())
                         ),
                         loop=self.service.get_loop()
                 )
 
-            self._deferred_properties = {}
+            self._deferred_property_signals = {}
 
     def __enter__(self):
-        self.defer_signals(True)
+        self.defer_property_updates(True)
         return self
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
-        self.defer_signals(False)
+        self.defer_property_updates(False)
