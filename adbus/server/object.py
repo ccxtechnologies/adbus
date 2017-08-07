@@ -86,9 +86,9 @@ class Object:
         if self.ccx:
             self.service._remove_ccx(self.path)
 
-    def emit_property_changed(self, py_name, dbus_name):
+    def emit_property_changed(self, dbus_name):
         if self._defer_properties:
-            self._deferred_properties[dbus_name.encode()] = py_name
+            self._deferred_properties[dbus_name.encode()] = True
 
         elif self.service.is_running():
             asyncio.ensure_future(

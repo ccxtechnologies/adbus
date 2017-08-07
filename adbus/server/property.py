@@ -75,7 +75,7 @@ class Property:
         if getattr(instance, self.py_name) != value:
             instance.__dict__[self.py_name] = value
             if self.emits_change or self.emits_invalidation:
-                instance.emit_property_changed(self.py_name, self.dbus_name)
+                instance.emit_property_changed(self.dbus_name)
 
     def __set_name__(self, owner, name):
         self.py_name = name
