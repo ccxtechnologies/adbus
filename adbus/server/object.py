@@ -113,7 +113,7 @@ class Object:
                         loop=self.service.get_loop()
                 )
 
-            self._deferred_property_signals = {}
+                self._deferred_property_signals = {}
 
     def __enter__(self):
         self.defer_property_updates(True)
