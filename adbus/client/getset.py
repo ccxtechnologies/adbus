@@ -2,6 +2,7 @@
 
 from asyncio import wait_for
 from .. import sdbus
+from .. import datatypes
 
 
 async def get(service, address, path, interface, name, timeout_ms=30000):
@@ -72,12 +73,6 @@ async def get_all(service, address, path, interface, timeout_ms=30000):
         return response
 
 
-class _variant_wrapper:
-    def __init__(self, value):
-        self.dbus_value = value
-        self.dbus_signature = "v"
-
-
 async def set_(
     service, address, path, interface, name, value, timeout_ms=30000
 ):
@@ -100,7 +95,7 @@ async def set_(
         service.sdbus,
         address.encode(),
         path.encode(), b"org.freedesktop.DBus.Properties", b"Set",
-        (interface, name, _variant_wrapper(value))
+        (interface, name, datatypes.VariantWrapper(value))
     )
 
     call.send(timeout_ms)
