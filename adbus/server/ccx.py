@@ -30,6 +30,14 @@ class _CCXInterface(Object):
     ) -> None:
         """Set multiple properties with a single call, similar to GetAll."""
 
+        exceptions = ''
         with self as s:
             for name, value in properties.items():
-                setattr(s, name, value)
+                try:
+                    setattr(s, name, value)
+                except Exception as e:
+                    exceptions += str(e) + "\n"
+
+        if exceptions:
+            raise ValueError(exceptions)
+
