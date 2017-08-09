@@ -38,17 +38,17 @@ class Property:
     """
 
     def __init__(
-        self,
-        default=None,
-        name=None,
-        read_only=False,
-        constant=False,
-        depreciated=False,
-        hidden=False,
-        unprivileged=False,
-        emits_change=True,
-        emits_invalidation=False,
-        camel_convert=True,
+            self,
+            default=None,
+            name=None,
+            read_only=False,
+            constant=False,
+            depreciated=False,
+            hidden=False,
+            unprivileged=False,
+            emits_change=True,
+            emits_invalidation=False,
+            camel_convert=True,
     ):
 
         self.default = default
@@ -82,7 +82,7 @@ class Property:
 
         try:
             self.dbus_signature = sdbus.dbus_signature(
-                owner.__annotations__[name]
+                    owner.__annotations__[name]
             )
         except KeyError:
             self.dbus_signature = sdbus.variant_signature()
@@ -96,7 +96,8 @@ class Property:
     def vt(self, instance):
         """Interface to sd-bus library"""
         return sdbus.Property(
-            self.dbus_name, instance, self.py_name, self.dbus_signature,
-            self.read_only, self.depreciated, self.hidden, self.unprivileged,
-            self.constant, self.emits_change, self.emits_invalidation
+                self.dbus_name, instance, self.py_name, self.dbus_signature,
+                self.read_only, self.depreciated, self.hidden,
+                self.unprivileged, self.constant, self.emits_change,
+                self.emits_invalidation
         )

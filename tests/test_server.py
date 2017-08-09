@@ -17,11 +17,22 @@ object_path = '/adbus/test/Tests1'
 object_interface = 'adbus.test'
 
 
+class TestDataType:
+    dbus_signature = 's'
+
+    def __init__(self, value):
+        if int(value) > 12:
+            raise ValueError
+        self.value = int(value) + 100
+        self.dbus_value = str(self.value)
+
+
 class TestObject(adbus.server.Object):
 
     property1: str = adbus.server.Property('none')
     property2: int = adbus.server.Property(100, emits_change=False)
     property3: typing.List[int] = adbus.server.Property([1, 2, 3])
+    datatype: TestDataType = adbus.server.Property(TestDataType(6))
 
     signal1: (int, str) = adbus.server.Signal()
     signal2: int = adbus.server.Signal()

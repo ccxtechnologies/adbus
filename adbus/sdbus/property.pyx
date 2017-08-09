@@ -39,7 +39,15 @@ cdef int property_set_handler(sdbus_h.sd_bus *bus,
     values = message.read(property.signature)
 
     try:
-        setattr(property.py_object, property.attr_name, values[0])
+        # If the old value was created with a dbus_value property then
+        # need to create a new instance of that object
+        old_value = getattr(property.py_object, property.attr_name)
+        if hasattr(old_value, 'dbus_value'):
+            value = type(old_value)(values[0])
+        else:
+            value = values[0]
+
+        setattr(property.py_object, property.attr_name, value)
     except Exception as e:
         property.loop.call_exception_handler({'message': str(e), 'exception': e})
         error = Error()
