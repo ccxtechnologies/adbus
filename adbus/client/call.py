@@ -11,7 +11,7 @@ async def call(
     interface,
     method,
     args=(),
-    response_signature="",
+    response_signature=None,
     timeout_ms=30000
 ):
     """Calls a D-Bus Method in another process.
@@ -26,7 +26,8 @@ async def call(
         method (str): name of the method to call, ie. TestMethod
         args (list or tuple): optional, list of arguments to pass to the method
         response_signature (str): optional, D-Bus Signature of the expected
-            resonse
+            response, if None the signature will be created at run-time, specifying
+            it here will speed up the message post-processing
         timeout_ms (int): maximum time to wait for a response in milli-seconds
 
     """
@@ -35,7 +36,8 @@ async def call(
         service.sdbus,
         address.encode(),
         path.encode(),
-        interface.encode(), method.encode(), args, response_signature.encode()
+        interface.encode(), method.encode(), args,
+        b"Any" if response_signature is None else response_signature.encode()
     )
 
     call.send(timeout_ms)

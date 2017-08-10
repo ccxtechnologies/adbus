@@ -202,11 +202,14 @@ cdef class Message:
 
         return value
 
-    cdef list read(self, const char *signature):
+    cdef list read(self, const char *signature="ANY"):
         cdef _value v
         cdef list values = []
         cdef unsigned int i = 0
         cdef char s
+
+        if signature[0] == 'A':
+            signature = sdbus_h.sd_bus_message_get_signature(self.message, 0)
 
         while True:
             s = signature[i]
