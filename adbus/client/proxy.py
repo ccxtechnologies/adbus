@@ -6,6 +6,7 @@ import typing
 import copy
 
 from .. import sdbus
+from .. import exceptions
 from . import call
 from . import get
 from . import get_all
@@ -30,15 +31,21 @@ class Signal:
                 self.signature += x.attrib['type']
 
     def add(self, coroutine):
-        self.listens[coroutine.__name__] = Listen(
+        listen = Listen(
             self.service,
             self.address,
             self.path,
             self.interface,
             self.name,
-            coroutine,
-            signature=self.signature
+            coroutine
         )
+
+        if self.signature != listen.signature:
+            raise exceptions.BusError(
+                    f"Coroutine signature {listen.signature} doesn't "
+                    f"match signal signature {self.signature}.")
+
+        self.listens[coroutine.__name__] = listen
 
     def remove(self, coroutine):
         del self.listens[coroutine.__name__]

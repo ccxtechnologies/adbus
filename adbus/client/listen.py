@@ -7,7 +7,7 @@ from .. import exceptions
 
 
 class Listen:
-    """Calls a D-Bus Method in another process.
+    """Listens for a D-Bus Signal from another process.
 
     This is a co-routine, so must be await-ed from within a asyncio mainloop.
 
@@ -21,8 +21,12 @@ class Listen:
         args (list or tuple): optional, list of argument values to match,
             the argument must be a string, useful for listening to property
             changes
-        signature (str): optional, signature of the signal, used to verify
-            that the coroutine is correct, if None disables check
+        signature (str): optional, signature of the signal, if False the
+            types of the coroutine arguments will be used to create the
+            signature and the coroutine will be called with one argument
+            per signal argument, if defined the coroutine will be called
+            with a list of arguments, if None the coroutine will be called
+            with a list of types determined at run-time
     """
 
     def __init__(
@@ -34,23 +38,25 @@ class Listen:
         signal,
         coroutine,
         args=(),
-        signature=None,
+        signature=False,
     ):
 
-        self.signature = ''
-        sig = inspect.signature(coroutine)
-        for param in sig.parameters.values():
-            if param.annotation != inspect.Parameter.empty:
-                self.signature += sdbus.dbus_signature(param.annotation)
-            else:
-                self.signature += sdbus.variant_signature()
+        if signature is False:
+            self.signature = ''
+            sig = inspect.signature(coroutine)
+            for param in sig.parameters.values():
+                if param.annotation != inspect.Parameter.empty:
+                    self.signature += sdbus.dbus_signature(param.annotation)
+                else:
+                    self.signature += sdbus.variant_signature()
 
-        if (signature is not None) and (signature != self.signature):
-            raise exceptions.BusError(
-                    f"Coroutine signature {self.signature} doesn't "
-                    f"match signal signature {signature}.")
+        elif signature is None:
+            self.signature = 'ANY'
+
+        else:
+            self.signature = signature
 
         self.sdbus = sdbus.Listen(
             service.sdbus, address, path, interface, signal, coroutine, args,
-            self.signature
+            self.signature.encode(), signature is False
         )

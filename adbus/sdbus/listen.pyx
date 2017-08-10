@@ -8,19 +8,23 @@ cdef int listen_message_handler(sdbus_h.sd_bus_message *m,
 
     message.import_sd_bus_message(m)
     args = message.read(listen.signature)
-    ensure_future(listen.coroutine(*args), loop=listen.loop)
+    if listen.seperate_arguments:
+        ensure_future(listen.coroutine(*args), loop=listen.loop)
+    else:
+        ensure_future(listen.coroutine(args), loop=listen.loop)
     return 1
 
 cdef class Listen:
     cdef bytes match
     cdef object coroutine
     cdef bytes signature
+    cdef bool seperate_arguments
 
     cdef sdbus_h.sd_bus_slot *_slot
     cdef object loop
 
     def __cinit__(self, Service service, address, path, interface, member,
-            coroutine, args=(), signature=''):
+            coroutine, args=(), signature=b'ANY', seperate_arguments=True):
 
         match = []
         match.append(f"sender='{address}'")
@@ -32,8 +36,9 @@ cdef class Listen:
 
         self.match = (','.join(match)).encode()
         self.coroutine = coroutine
-        self.signature = signature.encode()
+        self.signature = signature
         self.loop = service.loop
+        self.seperate_arguments = seperate_arguments
 
         ret = sdbus_h.sd_bus_add_match(service.bus, &self._slot, self.match,
             listen_message_handler, <void *>self)
