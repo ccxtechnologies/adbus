@@ -1,5 +1,4 @@
 # Copyright: 2017, CCX Technologies
-"""D-Bus Object"""
 
 import typing
 
