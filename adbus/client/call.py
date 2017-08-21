@@ -26,8 +26,8 @@ async def call(
         method (str): name of the method to call, ie. TestMethod
         args (list or tuple): optional, list of arguments to pass to the method
         response_signature (str): optional, D-Bus Signature of the expected
-            response, if None the signature will be created at run-time, specifying
-            it here will speed up the message post-processing
+            response, if None the signature will be created at run-time,
+            specifying it here will speed up the message post-processing
         timeout_ms (int): maximum time to wait for a response in milli-seconds
 
     """
