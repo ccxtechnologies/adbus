@@ -64,16 +64,14 @@ class Object:
         self.service = service
         self.path = path
 
-        self.vtable = [x.vt() for x in vtable]
-        """List of all D-Bus Methods, Properties, and Signals."""
-
-        self.vtable += [
+        vtable = list(vtable)
+        vtable += [
                 v.vt(self) for v in type(self).__dict__.values()
                 if hasattr(v, 'vt')
         ]
 
         self.sdbus = sdbus.Object(
-                service.sdbus, path, interface, self.vtable, depreciated,
+                service.sdbus, path, interface, vtable, depreciated,
                 hidden
         )
         """Interface to sd-bus library."""
@@ -81,7 +79,7 @@ class Object:
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
 
-        self.ccx = _CCX(self, self.path) if ccx else None
+        self.ccx = _CCX(service, path) if ccx else None
 
     def emit_property_changed(self, dbus_name):
         if self._defer_properties:
@@ -131,8 +129,6 @@ class _CCX(Object):
         path (str): path to connect to
 
     """
-
-    refernce_count = 1
 
     def __init__(self, service, path):
         super().__init__(service, path, 'ccx.DBus', ccx=False)

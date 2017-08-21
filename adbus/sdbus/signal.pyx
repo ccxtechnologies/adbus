@@ -8,7 +8,7 @@ cdef class Signal:
     cdef bytes name
     cdef list signature
     cdef bytes arg_signature
-    cdef Object object
+    cdef bool connected
 
     def __cinit__(self, name, signature=(), depreciated=False, hidden=False):
 
@@ -16,7 +16,7 @@ cdef class Signal:
         self.signature = [s.encode() for s in signature]
         self.arg_signature = (''.join(signature)).encode()
         self.type = sdbus_h._SD_BUS_VTABLE_SIGNAL
-        self.object = None
+        self.connected = False
 
         self.flags = 0
         if depreciated:
@@ -33,10 +33,10 @@ cdef class Signal:
         vtable.flags = self.flags
         memcpy(&vtable.x, &self.x, sizeof(self.x))
 
-    cdef set_object(self, object):
-        if self.object:
+    cdef set_object(self, Object object):
+        if self.connected:
             raise SdbusError("Signal already associated")
-        self.object = object
+        self.connected = True
 
     def emit(self, *values):
         message = Message()

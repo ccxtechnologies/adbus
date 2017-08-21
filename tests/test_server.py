@@ -83,7 +83,7 @@ class TestObject(adbus.server.Object):
     @adbus.server.method()
     def add_object(self) -> None:
         self.test = adbus.server.Object(
-                self.service, object_path + '/Test', object_interface, ccx=False
+                self.service, object_path + '/Test', object_interface, ccx=True
         )
 
     @adbus.server.method()

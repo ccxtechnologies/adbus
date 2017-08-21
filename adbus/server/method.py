@@ -42,14 +42,14 @@ class Method:
     """
 
     def __init__(
-        self,
-        callback,
-        name=None,
-        depreciated=False,
-        hidden=False,
-        unprivileged=False,
-        camel_convert=True,
-        dont_block=False,
+            self,
+            callback,
+            name=None,
+            depreciated=False,
+            hidden=False,
+            unprivileged=False,
+            camel_convert=True,
+            dont_block=False,
     ):
         if not name:
             name = callback.__name__
@@ -87,26 +87,19 @@ class Method:
         return self.callback(*args, **kwargs)
 
     def vt(self, instance=None):
-        """Interface to sd-bus library"""
-        if instance:
-            arg_signature = self.arg_signature[1:]
-            callback = functools.partial(self.callback, instance)
-        else:
-            arg_signature = self.arg_signature
-            callback = self.callback
-
         return sdbus.Method(
-            self.dbus_name, callback, arg_signature, self.return_signature,
-            self.depreciated, self.hidden, self.unprivileged, self.dont_block
+                self.dbus_name, self.callback, self.arg_signature,
+                self.return_signature, self.depreciated, self.hidden,
+                self.unprivileged, self.dont_block, instance
         )
 
 
 def method(
-    name=None,
-    depreciated=False,
-    hidden=False,
-    unprivileged=False,
-    camel_convert=True
+        name=None,
+        depreciated=False,
+        hidden=False,
+        unprivileged=False,
+        camel_convert=True
 ):
     """D-Bus Method Decorator.
 
@@ -139,7 +132,8 @@ def method(
 
     def wrapper(function):
         return Method(
-            function, name, depreciated, hidden, unprivileged, camel_convert
+                function, name, depreciated, hidden, unprivileged,
+                camel_convert
         )
 
     return wrapper

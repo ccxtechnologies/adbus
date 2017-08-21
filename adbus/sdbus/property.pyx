@@ -12,7 +12,7 @@ cdef int property_get_handler(sdbus_h.sd_bus *bus,
     message.import_sd_bus_message(m)
 
     try:
-        value = getattr(property.py_object, property.attr_name)
+        value = getattr(<object>(property.instance), property.attr_name)
         message.append(property.signature, value)
     except Exception as e:
         property.loop.call_exception_handler({'message': str(e), 'exception': e})
@@ -41,7 +41,7 @@ cdef int property_set_handler(sdbus_h.sd_bus *bus,
     try:
         # If the old value was created with a dbus_value property then
         # need to create a new instance of that object
-        old_value = getattr(property.py_object, property.attr_name)
+        old_value = getattr(<object>(property.instance), property.attr_name)
         if hasattr(old_value, 'dbus_value'):
             value = type(old_value)(values[0])
         else:
@@ -65,11 +65,12 @@ cdef class Property:
     cdef stdint.uint64_t flags
     cdef sdbus_h.sd_bus_vtable_property x
     cdef void *userdata
-    cdef object py_object
+    cdef object py_instance
+    cdef PyObject *instance
     cdef str attr_name
     cdef bytes name
     cdef bytes signature
-    cdef Object object
+    cdef bool connected
     cdef object loop
 
     def __cinit__(self, name, py_object, attr_name, signature='', read_only=False,
@@ -77,10 +78,10 @@ cdef class Property:
             emits_constant=False, emits_change=False, emits_invalidation=False):
 
         self.name = name.encode()
-        self.py_object = py_object
+        self.py_instance = py_object
         self.attr_name = attr_name
         self.signature = signature.encode()
-        self.object = None
+        self.connected = False
 
         if read_only:
             self.type = sdbus_h._SD_BUS_VTABLE_PROPERTY
@@ -121,11 +122,18 @@ cdef class Property:
         vtable.flags = self.flags
         memcpy(&vtable.x, &self.x, sizeof(self.x))
 
-    cdef set_object(self, object):
-        if self.object:
+    cdef set_object(self, Object object):
+        if self.connected:
             raise SdbusError("Property already associated")
-        self.object = object
-        self.loop = (<Object>object).loop
+        self.connected = True
+
+        # this decrements the counter of py_instance so if it
+        # refers to the base object the object won't be held in
+        # memory indefinitely (self-referenced)
+        self.instance = <PyObject *>self.py_instance
+        self.py_instance = None
+
+        self.loop = object.loop
 
     def emit_changed(self):
         if not self.object:

@@ -8,7 +8,10 @@ cdef void _method_message_handler(Method method, Message message):
     args = message.read(method.arg_signature)
 
     try:
-        value = method.callback(*args)
+        if method.instance:
+            value = method.callback(<object>(method.instance), *args)
+        else:
+            value = method.callback(*args)
     except Exception as e:
         method.loop.call_exception_handler({'message': str(e), 'exception': e})
         error = Error()
@@ -44,20 +47,23 @@ cdef class Method:
     cdef sdbus_h.sd_bus_vtable_method x
     cdef void *userdata
     cdef object callback
+    cdef object py_instance
+    cdef PyObject *instance
     cdef bytes name
     cdef bytes arg_signature
     cdef bytes return_signature
-    cdef Object object
+    cdef bool connected
     cdef object loop
 
     def __cinit__(self, name, callback, arg_signature='', return_signature='',
-            depreciated=False, hidden=False, unprivileged=False, no_reply=False):
+            depreciated=False, hidden=False, unprivileged=False, no_reply=False, instance=None):
 
         self.name = name.encode()
-        self.arg_signature = arg_signature.encode()
+        self.arg_signature = arg_signature[1:].encode() if instance is not None else arg_signature.encode()
         self.return_signature = return_signature.encode()
         self.callback = callback
-        self.object = None
+        self.py_instance = instance
+        self.connected = False
 
         self.type = sdbus_h._SD_BUS_VTABLE_METHOD
 
@@ -87,7 +93,14 @@ cdef class Method:
         memcpy(&vtable.x, &self.x, sizeof(self.x))
 
     cdef set_object(self, Object object):
-        if self.object:
+        if self.connected:
             raise SdbusError("Method already associated")
-        self.object = object
+        self.connected = True
+
+        # this decrements the counter of py_instance so if it
+        # refers to the base object the object won't be held in
+        # memory indefinitely (self-referenced)
+        self.instance = <PyObject *>self.py_instance
+        self.py_instance = None
+
         self.loop = object.loop
