@@ -80,6 +80,16 @@ class TestObject(adbus.server.Object):
         print(type(arg3))
         return str(arg3)
 
+    @adbus.server.method()
+    def add_object(self) -> None:
+        self.test = adbus.server.Object(
+                self.service, object_path + '/Test', object_interface, ccx=False
+        )
+
+    @adbus.server.method()
+    def del_object(self) -> None:
+        del self.test
+
 
 class Test(unittest.TestCase):
     """adbus method test cases."""

@@ -4,6 +4,9 @@
 import asyncio
 
 from .. import sdbus
+from .method import method
+
+import typing
 
 
 class Object:
@@ -78,13 +81,7 @@ class Object:
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
 
-        self.ccx = ccx
-        if self.ccx:
-            self.service._add_ccx(self.path)
-
-    def __dealloc__(self):
-        if self.ccx:
-            self.service._remove_ccx(self.path)
+        self.ccx = _CCX(self, self.path) if ccx else None
 
     def emit_property_changed(self, dbus_name):
         if self._defer_properties:
@@ -121,3 +118,38 @@ class Object:
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
         self.defer_property_updates(False)
+
+
+class _CCX(Object):
+    """Provides additional useful methods, similar to org.freedesktop.DBus.
+
+    NOTE: This isn't intended to be used directly, but will be automatically
+    added to a path when the ccx property on an Object is true.
+
+    Args:
+        service (Service): service to add to
+        path (str): path to connect to
+
+    """
+
+    refernce_count = 1
+
+    def __init__(self, service, path):
+        super().__init__(service, path, 'ccx.DBus', ccx=False)
+
+    @method()
+    def set_multi(
+            self, interface: str, properties: typing.Dict[str, typing.Any]
+    ) -> None:
+        """Set multiple properties with a single call, similar to GetAll."""
+
+        exceptions = ''
+        with self as s:
+            for name, value in properties.items():
+                try:
+                    setattr(s, name, value)
+                except Exception as e:
+                    exceptions += str(e) + "\n"
+
+        if exceptions:
+            raise ValueError(exceptions)
