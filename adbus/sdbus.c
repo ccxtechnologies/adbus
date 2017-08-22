@@ -17569,7 +17569,7 @@ static int __pyx_f_5adbus_5sdbus_property_set_handler(CYTHON_UNUSED sd_bus *__py
  *         else:
  *             value = values[0]             # <<<<<<<<<<<<<<
  * 
- *         setattr(property.py_object, property.attr_name, value)
+ *         setattr(<object>(property.instance), property.attr_name, value)
  */
       /*else*/ {
         if (unlikely(__pyx_v_values == Py_None)) {
@@ -17586,12 +17586,12 @@ static int __pyx_f_5adbus_5sdbus_property_set_handler(CYTHON_UNUSED sd_bus *__py
       /* "adbus/sdbus/property.pyx":50
  *             value = values[0]
  * 
- *         setattr(property.py_object, property.attr_name, value)             # <<<<<<<<<<<<<<
+ *         setattr(<object>(property.instance), property.attr_name, value)             # <<<<<<<<<<<<<<
  *     except Exception as e:
  *         property.loop.call_exception_handler({'message': str(e), 'exception': e})
  */
-      __pyx_t_8 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_property), __pyx_n_s_py_object); if (unlikely(!__pyx_t_8)) __PYX_ERR(11, 50, __pyx_L3_error)
-      __Pyx_GOTREF(__pyx_t_8);
+      __pyx_t_8 = ((PyObject *)__pyx_v_property->instance);
+      __Pyx_INCREF(__pyx_t_8);
       __pyx_t_1 = __pyx_v_property->attr_name;
       __Pyx_INCREF(__pyx_t_1);
       __pyx_t_13 = PyObject_SetAttr(__pyx_t_8, __pyx_t_1, __pyx_v_value); if (unlikely(__pyx_t_13 == -1)) __PYX_ERR(11, 50, __pyx_L3_error)
@@ -17620,7 +17620,7 @@ static int __pyx_f_5adbus_5sdbus_property_set_handler(CYTHON_UNUSED sd_bus *__py
 
     /* "adbus/sdbus/property.pyx":51
  * 
- *         setattr(property.py_object, property.attr_name, value)
+ *         setattr(<object>(property.instance), property.attr_name, value)
  *     except Exception as e:             # <<<<<<<<<<<<<<
  *         property.loop.call_exception_handler({'message': str(e), 'exception': e})
  *         error = Error()
@@ -17636,7 +17636,7 @@ static int __pyx_f_5adbus_5sdbus_property_set_handler(CYTHON_UNUSED sd_bus *__py
       __pyx_v_e = __pyx_t_8;
 
       /* "adbus/sdbus/property.pyx":52
- *         setattr(property.py_object, property.attr_name, value)
+ *         setattr(<object>(property.instance), property.attr_name, value)
  *     except Exception as e:
  *         property.loop.call_exception_handler({'message': str(e), 'exception': e})             # <<<<<<<<<<<<<<
  *         error = Error()

@@ -9,8 +9,6 @@ from .. import exceptions
 class Listen:
     """Listens for a D-Bus Signal from another process.
 
-    This is a co-routine, so must be await-ed from within a asyncio mainloop.
-
     Args:
         service (adbus.server.Service): service to connect to
         address (str): address (name) of the D-Bus Service to call

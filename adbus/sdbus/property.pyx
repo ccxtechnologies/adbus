@@ -47,7 +47,7 @@ cdef int property_set_handler(sdbus_h.sd_bus *bus,
         else:
             value = values[0]
 
-        setattr(property.py_object, property.attr_name, value)
+        setattr(<object>(property.instance), property.attr_name, value)
     except Exception as e:
         property.loop.call_exception_handler({'message': str(e), 'exception': e})
         error = Error()
