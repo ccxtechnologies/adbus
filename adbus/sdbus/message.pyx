@@ -68,10 +68,9 @@ cdef class Message:
 
     cdef new_signal(self, Signal signal):
         cdef int ret
-        cdef Object object = signal.object
         self.message = sdbus_h.sd_bus_message_unref(self.message)
-        ret = sdbus_h.sd_bus_message_new_signal(object.bus, &self.message,
-                object.path, object.interface, signal.name)
+        ret = sdbus_h.sd_bus_message_new_signal(signal.bus, &self.message,
+                signal.path, signal.interface, signal.name)
         if ret < 0:
             raise SdbusError(
                 f"Failed to create new signal: {errorcode[-ret]}", -ret)

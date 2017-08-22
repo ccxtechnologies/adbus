@@ -9,6 +9,9 @@ cdef class Signal:
     cdef list signature
     cdef bytes arg_signature
     cdef bool connected
+    cdef sdbus_h.sd_bus *bus
+    cdef bytes path
+    cdef bytes interface
 
     def __cinit__(self, name, signature=(), depreciated=False, hidden=False):
 
@@ -37,6 +40,9 @@ cdef class Signal:
         if self.connected:
             raise SdbusError("Signal already associated")
         self.connected = True
+        self.bus = object.bus
+        self.path = object.path
+        self.interface = object.interface
 
     def emit(self, *values):
         message = Message()
