@@ -15,9 +15,9 @@ Status
 
 Links
 -----
-- `Documentation <https://ccxtechnologies.github.io/python-adbus>`_
-- `Project Page <https://github.com/ccxtechnologies/python-adbus>`_
-- `Issues <https://github.com/ccxtechnologies/python-adbus/issues>`_
+- `Documentation <https://ccxtechnologies.github.io/adbus>`_
+- `Project Page <https://github.com/ccxtechnologies/adbus>`_
+- `Issues <https://github.com/ccxtechnologies/adbus/issues>`_
 
 Dependencies
 ------------
