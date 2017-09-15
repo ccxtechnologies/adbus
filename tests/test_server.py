@@ -195,14 +195,5 @@ class Test(unittest.TestCase):
 
         self.loop.run_until_complete(set_signal(self.obj))
 
-    def test_property_wrong_type(self):
-
-        async def set_props(obj):
-            print(obj.property1)
-            await self.delay(30)
-
-        self.loop.run_until_complete(set_props(self.obj))
-
-
 if __name__ == "__main__":
     unittest.main()
