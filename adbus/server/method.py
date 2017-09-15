@@ -84,7 +84,10 @@ class Method:
             self.return_signature = sdbus.variant_signature()
 
     def __call__(self, *args, **kwargs):
-        return self.callback(*args, **kwargs)
+        if self.sdbus.instance:
+            return self.callback(self.sdbus.instance, *args, **kwargs)
+        else:
+            return self.callback(*args, **kwargs)
 
     def vt(self, instance=None):
         return sdbus.Method(

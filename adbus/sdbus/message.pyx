@@ -310,8 +310,12 @@ cdef class Message:
                 sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
             raise SdbusError(f"Failed to open array {esignature}")
 
-        for v in list(value):
-            self.append_multiple(esignature, v)
+        if esignature[0] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
+             for v in dict(value).items():
+                 self.append(esignature, v)
+        else:
+            for v in list(value):
+                self.append_multiple(esignature, v)
 
         if sdbus_h.sd_bus_message_close_container(self.message) < 0:
             raise SdbusError(f"Failed to close array {esignature}")
