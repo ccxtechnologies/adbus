@@ -46,6 +46,10 @@ class TestObject(adbus.server.Object):
         )
 
     @adbus.server.method()
+    def str_list_method(self) -> typing.List[str]:
+        return ['thisisthefirst', 'two', 'three']
+
+    @adbus.server.method()
     def simple_method(self) -> int:
         return 1000
 
@@ -143,6 +147,14 @@ class Test(unittest.TestCase):
         self.loop.run_until_complete(
                 self.
                 call_method("TestMethod", "is", [-100, "doggie"], 'i', -94)
+        )
+
+    def test_str_list(self):
+        self.loop.run_until_complete(
+                self.call_method(
+                        "StrListMethod", "", [''], 'as',
+                        '3 "thisisthefirst" "two" "three"'
+                )
         )
 
     def test_method_rename(self):
