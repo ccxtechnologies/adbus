@@ -29,7 +29,7 @@ class TestDataType:
 
 class TestObject(adbus.server.Object):
 
-    property1: str = adbus.server.Property('none')
+    property1: str = adbus.server.Property(10)
     property2: int = adbus.server.Property(100, emits_change=False)
     property3: typing.List[int] = adbus.server.Property([1, 2, 3])
     datatype: TestDataType = adbus.server.Property(TestDataType(6))
@@ -194,6 +194,14 @@ class Test(unittest.TestCase):
             await self.delay(3)
 
         self.loop.run_until_complete(set_signal(self.obj))
+
+    def test_property_wrong_type(self):
+
+        async def set_props(obj):
+            print(obj.property1)
+            await self.delay(30)
+
+        self.loop.run_until_complete(set_props(self.obj))
 
 
 if __name__ == "__main__":

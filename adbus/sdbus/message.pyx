@@ -465,18 +465,39 @@ cdef class Message:
             self._append_basic(s, <void*>&v.c_double)
 
         elif s == sdbus_h.SD_BUS_TYPE_STRING:
-            v_str = value.encode('utf-8')
-            v.c_str = v_str
+            if type(value) == str:
+                v_str = value.encode('utf-8')
+                v.c_str = v_str
+            else:
+                try:
+                    v.c_str = value
+                except TypeError as e:
+                    e.args = (f"expected str or bytes, {type(value).__name__} found",)
+                    raise
             self._append_basic(s, <void*>v.c_str)
 
         elif s == sdbus_h.SD_BUS_TYPE_OBJECT_PATH:
-            v_str = value.encode('utf-8')
-            v.c_str = v_str
+            if type(value) == str:
+                v_str = value.encode('utf-8')
+                v.c_str = v_str
+            else:
+                try:
+                    v.c_str = value
+                except TypeError as e:
+                    e.args = (f"expected str or bytes, {type(value).__name__} found",)
+                    raise
             self._append_basic(s, <void*>v.c_str)
 
         elif s == sdbus_h.SD_BUS_TYPE_SIGNATURE:
-            v_str = value.encode('utf-8')
-            v.c_str = v_str
+            if type(value) == str:
+                v_str = value.encode('utf-8')
+                v.c_str = v_str
+            else:
+                try:
+                    v.c_str = value
+                except TypeError as e:
+                    e.args = (f"expected str or bytes, {type(value).__name__} found",)
+                    raise
             self._append_basic(s, <void*>v.c_str)
 
         elif s == sdbus_h.SD_BUS_TYPE_UNIX_FD:
