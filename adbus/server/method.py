@@ -83,11 +83,20 @@ class Method:
         else:
             self.return_signature = sdbus.variant_signature()
 
+    def __get__(self, instance, owner):
+        if instance is None:
+            return self
+
+        d = self
+
+        def mfactory(self, *args, **kwargs):
+            d(self, *args, **kwargs)
+
+        mfactory.__name__ = self.callback.__name__
+        return mfactory.__get__(instance, owner)
+
     def __call__(self, *args, **kwargs):
-        if self.sdbus.instance:
-            return self.callback(self.sdbus.instance, *args, **kwargs)
-        else:
-            return self.callback(*args, **kwargs)
+        return self.callback(*args, **kwargs)
 
     def vt(self, instance=None):
         return sdbus.Method(
