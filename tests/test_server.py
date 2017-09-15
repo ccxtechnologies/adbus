@@ -29,7 +29,7 @@ class TestDataType:
 
 class TestObject(adbus.server.Object):
 
-    property1: str = adbus.server.Property('startingstring')
+    property1: str = adbus.server.Property('propertystring')
     property2: int = adbus.server.Property(100, emits_change=False)
     property3: typing.List[int] = adbus.server.Property([1, 2, 3])
     datatype: TestDataType = adbus.server.Property(TestDataType(6))
@@ -83,7 +83,10 @@ class TestObject(adbus.server.Object):
     @adbus.server.method()
     def add_object(self) -> None:
         self.test = adbus.server.Object(
-                self.service, object_path + '/Test', object_interface, ccx=True
+                self.service,
+                object_path + '/Test',
+                object_interface,
+                ccx=True
         )
 
     @adbus.server.method()
@@ -194,6 +197,7 @@ class Test(unittest.TestCase):
             await self.delay(3)
 
         self.loop.run_until_complete(set_signal(self.obj))
+
 
 if __name__ == "__main__":
     unittest.main()
