@@ -29,7 +29,7 @@ class TestDataType:
 
 class TestObject(adbus.server.Object):
 
-    property1: str = adbus.server.Property(10)
+    property1: str = adbus.server.Property('startingstring')
     property2: int = adbus.server.Property(100, emits_change=False)
     property3: typing.List[int] = adbus.server.Property([1, 2, 3])
     datatype: TestDataType = adbus.server.Property(TestDataType(6))
