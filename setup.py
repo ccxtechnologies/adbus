@@ -4,12 +4,12 @@
 
 from distutils.core import setup
 from distutils.core import Extension
-from Cython.Build import cythonize
 import sys
 
 exec(open('adbus/__version__.py').read())
 
 if "--cythonize" in sys.argv:
+    from Cython.Build import cythonize
     sdbus = cythonize(
         [Extension("adbus.sdbus", ["adbus/sdbus.pyx"], libraries=["systemd"])]
     )
