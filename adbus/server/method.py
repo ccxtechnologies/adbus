@@ -90,7 +90,7 @@ class Method:
         d = self
 
         def mfactory(self, *args, **kwargs):
-            d(self, *args, **kwargs)
+            return d(self, *args, **kwargs)
 
         mfactory.__name__ = self.callback.__name__
         return mfactory.__get__(instance, owner)

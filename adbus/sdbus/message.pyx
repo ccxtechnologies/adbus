@@ -390,8 +390,10 @@ cdef class Message:
 
             value = values.pop(0)
 
-            if hasattr(value, 'dbus_value'):
+            try:
                 value = value.dbus_value
+            except AttributeError:
+                pass
 
             if s == sdbus_h.SD_BUS_TYPE_ARRAY:
                 self._append_array(&s, value, &i)
@@ -413,8 +415,10 @@ cdef class Message:
 
         s = signature[0]
 
-        if hasattr(value, 'dbus_value'):
+        try:
             value = value.dbus_value
+        except AttributeError:
+            pass
 
         if s == sdbus_h._SD_BUS_TYPE_INVALID:
             return
