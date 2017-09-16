@@ -79,7 +79,13 @@ class Object:
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
 
-        self.ccx = _CCX(service, path) if ccx else None
+        try:
+            self.ccx = _CCX(service, path) if ccx else None
+        except sdbus.SdbusError as e:
+            if e.errno == 17: # already exists
+                self.ccx = None
+            else:
+                raise
 
     def emit_property_changed(self, dbus_name):
         if self._defer_properties:
