@@ -1,6 +1,7 @@
 # Copyright: 2017, CCX Technologies
 
 cdef bytes signature_variant = int(sdbus_h.SD_BUS_TYPE_VARIANT).to_bytes(1, 'big')
+cdef bytes signature_boolean = int(sdbus_h.SD_BUS_TYPE_BOOLEAN).to_bytes(1, 'big')
 cdef bytes signature_byte = int(sdbus_h.SD_BUS_TYPE_BYTE).to_bytes(1, 'big')
 cdef bytes signature_int = int(sdbus_h.SD_BUS_TYPE_INT32).to_bytes(1, 'big')
 cdef bytes signature_float = int(sdbus_h.SD_BUS_TYPE_DOUBLE).to_bytes(1, 'big')
@@ -14,7 +15,7 @@ cdef bytes signature_invalid = b'E'
 
 cdef bytes _object_signature_basic(object obj):
     if (obj == bool) or isinstance(obj, bool):
-        return signature_byte
+        return signature_boolean
     elif (obj == int) or isinstance(obj, int):
         return signature_int
     elif (obj == float) or isinstance(obj, float):
