@@ -39,8 +39,6 @@ class Object:
             to the introspect XML data
         manager (bool): optional, if True add a device manager to this object,
             as defined by the D-Bus Spec from freedesktop.org
-        ccx: optional, add the additional ccx.DBus interface, which adds
-            some useful methods like SetMulti
 
     Raises:
         BusError: if an error occurs during initialization
@@ -56,7 +54,6 @@ class Object:
             depreciated=False,
             hidden=False,
             manager=False,
-            ccx=True,
     ):
         self._defer_properties = False
         self._deferred_property_signals = {}
@@ -74,18 +71,9 @@ class Object:
                 service.sdbus, path, interface, vtable, depreciated,
                 hidden
         )
-        """Interface to sd-bus library."""
 
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
-
-        try:
-            self.ccx = _CCX(service, path) if ccx else None
-        except sdbus.SdbusError as e:
-            if e.errno == 17: # already exists
-                self.ccx = None
-            else:
-                raise
 
     def emit_property_changed(self, dbus_name):
         if self._defer_properties:
@@ -123,35 +111,3 @@ class Object:
     def __exit__(self, exception_type, exception_value, exception_traceback):
         self.defer_property_updates(False)
 
-
-class _CCX(Object):
-    """Provides additional useful methods, similar to org.freedesktop.DBus.
-
-    NOTE: This isn't intended to be used directly, but will be automatically
-    added to a path when the ccx property on an Object is true.
-
-    Args:
-        service (Service): service to add to
-        path (str): path to connect to
-
-    """
-
-    def __init__(self, service, path):
-        super().__init__(service, path, 'ccx.DBus', ccx=False)
-
-    @method()
-    def set_multi(
-            self, interface: str, properties: typing.Dict[str, typing.Any]
-    ) -> None:
-        """Set multiple properties with a single call, similar to GetAll."""
-
-        exceptions = ''
-        with self as s:
-            for name, value in properties.items():
-                try:
-                    setattr(s, name, value)
-                except Exception as e:
-                    exceptions += str(e) + "\n"
-
-        if exceptions:
-            raise ValueError(exceptions)

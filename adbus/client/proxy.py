@@ -370,7 +370,7 @@ class Proxy:
         self, exception_type, exception_value, exception_traceback
     ):
         try:
-            await self._interfaces["ccx.DBus"].methods["SetMulti"](
+            await self._interfaces["ccx.DBus.Properties"].methods["SetMulti"](
                 self._interface, self._property_multi
             )
         except KeyError:

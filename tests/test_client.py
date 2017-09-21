@@ -212,13 +212,14 @@ class Test(unittest.TestCase):
 
         async def _test():
             await proxy.update()
-            print(await proxy.property1())
-            print(await proxy.property2())
+            v1 = await proxy.property1()
+            v2 = await proxy.property2()
             async with proxy as p:
                 p.property1 = self.rnd_str()
                 p.property2 = self.rnd_int()
-            print(await proxy.property1())
-            print(await proxy.property2())
+            await self.delay(3)
+            self.assertNotEqual(v1, await proxy.property1())
+            self.assertNotEqual(v2, await proxy.property2())
 
         self.loop.run_until_complete(_test())
 
