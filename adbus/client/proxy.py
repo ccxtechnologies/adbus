@@ -158,6 +158,7 @@ class Interface:
         self.signals = {}
         self.properties = {}
         self.changed_coroutine = changed_coroutine
+        self.camel_convert = camel_convert
 
         def _add_snake_and_camel(d, n, v):
             d[n] = v
@@ -215,7 +216,7 @@ class Interface:
             changed = list(changed.keys()) + invalidated
             if self.camel_convert:
                 changed = [sdbus.camel_to_snake(x) for x in changed]
-            self.changed_coroutine(changed)
+            await self.changed_coroutine(changed)
 
 
 class Proxy:
