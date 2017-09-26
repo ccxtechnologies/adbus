@@ -32,18 +32,15 @@ class Signal:
 
     def add(self, coroutine):
         listen = Listen(
-            self.service,
-            self.address,
-            self.path,
-            self.interface,
-            self.name,
-            coroutine
+                self.service, self.address, self.path, self.interface,
+                self.name, coroutine
         )
 
         if self.signature != listen.signature:
             raise exceptions.BusError(
                     f"Coroutine signature {listen.signature} doesn't "
-                    f"match signal signature {self.signature}.")
+                    f"match signal signature {self.signature}."
+            )
 
         self.listens[coroutine.__name__] = listen
 
@@ -84,12 +81,12 @@ class Property:
         if ((self.emits_changed_signal == 'false') or
                 (self.cached_value is None)):
             self.cached_value = await get(
-                self.service,
-                self.address,
-                self.path,
-                self.interface,
-                self.name,
-                timeout_ms=self.timeout_ms
+                    self.service,
+                    self.address,
+                    self.path,
+                    self.interface,
+                    self.name,
+                    timeout_ms=self.timeout_ms
             )
 
         return self.cached_value
@@ -99,13 +96,13 @@ class Property:
             raise AttributeError(f"Can't set read-only property {self.name}")
         else:
             await set_(
-                self.service,
-                self.address,
-                self.path,
-                self.interface,
-                self.name,
-                value,
-                timeout_ms=self.timeout_ms
+                    self.service,
+                    self.address,
+                    self.path,
+                    self.interface,
+                    self.name,
+                    value,
+                    timeout_ms=self.timeout_ms
             )
 
     async def __call__(self, value=None):
@@ -137,22 +134,23 @@ class Method:
 
     async def __call__(self, *args):
         return await call(
-            self.service,
-            self.address,
-            self.path,
-            self.interface,
-            self.name,
-            args,
-            self.return_signature,
-            timeout_ms=self.timeout_ms
+                self.service,
+                self.address,
+                self.path,
+                self.interface,
+                self.name,
+                args,
+                self.return_signature,
+                timeout_ms=self.timeout_ms
         )
 
 
 class Interface:
     def __init__(
-        self, service, address, path, etree, camel_convert, timeout_ms,
-        changed_coroutine
+            self, parent, service, address, path, etree, camel_convert,
+            timeout_ms, changed_coroutine
     ):
+        self.parent = parent
         interface = etree.attrib['name']
         self.methods = {}
         self.signals = {}
@@ -167,33 +165,35 @@ class Interface:
 
         for m in etree.iter('method'):
             _add_snake_and_camel(
-                self.methods, m.attrib['name'],
-                Method(service, address, path, interface, m, timeout_ms)
+                    self.methods, m.attrib['name'],
+                    Method(service, address, path, interface, m, timeout_ms)
             )
 
         for p in etree.iter('property'):
             _add_snake_and_camel(
-                self.properties, p.attrib['name'],
-                Property(service, address, path, interface, p, timeout_ms)
+                    self.properties, p.attrib['name'],
+                    Property(service, address, path, interface, p, timeout_ms)
             )
 
         if self.properties:
             self.properties_changed_listen = Listen(
-                service, address, path, "org.freedesktop.DBus.Properties",
-                "PropertiesChanged", self.properties_changed
+                    service, address, path, "org.freedesktop.DBus.Properties",
+                    "PropertiesChanged", self.properties_changed
             )
 
             self.get_all = get_all(
-                service, address, path, interface, timeout_ms
+                    service, address, path, interface, timeout_ms
             )
         else:
             self.get_all = None
 
         for s in etree.iter('signal'):
             _add_snake_and_camel(
-                self.signals, s.attrib['name'],
-                Signal(service, address, path, interface, s, timeout_ms)
+                    self.signals, s.attrib['name'],
+                    Signal(service, address, path, interface, s, timeout_ms)
             )
+
+        self.interface = interface
 
     async def update_properties(self):
         if self.get_all:
@@ -202,10 +202,8 @@ class Interface:
                 self.properties[p].cached_value = v
 
     async def properties_changed(
-        self,
-        interface: str,
-        changed: typing.Dict[str, typing.Any],
-        invalidated: typing.List[str]
+            self, interface: str, changed: typing.Dict[str, typing.Any],
+            invalidated: typing.List[str]
     ):
         for p, v in changed.items():
             self.properties[p].cached_value = v
@@ -245,12 +243,51 @@ class Interface:
             pass
 
         raise AttributeError(
-            f"'{type(self)}' interface has no attribute '{name}'"
+                f"'{type(self)}' interface has no attribute '{name}'"
         )
 
     def set_changed_coroutine(self, changed_coroutine):
         """Set the Interface's Changed Co-Routine."""
         self.changed_coroutine = changed_coroutine
+
+    async def __aenter__(self):
+        class _AsyncProps:
+            dbus_signature = 'a{sv}'
+
+            def __init__(self, camel_convert):
+                self._camel_convert = camel_convert
+
+            async def __await__(self):
+                pass
+
+            @property
+            def dbus_value(self):
+                if self._camel_convert:
+                    return {
+                            sdbus.snake_to_camel(p): v
+                            for p, v in self.__dict__.items()
+                            if p != "_camel_convert"
+                    }
+                else:
+                    return {
+                            p: v
+                            for p, v in self.__dict__.items()
+                            if p != "_camel_convert"
+                    }
+
+        self._property_multi = _AsyncProps(self.camel_convert)
+        return self._property_multi
+
+    async def __aexit__(
+            self, exception_type, exception_value, exception_traceback
+    ):
+        try:
+            await self.parent["ccx.DBus.Properties"].methods["SetMulti"](
+                    self.interface, self._property_multi
+            )
+        except KeyError:
+            for p, v in self._property_multi.dbus_value.items():
+                await self._interfaces[self._interface].properties[p].set(v)
 
 
 class Proxy:
@@ -283,14 +320,14 @@ class Proxy:
     _introspect_xml = None
 
     def __init__(
-        self,
-        service,
-        address,
-        path,
-        interface=None,
-        changed_coroutines=None,
-        timeout_ms=30000,
-        camel_convert=True,
+            self,
+            service,
+            address,
+            path,
+            interface=None,
+            changed_coroutines=None,
+            timeout_ms=30000,
+            camel_convert=True,
     ):
         self._node_i = 0
         self._interfaces = {}
@@ -332,51 +369,20 @@ class Proxy:
             raise AttributeError(f"Node {node} not in proxy")
 
         new = type(self)(
-            self._service, self._address, f"{self._path}/{node}", None,
-            changed_coroutines, self._timeout_ms, self._camel_convert
+                self._service, self._address, f"{self._path}/{node}", None,
+                changed_coroutines, self._timeout_ms, self._camel_convert
         )
 
         await new.update()
         return new
 
     async def __aenter__(self):
-        class _AsyncProps:
-            dbus_signature = 'a{sv}'
-
-            def __init__(self, camel_convert):
-                self._camel_convert = camel_convert
-
-            async def __await__(self):
-                pass
-
-            @property
-            def dbus_value(self):
-                if self._camel_convert:
-                    return {
-                        sdbus.snake_to_camel(p): v
-                        for p, v in self.__dict__.items()
-                        if p != "_camel_convert"
-                    }
-                else:
-                    return {
-                        p: v
-                        for p, v in self.__dict__.items()
-                        if p != "_camel_convert"
-                    }
-
-        self._property_multi = _AsyncProps(self._camel_convert)
-        return self._property_multi
+        return self._interfaces[self._interface].__aenter__()
 
     async def __aexit__(
-        self, exception_type, exception_value, exception_traceback
+            self, exception_type, exception_value, exception_traceback
     ):
-        try:
-            await self._interfaces["ccx.DBus.Properties"].methods["SetMulti"](
-                self._interface, self._property_multi
-            )
-        except KeyError:
-            for p, v in self._property_multi.dbus_value.items():
-                await self._interfaces[self._interface].properties[p].set(v)
+        return self._interfaces[self._interface].__aexit__()
 
     def __aiter__(self):
         return self
@@ -394,12 +400,12 @@ class Proxy:
             **Must be run once before using the Proxy.**
         """
         self._introspect_xml = await call(
-            self._service,
-            self._address,
-            self._path,
-            'org.freedesktop.DBus.Introspectable',
-            'Introspect',
-            response_signature="s"
+                self._service,
+                self._address,
+                self._path,
+                'org.freedesktop.DBus.Introspectable',
+                'Introspect',
+                response_signature="s"
         )
 
         self._update_interfaces()
@@ -413,9 +419,9 @@ class Proxy:
         for e in root.iter('interface'):
             name = e.attrib['name']
             self._interfaces[name] = Interface(
-                self._service, self._address, self._path, e,
-                self._camel_convert, self._timeout_ms,
-                self._changed_coroutines.get(name, None)
+                    self, self._service, self._address, self._path, e,
+                    self._camel_convert, self._timeout_ms,
+                    self._changed_coroutines.get(name, None)
             )
 
         for e in root.iter('node'):
