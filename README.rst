@@ -143,11 +143,8 @@ cache (i.e. will read on every access instead of tracking the property changes s
     # == Access a method using a different interface name
     proxy['com.example.service.serve'].remote_method_800(b"data")
 
-    # == Change a Proxies default interface
-    proxy = proxy['com.example.service.serve']
-
     # == Create a new proxy from a node in the proxy
-    proxy_new = await proxy('Test')['com.example.test']
+    proxy_new = await proxy('Test')
 
     # == Loop through all nodes in a proxy
     sum_cnt = 0

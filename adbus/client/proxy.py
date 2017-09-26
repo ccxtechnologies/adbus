@@ -218,6 +218,40 @@ class Interface:
                 changed = [sdbus.camel_to_snake(x) for x in changed]
             await self.changed_coroutine(changed)
 
+    def __getattr__(self, name):
+
+        if name == 'properties':
+            return self.properties
+
+        if name == 'methods':
+            return self.methods
+
+        if name == 'signals':
+            return self.signals
+
+        try:
+            return self.methods[name]
+        except KeyError:
+            pass
+
+        try:
+            return self.properties[name]
+        except KeyError:
+            pass
+
+        try:
+            return self.signals[name]
+        except KeyError:
+            pass
+
+        raise AttributeError(
+            f"'{type(self)}' interface has no attribute '{name}'"
+        )
+
+    def set_changed_coroutine(self, changed_coroutine):
+        """Set the Interface's Changed Co-Routine."""
+        self.changed_coroutine = changed_coroutine
+
 
 class Proxy:
     """Creates a Python Object that maps to an Interface that already
@@ -231,9 +265,10 @@ class Proxy:
             ie. /com/awesome/Settings1
         interface (str): optional, default interface to access, if None will
             use address
-        changed_coroutine: optional, coroutine called with a list of changed
-            properties, single argument is a list of property names, this is
-            the internal equivalent to the emit changed D-Bus signal
+        changed_coroutines: optional, coroutine dictionary of changed
+            coroutines, the key is the name of the interface to attach
+            to. The coroutine will be called with a single argument which is a
+            list of property names.
         timeout_ms (int): optional, maximum time to wait for a response in
             milli-seconds
         camel_convert (bool): optional, D-Bus method and property
@@ -253,7 +288,7 @@ class Proxy:
         address,
         path,
         interface=None,
-        changed_coroutine=None,
+        changed_coroutines=None,
         timeout_ms=30000,
         camel_convert=True,
     ):
@@ -268,63 +303,28 @@ class Proxy:
             self._interface = address
         else:
             self._interface = interface
-        self._changed_coroutine = changed_coroutine
+        if changed_coroutines:
+            self._changed_coroutines = changed_coroutines
+        else:
+            self._changed_coroutines = {}
         self._timeout_ms = timeout_ms
         self._camel_convert = camel_convert
 
     def __getattr__(self, name):
         if self._introspect_xml is None:
             raise RuntimeError("Must update proxy once before accessing.")
-
-        if name == 'properties':
-            return self._interfaces[self._interface].properties
-
-        if name == 'methods':
-            return self._interfaces[self._interface].methods
-
-        if name == 'signals':
-            return self._interfaces[self._interface].signals
-
-        try:
-            return self._interfaces[self._interface].methods[name]
-        except KeyError:
-            pass
-
-        try:
-            return self._interfaces[self._interface].properties[name]
-        except KeyError:
-            pass
-
-        try:
-            return self._interfaces[self._interface].signals[name]
-        except KeyError:
-            pass
-
-        raise AttributeError(
-            f"'{type(self)}' interface has no attribute '{name}'"
-        )
+        return getattr(self._interfaces[self._interface], name)
 
     def __getitem__(self, interface):
+        if self._introspect_xml is None:
+            raise RuntimeError("Must update proxy once before accessing.")
+
         if interface not in self._interfaces:
             raise KeyError(f"Interface {interface} not in proxy")
 
-        new = copy.copy(self)
-        new._interface = interface
-        return new
+        return self._interfaces[interface]
 
-    def __copy__(self):
-        new = type(self)(
-            self._service, self._address, self._path, self._interface,
-            self._changed_coroutine, self._timeout_ms, self._camel_convert
-        )
-
-        new._interface = self._interface
-        new._interfaces = self._interfaces
-        new._introspect_xml = self._introspect_xml
-
-        return new
-
-    async def __call__(self, node, changed_coroutine=None):
+    async def __call__(self, node, changed_coroutines=None):
         if self._camel_convert:
             node = sdbus.snake_to_camel(node)
 
@@ -333,7 +333,7 @@ class Proxy:
 
         new = type(self)(
             self._service, self._address, f"{self._path}/{node}", None,
-            changed_coroutine, self._timeout_ms, self._camel_convert
+            changed_coroutines, self._timeout_ms, self._camel_convert
         )
 
         await new.update()
@@ -411,9 +411,11 @@ class Proxy:
 
         root = etree.fromstring(self._introspect_xml)
         for e in root.iter('interface'):
-            self._interfaces[e.attrib['name']] = Interface(
+            name = e.attrib['name']
+            self._interfaces[name] = Interface(
                 self._service, self._address, self._path, e,
-                self._camel_convert, self._timeout_ms, self._changed_coroutine
+                self._camel_convert, self._timeout_ms,
+                self._changed_coroutines.get(name, None)
             )
 
         for e in root.iter('node'):
