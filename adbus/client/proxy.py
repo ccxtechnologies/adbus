@@ -151,7 +151,7 @@ class Interface:
     ):
         self.parent = parent
         interface = etree.attrib['name']
-        self.inerface = interface
+        self.interface = interface
         self.methods = {}
         self.signals = {}
         self.properties = {}
@@ -242,7 +242,7 @@ class Interface:
             pass
 
         raise AttributeError(
-                f"'{type(self)}' interface has no attribute '{name}'"
+                f"'{self.interface}' interface has no attribute '{name}'"
         )
 
     def set_changed_coroutine(self, changed_coroutine):
