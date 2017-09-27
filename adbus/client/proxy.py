@@ -3,7 +3,6 @@
 
 import xml.etree.ElementTree as etree
 import typing
-import copy
 
 from .. import sdbus
 from .. import exceptions
@@ -152,6 +151,7 @@ class Interface:
     ):
         self.parent = parent
         interface = etree.attrib['name']
+        self.inerface = interface
         self.methods = {}
         self.signals = {}
         self.properties = {}
@@ -178,7 +178,8 @@ class Interface:
         if self.properties:
             self.properties_changed_listen = Listen(
                     service, address, path, "org.freedesktop.DBus.Properties",
-                    "PropertiesChanged", self.properties_changed
+                    "PropertiesChanged", self.properties_changed,
+                    args=(interface,),
             )
 
             self.get_all = get_all(
@@ -192,8 +193,6 @@ class Interface:
                     self.signals, s.attrib['name'],
                     Signal(service, address, path, interface, s, timeout_ms)
             )
-
-        self.interface = interface
 
     async def update_properties(self):
         if self.get_all:
