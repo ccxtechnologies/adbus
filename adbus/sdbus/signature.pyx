@@ -128,12 +128,12 @@ cdef object _object_cast(bytes signature, object obj):
 
     if signature[0] == sdbus_h.SD_BUS_TYPE_ARRAY:
         if signature[1] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
-            return {_object_cast_basic(signature[2], k): _object_cast_basic(signature[3], v)
+            return {_object_cast_basic(signature[2:], k): _object_cast(signature[3:], v)
                     for k,v in obj.items()}
         else:
-            return [_object_cast_basic(signature[2], v) for v in obj]
+            return [_object_cast(signature[2:], v) for v in obj]
     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
-        return [_object_cast_basic(signature[2], v) for v in obj]
+        return [_object_cast(signature[2:], v) for v in obj]
 
     else:
         return _object_cast_basic(signature, obj)
