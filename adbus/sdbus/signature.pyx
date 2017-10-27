@@ -123,6 +123,9 @@ cdef object _object_cast_basic(bytes signature, object obj):
 
 cdef object _object_cast(bytes signature, object obj):
 
+    if hasattr(obj, 'dbus_value'):
+        obj = obj.dbus_value
+
     if signature[0] == sdbus_h.SD_BUS_TYPE_ARRAY:
         if signature[1] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
             return {_object_cast_basic(signature[2], k): _object_cast_basic(signature[3], v)
