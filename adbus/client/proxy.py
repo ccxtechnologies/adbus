@@ -17,6 +17,12 @@ class _Empty_Class:
     pass
 
 
+class _DbusWrapper:
+    def __init__(self, signature, value):
+        self.dbus_signature = signature
+        self.dbus_value = value
+
+
 class Signal:
     def __init__(self, service, address, path, interface, etree, timeout_ms):
         self.service = service
@@ -142,8 +148,10 @@ class Method:
                 self.path,
                 self.interface,
                 self.name, [
-                        sdbus.dbus_cast(self.arg_signatures[i], a)
-                        for i, a in enumerate(args)
+                        _DbusWrapper(
+                                self.arg_signatures[i],
+                                sdbus.dbus_cast(self.arg_signatures[i], a)
+                        ) for i, a in enumerate(args)
                 ],
                 self.return_signature,
                 timeout_ms=self.timeout_ms
@@ -266,13 +274,13 @@ class Interface:
     async def __aexit__(
             self, exception_type, exception_value, exception_traceback
     ):
-        properties = _Empty_Class()
-        properties.dbus_signature = 'a{sv}'
-        properties.dbus_value = {
-                sdbus.snake_to_camel(p) if self.camel_convert else p:
-                sdbus.dbus_cast(self.properties[p].signature, v)
-                for p, v in self._property_multi.__dict__.items()
-        }
+        properties = _DbusWrapper(
+                'a{sv}', {
+                        sdbus.snake_to_camel(p) if self.camel_convert else p:
+                        sdbus.dbus_cast(self.properties[p].signature, v)
+                        for p, v in self._property_multi.__dict__.items()
+                }
+        )
 
         try:
             await self.parent["ccx.DBus.Properties"].methods["SetMulti"](
