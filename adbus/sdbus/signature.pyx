@@ -109,13 +109,13 @@ def dbus_signature(obj):
     return _dbus_signature(obj).decode()
 
 cdef object _object_cast_basic(bytes signature, object obj):
-    if signature[0] == signature_boolean:
+    if signature[0] == sdbus_h.SD_BUS_TYPE_BOOLEAN :
         return bool(obj)
-    elif signature[0] == signature_int:
+    elif signature[0] == sdbus_h.SD_BUS_TYPE_INT32:
         return int(obj)
-    elif signature[0] == signature_float:
+    elif signature[0] == sdbus_h.SD_BUS_TYPE_DOUBLE:
         return float(obj)
-    elif signature[0] == signature_string:
+    elif signature[0] == sdbus_h.SD_BUS_TYPE_STRING:
         if type(obj) == bytes:
             return obj.decode('utf-8', errors='ignore')
         return str(obj)
@@ -123,13 +123,13 @@ cdef object _object_cast_basic(bytes signature, object obj):
 
 cdef object _object_cast(bytes signature, object obj):
 
-    if signature[0] == signature_array:
-        if signature[1] == signature_dict_begin:
+    if signature[0] == sdbus_h.SD_BUS_TYPE_ARRAY:
+        if signature[1] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
             return {_object_cast_basic(signature[2], k): _object_cast_basic(signature[3], v)
                     for k,v in obj.items()}
         else:
             return [_object_cast_basic(signature[2], v) for v in obj]
-    elif signature[0] == signature_struct_begin:
+    elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
         return [_object_cast_basic(signature[2], v) for v in obj]
 
     else:

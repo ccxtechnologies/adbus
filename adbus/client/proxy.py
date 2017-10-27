@@ -13,6 +13,10 @@ from . import set_
 from . import Listen
 
 
+class _Empty_Class:
+    pass
+
+
 class Signal:
     def __init__(self, service, address, path, interface, etree, timeout_ms):
         self.service = service
@@ -100,7 +104,7 @@ class Property:
                     self.path,
                     self.interface,
                     self.name,
-                    value,
+                    sdbus.dbus_cast(self.signature, value),
                     timeout_ms=self.timeout_ms
             )
 
@@ -137,8 +141,10 @@ class Method:
                 self.address,
                 self.path,
                 self.interface,
-                self.name,
-                args,
+                self.name, [
+                        sdbus.dbus_cast(self.arg_signatures[i], a)
+                        for i, a in enumerate(args)
+                ],
                 self.return_signature,
                 timeout_ms=self.timeout_ms
         )
@@ -254,44 +260,27 @@ class Interface:
         self.changed_coroutine = changed_coroutine
 
     async def __aenter__(self):
-        class _AsyncProps:
-            dbus_signature = 'a{sv}'
-
-            def __init__(self, camel_convert):
-                self._camel_convert = camel_convert
-
-            async def __await__(self):
-                pass
-
-            @property
-            def dbus_value(self):
-                if self._camel_convert:
-                    return {
-                            sdbus.snake_to_camel(p):
-                            sdbus.dbus_cast(sdbus.dbus_signature(p), v)
-                            for p, v in self.__dict__.items()
-                            if p != "_camel_convert"
-                    }
-                else:
-                    return {
-                            p: sdbus.dbus_cast(sdbus.dbus_signature(p), v)
-                            for p, v in self.__dict__.items()
-                            if p != "_camel_convert"
-                    }
-
-        self._property_multi = _AsyncProps(self.camel_convert)
+        self._property_multi = _Empty_Class()
         return self._property_multi
 
     async def __aexit__(
             self, exception_type, exception_value, exception_traceback
     ):
+        properties = _Empty_Class()
+        properties.dbus_signature = 'a{sv}'
+        properties.dbus_value = {
+                sdbus.snake_to_camel(p) if self.camel_convert else p:
+                sdbus.dbus_cast(self.properties[p].signature, v)
+                for p, v in self._property_multi.__dict__.items()
+        }
+
         try:
             await self.parent["ccx.DBus.Properties"].methods["SetMulti"](
-                    self.interface, self._property_multi
+                    self.interface, properties
             )
         except KeyError:
-            for p, v in self._property_multi.dbus_value.items():
-                await self._interfaces[self._interface].properties[p].set(v)
+            for p, v in properties.dbus_value.items():
+                await self.properties[p].set(v)
 
 
 class Proxy:
@@ -381,12 +370,14 @@ class Proxy:
         return new
 
     async def __aenter__(self):
-        return self._interfaces[self._interface].__aenter__()
+        return await self._interfaces[self._interface].__aenter__()
 
     async def __aexit__(
             self, exception_type, exception_value, exception_traceback
     ):
-        return self._interfaces[self._interface].__aexit__()
+        return await self._interfaces[self._interface].__aexit__(
+                exception_type, exception_value, exception_traceback
+        )
 
     def __aiter__(self):
         return self
