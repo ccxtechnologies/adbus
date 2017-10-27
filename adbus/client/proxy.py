@@ -177,9 +177,13 @@ class Interface:
 
         if self.properties:
             self.properties_changed_listen = Listen(
-                    service, address, path, "org.freedesktop.DBus.Properties",
-                    "PropertiesChanged", self.properties_changed,
-                    args=(interface,),
+                    service,
+                    address,
+                    path,
+                    "org.freedesktop.DBus.Properties",
+                    "PropertiesChanged",
+                    self.properties_changed,
+                    args=(interface, ),
             )
 
             self.get_all = get_all(
@@ -263,13 +267,14 @@ class Interface:
             def dbus_value(self):
                 if self._camel_convert:
                     return {
-                            sdbus.snake_to_camel(p): v
+                            sdbus.snake_to_camel(p):
+                            sdbus.dbus_cast(sdbus.dbus_signature(p), v)
                             for p, v in self.__dict__.items()
                             if p != "_camel_convert"
                     }
                 else:
                     return {
-                            p: v
+                            p: sdbus.dbus_cast(sdbus.dbus_signature(p), v)
                             for p, v in self.__dict__.items()
                             if p != "_camel_convert"
                     }

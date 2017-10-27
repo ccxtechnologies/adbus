@@ -107,3 +107,43 @@ def dbus_signature(obj):
         TypeError: If no D-Bus Equivalent for objects type.
     """
     return _dbus_signature(obj).decode()
+
+cdef object _object_cast_basic(bytes signature, object obj):
+    if signature[0] == signature_boolean:
+        return bool(obj)
+    elif signature[0] == signature_int:
+        return int(obj)
+    elif signature[0] == signature_float:
+        return float(obj)
+    elif signature[0] == signature_string:
+        if type(obj) == bytes:
+            return obj.decode('utf-8', errors='ignore')
+        return str(obj)
+    return obj
+
+cdef object _object_cast(bytes signature, object obj):
+
+    if signature[0] == signature_array:
+        if signature[1] == signature_dict_begin:
+            return {_object_cast_basic(signature[2], k): _object_cast_basic(signature[3], v)
+                    for k,v in obj.items()}
+        else:
+            return [_object_cast_basic(signature[2], v) for v in obj]
+    elif signature[0] == signature_struct_begin:
+        return [_object_cast_basic(signature[2], v) for v in obj]
+
+    else:
+        return _object_cast_basic(signature, obj)
+
+def dbus_cast(signature, obj):
+    """Casts an object into the type defined in a D-Bus signature.
+
+    Args:
+        signature (str): D-Bus type signature
+        obj (object or type): Python object or type
+
+    Returns:
+        A new type, cast from the D-Bus Signature.
+
+    """
+    return _object_cast(signature.encode(), obj)
