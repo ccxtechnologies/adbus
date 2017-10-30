@@ -131,7 +131,7 @@ cdef object _object_cast(bytes signature, object obj):
             return {_object_cast_basic(signature[2:], k): _object_cast(signature[3:], v)
                     for k,v in obj.items()}
         else:
-            return [_object_cast(signature[2:], v) for v in obj]
+            return [_object_cast(signature[1:], v) for v in obj]
     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
         return [_object_cast(signature[2:], v) for v in obj]
 

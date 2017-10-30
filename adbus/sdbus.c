@@ -5708,7 +5708,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
  *             return {_object_cast_basic(signature[2:], k): _object_cast(signature[3:], v)
  *                     for k,v in obj.items()}             # <<<<<<<<<<<<<<
  *         else:
- *             return [_object_cast(signature[2:], v) for v in obj]
+ *             return [_object_cast(signature[1:], v) for v in obj]
  */
         __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_obj, __pyx_n_s_items); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 132, __pyx_L8_error)
         __Pyx_GOTREF(__pyx_t_5);
@@ -5859,7 +5859,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
  *             return {_object_cast_basic(signature[2:], k): _object_cast(signature[3:], v)
  *                     for k,v in obj.items()}             # <<<<<<<<<<<<<<
  *         else:
- *             return [_object_cast(signature[2:], v) for v in obj]
+ *             return [_object_cast(signature[1:], v) for v in obj]
  */
         }
         __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
@@ -5888,7 +5888,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
     /* "adbus/sdbus/signature.pyx":134
  *                     for k,v in obj.items()}
  *         else:
- *             return [_object_cast(signature[2:], v) for v in obj]             # <<<<<<<<<<<<<<
+ *             return [_object_cast(signature[1:], v) for v in obj]             # <<<<<<<<<<<<<<
  *     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
  *         return [_object_cast(signature[2:], v) for v in obj]
  */
@@ -5941,7 +5941,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
           PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
           __PYX_ERR(0, 134, __pyx_L1_error)
         }
-        __pyx_t_6 = PySequence_GetSlice(__pyx_v_signature, 2, PY_SSIZE_T_MAX); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 134, __pyx_L1_error)
+        __pyx_t_6 = PySequence_GetSlice(__pyx_v_signature, 1, PY_SSIZE_T_MAX); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 134, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_6);
         __pyx_t_9 = __pyx_f_5adbus_5sdbus__object_cast(((PyObject*)__pyx_t_6), __pyx_v_v); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 134, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_9);
@@ -5966,7 +5966,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
 
   /* "adbus/sdbus/signature.pyx":135
  *         else:
- *             return [_object_cast(signature[2:], v) for v in obj]
+ *             return [_object_cast(signature[1:], v) for v in obj]
  *     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:             # <<<<<<<<<<<<<<
  *         return [_object_cast(signature[2:], v) for v in obj]
  * 
@@ -5983,7 +5983,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
   if (__pyx_t_2) {
 
     /* "adbus/sdbus/signature.pyx":136
- *             return [_object_cast(signature[2:], v) for v in obj]
+ *             return [_object_cast(signature[1:], v) for v in obj]
  *     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
  *         return [_object_cast(signature[2:], v) for v in obj]             # <<<<<<<<<<<<<<
  * 
@@ -6052,7 +6052,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
 
     /* "adbus/sdbus/signature.pyx":135
  *         else:
- *             return [_object_cast(signature[2:], v) for v in obj]
+ *             return [_object_cast(signature[1:], v) for v in obj]
  *     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:             # <<<<<<<<<<<<<<
  *         return [_object_cast(signature[2:], v) for v in obj]
  * 
