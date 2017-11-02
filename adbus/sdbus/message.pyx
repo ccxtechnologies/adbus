@@ -314,8 +314,11 @@ cdef class Message:
              for v in dict(value).items():
                  self.append(esignature, v)
         else:
-            for v in list(value):
-                self.append_multiple(esignature, v)
+            try:
+                for v in list(value):
+                    self.append_multiple(esignature, v)
+            except TypeError:
+                pass
 
         if sdbus_h.sd_bus_message_close_container(self.message) < 0:
             raise SdbusError(f"Failed to close array {esignature}")
