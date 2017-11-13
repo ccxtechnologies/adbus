@@ -105,7 +105,7 @@ class Method:
         return mfactory.__get__(instance, owner)
 
     def __call__(self, *args, **kwargs):
-        if self.threadsafe:
+        if not self.threadsafe:
             obj = self.callback.__self__
             if not hasattr(obj, '_adbus_object_lock'):
                 obj._adbus_object_lock = threading.RLock()
