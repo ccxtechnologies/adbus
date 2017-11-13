@@ -1,8 +1,8 @@
 # Copyright: 2017, CCX Technologies
 """D-Bus Method"""
 
-import functools
 import inspect
+import threading
 
 from .. import sdbus
 
@@ -36,6 +36,12 @@ class Method:
             converted between the two
         dont_block (bool): optional, if true the method call will not
             block on the D-Bus, **a value will never be returned**
+        threadsafe (bool): optional, if the method isn't threadsafe
+            (False) the object will lock, so that only one of the
+            objects non-threadsafe methods can run at a time,
+            default is True
+            **NOTE: this will only work if this is decorating a class
+            method, as the lock has to be connected to the method**
 
     Raises:
         BusError: if an error occurs during initialization
@@ -50,6 +56,7 @@ class Method:
             unprivileged=False,
             camel_convert=True,
             dont_block=False,
+            threadsafe=True,
     ):
         if not name:
             name = callback.__name__
@@ -83,6 +90,8 @@ class Method:
         else:
             self.return_signature = sdbus.variant_signature()
 
+        self.threadsafe = threadsafe
+
     def __get__(self, instance, owner):
         if instance is None:
             return self
@@ -96,7 +105,14 @@ class Method:
         return mfactory.__get__(instance, owner)
 
     def __call__(self, *args, **kwargs):
-        return self.callback(*args, **kwargs)
+        if self.threadsafe:
+            obj = self.callback.__self__
+            if not hasattr(obj, '_adbus_object_lock'):
+                obj._adbus_object_lock = threading.RLock()
+            with obj._adbus_object_lock:
+                return self.callback(*args, **kwargs)
+        else:
+            return self.callback(*args, **kwargs)
 
     def vt(self, instance=None):
         return sdbus.Method(
@@ -111,7 +127,8 @@ def method(
         depreciated=False,
         hidden=False,
         unprivileged=False,
-        camel_convert=True
+        camel_convert=True,
+        threadsafe=True,
 ):
     """D-Bus Method Decorator.
 
@@ -136,6 +153,12 @@ def method(
             methods and arguments are typically defined in Snake
             Case, if this is set the cases will be automatically
             converted between the two
+        threadsafe (bool): optional, if the method isn't threadsafe
+            (False) the object will lock, so that only one of the
+            objects non-threadsafe methods can run at a time,
+            default is True
+            **NOTE: this will only work if this is decorating a class
+            method, as the lock has to be connected to the method**
 
     Returns:
         Instantiated Method, which can be used to replace a method
@@ -145,7 +168,7 @@ def method(
     def wrapper(function):
         return Method(
                 function, name, depreciated, hidden, unprivileged,
-                camel_convert
+                camel_convert, threadsafe=threadsafe,
         )
 
     return wrapper
