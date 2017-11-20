@@ -128,6 +128,7 @@ def method(
         hidden=False,
         unprivileged=False,
         camel_convert=True,
+        dont_block=False,
         threadsafe=True,
 ):
     """D-Bus Method Decorator.
@@ -153,6 +154,8 @@ def method(
             methods and arguments are typically defined in Snake
             Case, if this is set the cases will be automatically
             converted between the two
+        dont_block (bool): optional, if true the method call will not
+            block on the D-Bus, **a value will never be returned**
         threadsafe (bool): optional, if the method isn't threadsafe
             (False) the object will lock, so that only one of the
             objects non-threadsafe methods can run at a time,
@@ -167,8 +170,14 @@ def method(
 
     def wrapper(function):
         return Method(
-                function, name, depreciated, hidden, unprivileged,
-                camel_convert, threadsafe=threadsafe,
+                function,
+                name,
+                depreciated,
+                hidden,
+                unprivileged,
+                camel_convert,
+                dont_block=dont_block,
+                threadsafe=threadsafe,
         )
 
     return wrapper
