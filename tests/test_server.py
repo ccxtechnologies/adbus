@@ -34,6 +34,15 @@ class TestObject(adbus.server.Object):
     property3: typing.List[int] = adbus.server.Property([1, 2, 3])
     datatype: TestDataType = adbus.server.Property(TestDataType(6))
 
+    complex_type1: typing.Dict[str, str] = adbus.server.Property(
+            {
+                    "a": "10",
+                    "b": "hello"
+            }
+    )
+
+    complex_type2: typing.Tuple[str, str, int] = adbus.server.Property(("a", "b", 10))
+
     signal1: (int, str) = adbus.server.Signal()
     signal2: int = adbus.server.Signal()
     signal_cnt: int = adbus.server.Signal()
@@ -145,8 +154,9 @@ class Test(unittest.TestCase):
 
     def test_method_basic(self):
         self.loop.run_until_complete(
-                self.
-                call_method("TestMethod", "is", [-100, "doggie"], 'i', -94)
+                self.call_method(
+                        "TestMethod", "is", [-100, "doggie"], 'i', -94
+                )
         )
 
     def test_str_list(self):

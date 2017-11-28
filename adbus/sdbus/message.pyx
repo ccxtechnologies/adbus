@@ -116,7 +116,8 @@ cdef class Message:
 
     cdef _read_array(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]])
-        cdef bytes psignature = signature[index[0]:elength+index[0]] + bytes(1)
+        cdef bytes bsignature = signature
+        cdef bytes psignature = bsignature[index[0]:elength+index[0]]
         cdef char *esignature = psignature
         cdef list values = []
         cdef list value
@@ -166,7 +167,8 @@ cdef class Message:
 
     cdef list _read_struct(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
-        cdef bytes psignature = signature[index[0]:elength+index[0]-1] + bytes(1)
+        cdef bytes bsignature = signature
+        cdef bytes psignature = bsignature[index[0]:elength+index[0]-1]
         cdef char *esignature = psignature
         cdef list value
 
@@ -185,7 +187,8 @@ cdef class Message:
 
     cdef list _read_dict(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
-        cdef bytes psignature = signature[index[0]:elength+index[0]-1] + bytes(1)
+        cdef bytes bsignature = signature
+        cdef bytes psignature = bsignature[index[0]:elength+index[0]-1]
         cdef char *esignature = psignature
 
         index[0] += elength + 1
@@ -301,7 +304,8 @@ cdef class Message:
     cdef _append_array(self, const char *signature, object value,
             unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]])
-        cdef bytes psignature = signature[index[0]:elength+index[0]] + bytes(1)
+        cdef bytes bsignature = signature
+        cdef bytes psignature = bsignature[index[0]:elength+index[0]]
         cdef char *esignature = psignature
 
         index[0] += elength
@@ -339,15 +343,16 @@ cdef class Message:
 
     cdef _append_struct(self, const char *signature, object value,
             unsigned int *index):
-        cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
-        cdef bytes psignature = signature[index[0]:elength+index[0]-1] + bytes(1)
+        cdef unsigned int elength = self._element_length(&signature[index[0]-1])-2
+        cdef bytes bsignature = signature
+        cdef bytes psignature = bsignature[index[0]:elength+index[0]]
         cdef char *esignature = psignature
 
-        index[0] += elength + 1
+        index[0] += elength + 2
 
         if sdbus_h.sd_bus_message_open_container(self.message,
                 sdbus_h.SD_BUS_TYPE_STRUCT, esignature) < 0:
-            raise SdbusError(f"Failed to open struct {esignature}")
+            raise SdbusError(f"Failed to open struct {psignature} {index[0]} {elength} {signature}")
 
         self.append_multiple(esignature, value)
 
@@ -356,8 +361,9 @@ cdef class Message:
 
     cdef _append_dict(self, const char *signature, object value,
             unsigned int *index):
-        cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
-        cdef bytes psignature = signature[index[0]:elength+index[0]-1] + bytes(1)
+        cdef unsigned int elength = self._element_length(&signature[index[0]-1])-2
+        cdef bytes bsignature = signature
+        cdef bytes psignature = bsignature[index[0]:elength+index[0]]
         cdef char *esignature = psignature
         cdef char ksignature = esignature[0]
         cdef char vsignature = esignature[1]

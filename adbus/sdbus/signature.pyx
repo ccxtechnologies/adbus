@@ -53,6 +53,12 @@ cdef const char* _object_signature(object obj):
                 signature += _object_signature(v)
             signature += signature_struct_end
 
+    elif isinstance(obj, tuple):
+        signature += signature_struct_begin
+        for v in obj:
+            signature += _object_signature(v)
+        signature += signature_struct_end
+
     elif isinstance(obj, GenericMeta) and (obj.__extra__ == dict):
         signature += signature_array
         signature += signature_dict_begin

@@ -25,8 +25,8 @@ class Test(unittest.TestCase):
     @classmethod
     def rnd_str(cls, N=8):
         return ''.join(
-            random.choice(string.ascii_uppercase + string.digits)
-            for _ in range(N)
+                random.choice(string.ascii_uppercase + string.digits)
+                for _ in range(N)
         )
 
     @classmethod
@@ -36,10 +36,10 @@ class Test(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.server = subprocess.Popen(
-            [
-                'python', '-m', 'unittest',
-                'tests.test_server.Test.test_method_wait'
-            ]
+                [
+                        'python', '-m', 'unittest',
+                        'tests.test_server.Test.test_method_wait'
+                ]
         )
         time.sleep(3)
 
@@ -62,86 +62,129 @@ class Test(unittest.TestCase):
         async def call_basic():
             print("Calling...")
             value = await adbus.client.call(
-                self.service,
-                "adbus.test",
-                "/adbus/test/Tests1",
-                "adbus.test",
-                "SlowMethod",
-                response_signature="",
-                timeout_ms=6000
+                    self.service,
+                    "adbus.test",
+                    "/adbus/test/Tests1",
+                    "adbus.test",
+                    "SlowMethod",
+                    response_signature="",
+                    timeout_ms=6000
             )
             print(f"Returned {value}")
 
-        self.loop.run_until_complete(asyncio.gather(
-            call_basic(),
-        ))
+        self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     def test_get(self):
         async def call_basic():
             value = await adbus.client.get(
-                self.service,
-                "adbus.test",
-                "/adbus/test/Tests1",
-                "adbus.test",
-                "Property2",
+                    self.service,
+                    "adbus.test",
+                    "/adbus/test/Tests1",
+                    "adbus.test",
+                    "Property2",
             )
             print(f"Returned {value}")
 
-        self.loop.run_until_complete(asyncio.gather(
-            call_basic(),
-        ))
+        self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     def test_get_all(self):
         async def call_basic():
             value = await adbus.client.get_all(
-                self.service,
-                "adbus.test",
-                "/adbus/test/Tests1",
-                "adbus.test",
+                    self.service,
+                    "adbus.test",
+                    "/adbus/test/Tests1",
+                    "adbus.test",
             )
             print(f"Returned {value}")
 
-        self.loop.run_until_complete(asyncio.gather(
-            call_basic(),
-        ))
+        self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     def test_set(self):
         async def call_basic():
             await adbus.client.set_(
-                self.service,
-                "adbus.test",
-                "/adbus/test/Tests1",
-                "adbus.test",
-                "Property1",
-                "CRUD",
+                    self.service,
+                    "adbus.test",
+                    "/adbus/test/Tests1",
+                    "adbus.test",
+                    "Property1",
+                    "CRUD",
             )
 
-        self.loop.run_until_complete(asyncio.gather(
-            call_basic(),
-        ))
+        self.loop.run_until_complete(asyncio.gather(call_basic(), ))
+
+    def test_set_dict(self):
+        class _Crud:
+            dbus_signature = 'a{ss}'
+            dbus_value = {"c": "43", "d": "test"}
+
+        async def call_basic():
+            x = {"a": "A", "b": "B"}
+            await adbus.client.set_(
+                    self.service,
+                    "adbus.test",
+                    "/adbus/test/Tests1",
+                    "adbus.test",
+                    "ComplexType1",
+                    {"a": "A",
+                     "b": "B"},
+            )
+            value = await adbus.client.get(
+                    self.service,
+                    "adbus.test",
+                    "/adbus/test/Tests1",
+                    "adbus.test",
+                    "ComplexType1",
+            )
+            self.assertEqual(x, value)
+
+        self.loop.run_until_complete(asyncio.gather(call_basic(), ))
+
+    def test_set_tuple(self):
+        class _Crud:
+            dbus_signature = 'a{ss}'
+            dbus_value = {"c": "43", "d": "test"}
+
+        async def call_basic():
+            x = ('test', 'stuff', 100000)
+            await adbus.client.set_(
+                    self.service,
+                    "adbus.test",
+                    "/adbus/test/Tests1",
+                    "adbus.test",
+                    "ComplexType2",
+                    x,
+            )
+            value = await adbus.client.get(
+                    self.service,
+                    "adbus.test",
+                    "/adbus/test/Tests1",
+                    "adbus.test",
+                    "ComplexType2",
+            )
+            for i, v in enumerate(value):
+                self.assertEqual(x[i], v)
+
+        self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     @unittest.skip("long test used for development")
     def test_listen(self):
         async def test_cb(
-            interface: str,
-            changed: typing.Dict[str, typing.Any],
-            invalidated: typing.List[str]
+                interface: str, changed: typing.Dict[str, typing.Any],
+                invalidated: typing.List[str]
         ):
             print("Properties Changed")
             print((interface, changed, invalidated))
 
         self.listen = adbus.client.Listen(
-            self.service, "adbus.test", "/adbus/test/Tests1",
-            "org.freedesktop.DBus.Properties", "PropertiesChanged", test_cb
+                self.service, "adbus.test", "/adbus/test/Tests1",
+                "org.freedesktop.DBus.Properties", "PropertiesChanged", test_cb
         )
 
-        self.loop.run_until_complete(
-            self.delay(30),
-        )
+        self.loop.run_until_complete(self.delay(30), )
 
     def test_proxy_props(self):
         proxy = adbus.client.Proxy(
-            self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
+                self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
         )
 
         async def _test():
@@ -160,7 +203,7 @@ class Test(unittest.TestCase):
 
     def test_proxy_signal(self):
         proxy = adbus.client.Proxy(
-            self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
+                self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
         )
 
         async def test_cb(count: int):
@@ -176,7 +219,7 @@ class Test(unittest.TestCase):
 
     def test_proxy_interface(self):
         proxy = adbus.client.Proxy(
-            self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
+                self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
         )
 
         async def _test():
@@ -191,7 +234,7 @@ class Test(unittest.TestCase):
 
     def test_proxy_nodes(self):
         proxy = adbus.client.Proxy(
-            self.service, "adbus.test", "/adbus/test", "adbus.test"
+                self.service, "adbus.test", "/adbus/test", "adbus.test"
         )
 
         async def _test():
@@ -207,7 +250,7 @@ class Test(unittest.TestCase):
 
     def test_proxy_multi_prop(self):
         proxy = adbus.client.Proxy(
-            self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
+                self.service, "adbus.test", "/adbus/test/Tests1", "adbus.test"
         )
 
         async def _test():
