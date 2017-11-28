@@ -74,6 +74,27 @@ class Test(unittest.TestCase):
 
         self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
+    def test_call_complicated(self):
+        async def call_basic():
+            print("Calling...")
+
+            class _Args:
+                dbus_signature = "a{sv}"
+                dbus_value = {"d": 10, "c": "a1234"}
+
+            value = await adbus.client.call(
+                    self.service,
+                    "adbus.test",
+                    "/adbus/test/Tests1",
+                    "adbus.test",
+                    "ComplicatedArgs",
+                    args=[_Args],
+                    timeout_ms=6000
+            )
+            print(f"Returned {value}")
+
+        self.loop.run_until_complete(asyncio.gather(call_basic(), ))
+
     def test_get(self):
         async def call_basic():
             value = await adbus.client.get(

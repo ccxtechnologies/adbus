@@ -27,6 +27,11 @@ class TestDataType:
         self.dbus_value = str(self.value)
 
 
+class _TestObect:
+    dbus_signature = 'o'
+    dbus_value = '/this/is/nothing'
+
+
 class TestObject(adbus.server.Object):
 
     property1: str = adbus.server.Property('propertystring')
@@ -41,7 +46,9 @@ class TestObject(adbus.server.Object):
             }
     )
 
-    complex_type2: typing.Tuple[str, str, int] = adbus.server.Property(("a", "b", 10))
+    complex_type2: typing.Tuple[str, str, int] = adbus.server.Property(
+            ("a", "b", 10)
+    )
 
     signal1: (int, str) = adbus.server.Signal()
     signal2: int = adbus.server.Signal()
@@ -105,6 +112,12 @@ class TestObject(adbus.server.Object):
     @adbus.server.method()
     def del_object(self) -> None:
         del self.test
+
+    @adbus.server.method()
+    def complicated_args(self, properties: typing.Dict[str, typing.Any]
+                         ) -> _TestObect:
+        print(properties)
+        return "/this/is/nothing"
 
 
 class Test(unittest.TestCase):
