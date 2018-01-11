@@ -3,7 +3,6 @@
 import inspect
 
 from .. import sdbus
-from .. import exceptions
 
 
 class Listen:
