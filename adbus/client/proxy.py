@@ -39,13 +39,30 @@ class Signal:
             if x.tag == 'arg':
                 self.signature += x.attrib['type']
 
-    def add(self, coroutine):
+    def add(self, coroutine, signature=False):
+        """Add a listening coroutine to this signal.
+
+        Args:
+            coroutine (coroutine): coroutine to schedule when signal received
+            signature (str): optional, signature of the signal, if False the
+                types of the coroutine arguments will be used to create the
+                signature and the coroutine will be called with one argument
+                per signal argument, if defined the coroutine will be called
+                with a list of arguments, if None the coroutine will be called
+                with a list of types determined at run-time
+        """
         listen = Listen(
-                self.service, self.address, self.path, self.interface,
-                self.name, coroutine
+                self.service,
+                self.address,
+                self.path,
+                self.interface,
+                self.name,
+                coroutine,
+                signature=signature
         )
 
-        if self.signature != listen.signature:
+        if ((listen.signature != 'ANY') and
+                (self.signature != listen.signature)):
             raise exceptions.BusError(
                     f"Coroutine signature {listen.signature} doesn't "
                     f"match signal signature {self.signature}."
