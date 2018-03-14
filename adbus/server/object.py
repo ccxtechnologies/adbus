@@ -63,13 +63,13 @@ class Object:
 
         vtable = list(vtable)
         vtable += [
-                v.vt(self) for v in type(self).__dict__.values()
+                v.vt(self)
+                for v in type(self).__dict__.values()
                 if hasattr(v, 'vt')
         ]
 
         self.sdbus = sdbus.Object(
-                service.sdbus, path, interface, vtable, depreciated,
-                hidden
+                service.sdbus, path, interface, vtable, depreciated, hidden
         )
 
         if manager:
@@ -110,4 +110,3 @@ class Object:
 
     def __exit__(self, exception_type, exception_value, exception_traceback):
         self.defer_property_updates(False)
-
