@@ -47,4 +47,3 @@ class Service:
 
     def get_loop(self):
         return self.sdbus.get_loop()
-

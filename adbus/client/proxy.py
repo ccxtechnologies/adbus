@@ -24,7 +24,10 @@ class _DbusWrapper:
 
 
 class Signal:
-    def __init__(self, service, address, path, interface, etree, timeout_ms):
+    def __init__(
+            self, parent, service, address, path, interface, etree, timeout_ms
+    ):
+        self.parent = parent
         self.service = service
         self.address = address
         self.path = path
@@ -61,8 +64,10 @@ class Signal:
                 signature=signature
         )
 
-        if ((listen.signature != 'ANY') and
-                (self.signature != listen.signature)):
+        if (
+                (listen.signature != 'ANY')
+                and (self.signature != listen.signature)
+        ):
             raise exceptions.BusError(
                     f"Coroutine signature {listen.signature} doesn't "
                     f"match signal signature {self.signature}."
@@ -84,7 +89,10 @@ class Property:
     emits_changed_signal = 'true'
     cached_value = None
 
-    def __init__(self, service, address, path, interface, etree, timeout_ms):
+    def __init__(
+            self, parent, service, address, path, interface, etree, timeout_ms
+    ):
+        self.parent = parent
         self.service = service
         self.address = address
         self.path = path
@@ -92,6 +100,8 @@ class Property:
         self.timeout_ms = timeout_ms
         self.name = etree.attrib['name']
         self.signature = etree.attrib['type']
+        self.trackers = {}
+
         if etree.attrib['access'] == 'readwrite':
             self.readonly = False
         else:
@@ -99,13 +109,17 @@ class Property:
 
         for x in etree:
             if x.tag == 'annotation':
-                if (x.attrib['name'] ==
-                        'org.freedesktop.DBus.Property.EmitsChangedSignal'):
+                if (
+                        x.attrib['name'] ==
+                        'org.freedesktop.DBus.Property.EmitsChangedSignal'
+                ):
                     self.emits_changed_signal = x.attrib['value'].lower()
 
     async def get(self):
-        if ((self.emits_changed_signal == 'false') or
-                (self.cached_value is None)):
+        if (
+                (self.emits_changed_signal == 'false')
+                or (self.cached_value is None)
+        ):
             self.cached_value = await get(
                     self.service,
                     self.address,
@@ -131,6 +145,12 @@ class Property:
                     timeout_ms=self.timeout_ms
             )
 
+    def track(self, coroutine):
+        self.trackers[coroutine.__name__] = coroutine
+
+    def untrack(self, coroutine):
+        del self.trackers[coroutine.__name__]
+
     async def __call__(self, value=None):
         if value is None:
             return await self.get()
@@ -140,7 +160,10 @@ class Property:
 
 
 class Method:
-    def __init__(self, service, address, path, interface, etree, timeout_ms):
+    def __init__(
+            self, parent, service, address, path, interface, etree, timeout_ms
+    ):
+        self.parent = parent
         self.service = service
         self.address = address
         self.path = path
@@ -197,13 +220,19 @@ class Interface:
         for m in etree.iter('method'):
             _add_snake_and_camel(
                     self.methods, m.attrib['name'],
-                    Method(service, address, path, interface, m, timeout_ms)
+                    Method(
+                            self, service, address, path, interface, m,
+                            timeout_ms
+                    )
             )
 
         for p in etree.iter('property'):
             _add_snake_and_camel(
                     self.properties, p.attrib['name'],
-                    Property(service, address, path, interface, p, timeout_ms)
+                    Property(
+                            self, service, address, path, interface, p,
+                            timeout_ms
+                    )
             )
 
         if self.properties:
@@ -226,7 +255,10 @@ class Interface:
         for s in etree.iter('signal'):
             _add_snake_and_camel(
                     self.signals, s.attrib['name'],
-                    Signal(service, address, path, interface, s, timeout_ms)
+                    Signal(
+                            self, service, address, path, interface, s,
+                            timeout_ms
+                    )
             )
 
     async def update_properties(self):
@@ -240,7 +272,11 @@ class Interface:
             invalidated: typing.List[str]
     ):
         for p, v in changed.items():
-            self.properties[p].cached_value = v
+            prop = self.properties[p]
+            prop.cached_value = v
+            for coroutine in prop.trackers.values():
+                await coroutine(v)
+
         for p in invalidated:
             self.properties[p].cached_value = None
 

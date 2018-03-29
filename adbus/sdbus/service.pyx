@@ -91,5 +91,6 @@ cdef class Service:
 
                 if r == 0:
                     break
+
         finally:
             self.connected = False
