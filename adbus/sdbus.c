@@ -4421,7 +4421,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
  *         signature += signature_array
  *         signature += signature_dict_begin             # <<<<<<<<<<<<<<
  *         signature += _object_signature_basic(next(iter(obj.keys())))
- *         signature += _object_signature_basic(next(iter(obj.values())))
+ *         signature += _object_signature(next(iter(obj.values())))
  */
     __pyx_t_1 = PyNumber_InPlaceAdd(__pyx_v_signature, __pyx_v_5adbus_5sdbus_signature_dict_begin); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -4432,7 +4432,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
  *         signature += signature_array
  *         signature += signature_dict_begin
  *         signature += _object_signature_basic(next(iter(obj.keys())))             # <<<<<<<<<<<<<<
- *         signature += _object_signature_basic(next(iter(obj.values())))
+ *         signature += _object_signature(next(iter(obj.values())))
  *         signature += signature_dict_end
  */
     __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_obj, __pyx_n_s_keys); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 40, __pyx_L1_error)
@@ -4473,7 +4473,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
     /* "adbus/sdbus/signature.pyx":41
  *         signature += signature_dict_begin
  *         signature += _object_signature_basic(next(iter(obj.keys())))
- *         signature += _object_signature_basic(next(iter(obj.values())))             # <<<<<<<<<<<<<<
+ *         signature += _object_signature(next(iter(obj.values())))             # <<<<<<<<<<<<<<
  *         signature += signature_dict_end
  * 
  */
@@ -4503,7 +4503,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
     __pyx_t_1 = __Pyx_PyIter_Next(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-    __pyx_t_4 = __pyx_f_5adbus_5sdbus__object_signature_basic(__pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
+    __pyx_t_4 = __Pyx_PyBytes_FromString(__pyx_f_5adbus_5sdbus__object_signature(__pyx_t_1)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 41, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = PyNumber_InPlaceAdd(__pyx_v_signature, __pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 41, __pyx_L1_error)
@@ -4514,7 +4514,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
 
     /* "adbus/sdbus/signature.pyx":42
  *         signature += _object_signature_basic(next(iter(obj.keys())))
- *         signature += _object_signature_basic(next(iter(obj.values())))
+ *         signature += _object_signature(next(iter(obj.values())))
  *         signature += signature_dict_end             # <<<<<<<<<<<<<<
  * 
  *     elif isinstance(obj, list):
@@ -4884,7 +4884,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
  *         signature += signature_array
  *         signature += signature_dict_begin             # <<<<<<<<<<<<<<
  *         signature += _object_signature_basic(obj.__args__[0])
- *         signature += _object_signature_basic(obj.__args__[1])
+ *         signature += _object_signature(obj.__args__[1])
  */
     __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_v_signature, __pyx_v_5adbus_5sdbus_signature_dict_begin); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 64, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
@@ -4895,7 +4895,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
  *         signature += signature_array
  *         signature += signature_dict_begin
  *         signature += _object_signature_basic(obj.__args__[0])             # <<<<<<<<<<<<<<
- *         signature += _object_signature_basic(obj.__args__[1])
+ *         signature += _object_signature(obj.__args__[1])
  *         signature += signature_dict_end
  */
     __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_cur_scope->__pyx_v_obj, __pyx_n_s_args); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 65, __pyx_L1_error)
@@ -4915,7 +4915,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
     /* "adbus/sdbus/signature.pyx":66
  *         signature += signature_dict_begin
  *         signature += _object_signature_basic(obj.__args__[0])
- *         signature += _object_signature_basic(obj.__args__[1])             # <<<<<<<<<<<<<<
+ *         signature += _object_signature(obj.__args__[1])             # <<<<<<<<<<<<<<
  *         signature += signature_dict_end
  * 
  */
@@ -4924,7 +4924,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
     __pyx_t_4 = __Pyx_GetItemInt(__pyx_t_1, 1, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __pyx_t_1 = __pyx_f_5adbus_5sdbus__object_signature_basic(__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_f_5adbus_5sdbus__object_signature(__pyx_t_4)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 66, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
     __pyx_t_4 = PyNumber_InPlaceAdd(__pyx_v_signature, __pyx_t_1); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 66, __pyx_L1_error)
@@ -4935,7 +4935,7 @@ static char const *__pyx_f_5adbus_5sdbus__object_signature(PyObject *__pyx_v_obj
 
     /* "adbus/sdbus/signature.pyx":67
  *         signature += _object_signature_basic(obj.__args__[0])
- *         signature += _object_signature_basic(obj.__args__[1])
+ *         signature += _object_signature(obj.__args__[1])
  *         signature += signature_dict_end             # <<<<<<<<<<<<<<
  * 
  *     elif isinstance(obj, GenericMeta) and (obj.__extra__ == list):
