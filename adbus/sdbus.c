@@ -11444,7 +11444,7 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message_append_multiple(struct __pyx_obj
  *                 pass
  * 
  *             if s == sdbus_h.SD_BUS_TYPE_ARRAY:             # <<<<<<<<<<<<<<
- *                 self._append_array(&s, value, &i)
+ *                 self._append_array(signature, value, &i)
  * 
  */
     switch (__pyx_v_s) {
@@ -11453,11 +11453,11 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message_append_multiple(struct __pyx_obj
       /* "adbus/sdbus/message.pyx":408
  * 
  *             if s == sdbus_h.SD_BUS_TYPE_ARRAY:
- *                 self._append_array(&s, value, &i)             # <<<<<<<<<<<<<<
+ *                 self._append_array(signature, value, &i)             # <<<<<<<<<<<<<<
  * 
  *             elif s == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
  */
-      __pyx_t_10 = ((struct __pyx_vtabstruct_5adbus_5sdbus_Message *)__pyx_v_self->__pyx_vtab)->_append_array(__pyx_v_self, (&__pyx_v_s), __pyx_v_value, (&__pyx_v_i)); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 408, __pyx_L1_error)
+      __pyx_t_10 = ((struct __pyx_vtabstruct_5adbus_5sdbus_Message *)__pyx_v_self->__pyx_vtab)->_append_array(__pyx_v_self, __pyx_v_signature, __pyx_v_value, (&__pyx_v_i)); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 408, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
@@ -11465,16 +11465,16 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message_append_multiple(struct __pyx_obj
  *                 pass
  * 
  *             if s == sdbus_h.SD_BUS_TYPE_ARRAY:             # <<<<<<<<<<<<<<
- *                 self._append_array(&s, value, &i)
+ *                 self._append_array(signature, value, &i)
  * 
  */
       break;
 
       /* "adbus/sdbus/message.pyx":410
- *                 self._append_array(&s, value, &i)
+ *                 self._append_array(signature, value, &i)
  * 
  *             elif s == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:             # <<<<<<<<<<<<<<
- *                 self._append_struct(&s, value, &i)
+ *                 self._append_struct(signature, value, &i)
  * 
  */
       case SD_BUS_TYPE_STRUCT_BEGIN:
@@ -11482,28 +11482,28 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message_append_multiple(struct __pyx_obj
       /* "adbus/sdbus/message.pyx":411
  * 
  *             elif s == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
- *                 self._append_struct(&s, value, &i)             # <<<<<<<<<<<<<<
+ *                 self._append_struct(signature, value, &i)             # <<<<<<<<<<<<<<
  * 
  *             elif s == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
  */
-      __pyx_t_10 = ((struct __pyx_vtabstruct_5adbus_5sdbus_Message *)__pyx_v_self->__pyx_vtab)->_append_struct(__pyx_v_self, (&__pyx_v_s), __pyx_v_value, (&__pyx_v_i)); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 411, __pyx_L1_error)
+      __pyx_t_10 = ((struct __pyx_vtabstruct_5adbus_5sdbus_Message *)__pyx_v_self->__pyx_vtab)->_append_struct(__pyx_v_self, __pyx_v_signature, __pyx_v_value, (&__pyx_v_i)); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 411, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
       /* "adbus/sdbus/message.pyx":410
- *                 self._append_array(&s, value, &i)
+ *                 self._append_array(signature, value, &i)
  * 
  *             elif s == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:             # <<<<<<<<<<<<<<
- *                 self._append_struct(&s, value, &i)
+ *                 self._append_struct(signature, value, &i)
  * 
  */
       break;
 
       /* "adbus/sdbus/message.pyx":413
- *                 self._append_struct(&s, value, &i)
+ *                 self._append_struct(signature, value, &i)
  * 
  *             elif s == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:             # <<<<<<<<<<<<<<
- *                 self._append_dict(&s, value, &i)
+ *                 self._append_dict(signature, value, &i)
  * 
  */
       case SD_BUS_TYPE_DICT_ENTRY_BEGIN:
@@ -11511,19 +11511,19 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message_append_multiple(struct __pyx_obj
       /* "adbus/sdbus/message.pyx":414
  * 
  *             elif s == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
- *                 self._append_dict(&s, value, &i)             # <<<<<<<<<<<<<<
+ *                 self._append_dict(signature, value, &i)             # <<<<<<<<<<<<<<
  * 
  *             else:
  */
-      __pyx_t_10 = ((struct __pyx_vtabstruct_5adbus_5sdbus_Message *)__pyx_v_self->__pyx_vtab)->_append_dict(__pyx_v_self, (&__pyx_v_s), __pyx_v_value, (&__pyx_v_i)); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 414, __pyx_L1_error)
+      __pyx_t_10 = ((struct __pyx_vtabstruct_5adbus_5sdbus_Message *)__pyx_v_self->__pyx_vtab)->_append_dict(__pyx_v_self, __pyx_v_signature, __pyx_v_value, (&__pyx_v_i)); if (unlikely(!__pyx_t_10)) __PYX_ERR(1, 414, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
 
       /* "adbus/sdbus/message.pyx":413
- *                 self._append_struct(&s, value, &i)
+ *                 self._append_struct(signature, value, &i)
  * 
  *             elif s == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:             # <<<<<<<<<<<<<<
- *                 self._append_dict(&s, value, &i)
+ *                 self._append_dict(signature, value, &i)
  * 
  */
       break;

@@ -405,13 +405,13 @@ cdef class Message:
                 pass
 
             if s == sdbus_h.SD_BUS_TYPE_ARRAY:
-                self._append_array(&s, value, &i)
+                self._append_array(signature, value, &i)
 
             elif s == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
-                self._append_struct(&s, value, &i)
+                self._append_struct(signature, value, &i)
 
             elif s == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
-                self._append_dict(&s, value, &i)
+                self._append_dict(signature, value, &i)
 
             else:
                 self.append(&s, value)
