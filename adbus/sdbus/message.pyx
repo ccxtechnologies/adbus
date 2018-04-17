@@ -360,18 +360,19 @@ cdef class Message:
             raise SdbusError(f"Failed to close dict {esignature}")
 
     cdef _append_dict_item(self, const char *signature, object value):
+        cdef unsigned int elength = self._element_length(&signature[2])
         cdef bytes bsignature = signature
-        cdef bytes psignature = bsignature[1:3] + bytes(1)
+        cdef bytes psignature = bsignature[1:2+elength] + bytes(1)
         cdef char *esignature = psignature
         cdef char ksignature = esignature[0]
-        cdef char vsignature = esignature[1]
+        cdef char *vsignature = &esignature[1]
 
         if sdbus_h.sd_bus_message_open_container(self.message,
                 sdbus_h.SD_BUS_TYPE_DICT_ENTRY, esignature) < 0:
             raise SdbusError(f"Failed to open dict item {esignature}")
 
         self.append(&ksignature, value[0])
-        self.append(&vsignature, value[1])
+        self.append(vsignature, value[1])
 
         if sdbus_h.sd_bus_message_close_container(self.message) < 0:
             raise SdbusError(f"Failed to close dict item {esignature}")
