@@ -154,6 +154,7 @@ cdef extern from "systemd/sd-bus.h":
             const char *contents)
     int sd_bus_message_enter_container(sd_bus_message *m, char type,
             const char *contents)
+    int sd_bus_message_at_end(sd_bus_message *m, int complete)
     int sd_bus_message_exit_container(sd_bus_message *m)
     int sd_bus_message_close_container(sd_bus_message *m)
 

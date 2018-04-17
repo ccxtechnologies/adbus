@@ -12,10 +12,6 @@ cdef union _value:
     bint c_bool
     const char* c_str
 
-cdef class MessageEmptyError(Exception):
-    """Empty Message Element Error"""
-    pass
-
 cdef class Message:
     cdef sdbus_h.sd_bus_message *message
 
@@ -111,8 +107,6 @@ cdef class Message:
             raise SdbusError(
                     f"Failed to read value with signature {chr(sig)}: {errorcode[-ret]}",
                     -ret)
-        if ret == 0:
-            raise MessageEmptyError(f"No data to read of type {chr(sig)}")
 
     cdef _read_array(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]])
@@ -128,15 +122,12 @@ cdef class Message:
                 sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
             raise SdbusError(f"Failed to enter array {esignature}")
 
-        while True:
-            try:
-                value = self.read(esignature)
-                if len(value) == 1:
-                    values.append(value[0])
-                else:
-                    values.append(value)
-            except MessageEmptyError:
-                break
+        while not sdbus_h.sd_bus_message_at_end(self.message,0):
+            value = self.read(esignature)
+            if len(value) == 1:
+                values.append(value[0])
+            else:
+                values.append(value)
 
         if sdbus_h.sd_bus_message_exit_container(self.message) < 0:
             raise SdbusError(f"Failed to exit array {esignature}")
@@ -287,10 +278,7 @@ cdef class Message:
             else:
                 raise SdbusError(f"Unsupported signature type {chr(s)} for read")
 
-        if (len(values) == 0) and (signature[0]):
-            raise MessageEmptyError(f"No data read in type {signature}")
-        else:
-            return values
+        return values
 
     # ------------
 

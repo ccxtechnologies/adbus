@@ -112,7 +112,7 @@ cache (i.e. will read on every access instead of tracking the property changes s
       interface='com.example.service.unit')
 
   async def proxy_examples():
-    proxy.update() # initialize the proxy
+    await proxy.update() # initialize the proxy
 
     # == Access Properties
     await proxy.remote_propertyX.set(45)
