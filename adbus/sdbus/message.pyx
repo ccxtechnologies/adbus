@@ -314,15 +314,8 @@ cdef class Message:
                 sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
             raise SdbusError(f"Failed to open array {esignature}")
 
-        if esignature[0] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
-             for v in dict(value).items():
-                 self.append(esignature, v)
-        else:
-            try:
-                for v in list(value):
-                    self.append_multiple(esignature, v)
-            except TypeError:
-                pass
+        for item in value:
+            self.append(esignature, item)
 
         if sdbus_h.sd_bus_message_close_container(self.message) < 0:
             raise SdbusError(f"Failed to close array {esignature}")
@@ -354,44 +347,56 @@ cdef class Message:
                 sdbus_h.SD_BUS_TYPE_STRUCT, esignature) < 0:
             raise SdbusError(f"Failed to open struct {psignature} {index[0]} {elength} {signature}")
 
-        self.append_multiple(esignature, value)
+        self._append_multiple(esignature, value)
 
         if sdbus_h.sd_bus_message_close_container(self.message) < 0:
             raise SdbusError(f"Failed to close struct {esignature}")
 
     cdef _append_dict(self, const char *signature, object value,
             unsigned int *index):
-        cdef unsigned int elength = self._element_length(&signature[index[0]-1])-2
+        cdef unsigned int elength = self._element_length(&signature[index[0]])
         cdef bytes bsignature = signature
         cdef bytes psignature = bsignature[index[0]:elength+index[0]] + bytes(1)
+        cdef char *esignature = psignature
+
+        index[0] += elength
+
+        if sdbus_h.sd_bus_message_open_container(self.message,
+                sdbus_h.SD_BUS_TYPE_ARRAY, esignature) < 0:
+            raise SdbusError(f"Failed to open dict {esignature}")
+
+        for item in value.items():
+            self._append_dict_item(esignature, item)
+
+        if sdbus_h.sd_bus_message_close_container(self.message) < 0:
+            raise SdbusError(f"Failed to close dict {esignature}")
+
+    cdef _append_dict_item(self, const char *signature, object value):
+        cdef bytes bsignature = signature
+        cdef bytes psignature = bsignature[1:3] + bytes(1)
         cdef char *esignature = psignature
         cdef char ksignature = esignature[0]
         cdef char vsignature = esignature[1]
 
-        index[0] += elength + 1
-
         if sdbus_h.sd_bus_message_open_container(self.message,
                 sdbus_h.SD_BUS_TYPE_DICT_ENTRY, esignature) < 0:
-            raise SdbusError(f"Failed to open dictionary {esignature}")
+            raise SdbusError(f"Failed to open dict item {esignature}")
 
-        self.append_multiple(esignature, value)
+        self.append(&ksignature, value[0])
+        self.append(&vsignature, value[1])
 
         if sdbus_h.sd_bus_message_close_container(self.message) < 0:
-            raise SdbusError(f"Failed to close dictionary {esignature}")
+            raise SdbusError(f"Failed to close dict item {esignature}")
 
-
-    cdef append_multiple(self, const char *signature, object values):
+    cdef _append_multiple(self, const char *signature, object values):
         cdef unsigned int i = 0
         cdef char s
         cdef object value
 
         if isinstance(values, (str, bytes)):
             values = [values]
-        else:
-            try:
-                values = list(values)
-            except TypeError:
-                values = [values]
+        elif isinstance(values, tuple):
+            values = list(values)
 
         while values:
             s = signature[i]
@@ -405,13 +410,13 @@ cdef class Message:
                 pass
 
             if s == sdbus_h.SD_BUS_TYPE_ARRAY:
-                self._append_array(signature, value, &i)
+                if signature[1] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
+                    self._append_dict(signature, value, &i)
+                else:
+                    self._append_array(signature, value, &i)
 
             elif s == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
                 self._append_struct(signature, value, &i)
-
-            elif s == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
-                self._append_dict(signature, value, &i)
 
             else:
                 self.append(&s, value)
@@ -433,16 +438,16 @@ cdef class Message:
             return
 
         elif s == sdbus_h.SD_BUS_TYPE_ARRAY:
-            self._append_array(signature, value, &i)
+            if signature[1] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
+                self._append_dict(signature, value, &i)
+            else:
+                self._append_array(signature, value, &i)
 
         elif s == sdbus_h.SD_BUS_TYPE_VARIANT:
             self._append_variant(value)
 
         elif s == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
             self._append_struct(signature, value, &i)
-
-        elif s == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
-            self._append_dict(signature, value, &i)
 
         elif s == sdbus_h.SD_BUS_TYPE_BYTE:
             v.c_byte = value
