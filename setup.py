@@ -43,10 +43,8 @@ def check_external_dependancy(name):
         )
         if b'/' not in whereis.stdout:
             print(f"\033[91m Failed to find dependency {name}.\033[0m")
-            exit(-1)
     except subprocess.CalledProcessError:
         print(f"\033[91m Failed to run whereis, is whereis broken?\033[0m")
-        exit(-1)
 
 
 check_external_dependancy("libsystemd")
