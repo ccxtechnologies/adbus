@@ -13,6 +13,9 @@ __url__ = 'https://github.com/ccxtechnologies'
 __version__ = None
 exec(open(f'{__module__}/__version__.py').read())
 
+if "--nosystemd" in sys.argv:
+    sys.argv.remove("--nosystemd")
+
 
 def cython(module, libraries):
     if "--cythonize" in sys.argv:
