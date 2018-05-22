@@ -156,7 +156,7 @@ cdef class Message:
         # variant only has one type
         return value[0]
 
-    cdef list _read_struct(self, const char *signature, unsigned int *index):
+    cdef tuple _read_struct(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
         cdef bytes bsignature = signature
         cdef bytes psignature = bsignature[index[0]:elength+index[0]-1] + bytes(1)
@@ -174,7 +174,7 @@ cdef class Message:
         if sdbus_h.sd_bus_message_exit_container(self.message) < 0:
             raise SdbusError(f"Failed to exit structure {esignature}")
 
-        return value
+        return tuple(value)
 
     cdef list _read_dict(self, const char *signature, unsigned int *index):
         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1

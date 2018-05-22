@@ -8073,7 +8073,7 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message__read_variant(struct __pyx_obj_5
  *         # variant only has one type
  *         return value[0]             # <<<<<<<<<<<<<<
  * 
- *     cdef list _read_struct(self, const char *signature, unsigned int *index):
+ *     cdef tuple _read_struct(self, const char *signature, unsigned int *index):
  */
   __Pyx_XDECREF(__pyx_r);
   if (unlikely(__pyx_v_value == Py_None)) {
@@ -8110,7 +8110,7 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message__read_variant(struct __pyx_obj_5
 /* "adbus/sdbus/message.pyx":159
  *         return value[0]
  * 
- *     cdef list _read_struct(self, const char *signature, unsigned int *index):             # <<<<<<<<<<<<<<
+ *     cdef tuple _read_struct(self, const char *signature, unsigned int *index):             # <<<<<<<<<<<<<<
  *         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
  *         cdef bytes bsignature = signature
  */
@@ -8135,7 +8135,7 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message__read_struct(struct __pyx_obj_5a
 
   /* "adbus/sdbus/message.pyx":160
  * 
- *     cdef list _read_struct(self, const char *signature, unsigned int *index):
+ *     cdef tuple _read_struct(self, const char *signature, unsigned int *index):
  *         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1             # <<<<<<<<<<<<<<
  *         cdef bytes bsignature = signature
  *         cdef bytes psignature = bsignature[index[0]:elength+index[0]-1] + bytes(1)
@@ -8150,7 +8150,7 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message__read_struct(struct __pyx_obj_5a
   __pyx_v_elength = __pyx_t_3;
 
   /* "adbus/sdbus/message.pyx":161
- *     cdef list _read_struct(self, const char *signature, unsigned int *index):
+ *     cdef tuple _read_struct(self, const char *signature, unsigned int *index):
  *         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
  *         cdef bytes bsignature = signature             # <<<<<<<<<<<<<<
  *         cdef bytes psignature = bsignature[index[0]:elength+index[0]-1] + bytes(1)
@@ -8277,7 +8277,7 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message__read_struct(struct __pyx_obj_5a
  *         if sdbus_h.sd_bus_message_exit_container(self.message) < 0:
  *             raise SdbusError(f"Failed to exit structure {esignature}")             # <<<<<<<<<<<<<<
  * 
- *         return value
+ *         return tuple(value)
  */
     __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_esignature); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 175, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -8306,19 +8306,25 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message__read_struct(struct __pyx_obj_5a
   /* "adbus/sdbus/message.pyx":177
  *             raise SdbusError(f"Failed to exit structure {esignature}")
  * 
- *         return value             # <<<<<<<<<<<<<<
+ *         return tuple(value)             # <<<<<<<<<<<<<<
  * 
  *     cdef list _read_dict(self, const char *signature, unsigned int *index):
  */
   __Pyx_XDECREF(__pyx_r);
-  __Pyx_INCREF(__pyx_v_value);
-  __pyx_r = __pyx_v_value;
+  if (unlikely(__pyx_v_value == Py_None)) {
+    PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
+    __PYX_ERR(1, 177, __pyx_L1_error)
+  }
+  __pyx_t_4 = PyList_AsTuple(__pyx_v_value); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 177, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_4);
+  __pyx_r = ((PyObject*)__pyx_t_4);
+  __pyx_t_4 = 0;
   goto __pyx_L0;
 
   /* "adbus/sdbus/message.pyx":159
  *         return value[0]
  * 
- *     cdef list _read_struct(self, const char *signature, unsigned int *index):             # <<<<<<<<<<<<<<
+ *     cdef tuple _read_struct(self, const char *signature, unsigned int *index):             # <<<<<<<<<<<<<<
  *         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
  *         cdef bytes bsignature = signature
  */
@@ -8340,7 +8346,7 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message__read_struct(struct __pyx_obj_5a
 }
 
 /* "adbus/sdbus/message.pyx":179
- *         return value
+ *         return tuple(value)
  * 
  *     cdef list _read_dict(self, const char *signature, unsigned int *index):             # <<<<<<<<<<<<<<
  *         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
@@ -8548,7 +8554,7 @@ static PyObject *__pyx_f_5adbus_5sdbus_7Message__read_dict(struct __pyx_obj_5adb
   goto __pyx_L0;
 
   /* "adbus/sdbus/message.pyx":179
- *         return value
+ *         return tuple(value)
  * 
  *     cdef list _read_dict(self, const char *signature, unsigned int *index):             # <<<<<<<<<<<<<<
  *         cdef unsigned int elength = self._element_length(&signature[index[0]-1])-1
