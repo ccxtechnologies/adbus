@@ -436,9 +436,9 @@ class Proxy:
     async def __aexit__(
             self, exception_type, exception_value, exception_traceback
     ):
-        return await self._interfaces[self._interface].__aexit__(
-                exception_type, exception_value, exception_traceback
-        )
+        return await self._interfaces[
+                self._interface
+        ].__aexit__(exception_type, exception_value, exception_traceback)
 
     def __aiter__(self):
         return self

@@ -5997,7 +5997,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
  *         else:
  *             return [_object_cast(signature[1:], v) for v in obj]             # <<<<<<<<<<<<<<
  *     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
- *         return [_object_cast(signature[2:], v) for v in obj]
+ *         return tuple([_object_cast(signature[2:], v) for v in obj])
  */
     /*else*/ {
       __Pyx_XDECREF(__pyx_r);
@@ -6075,7 +6075,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
  *         else:
  *             return [_object_cast(signature[1:], v) for v in obj]
  *     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:             # <<<<<<<<<<<<<<
- *         return [_object_cast(signature[2:], v) for v in obj]
+ *         return tuple([_object_cast(signature[2:], v) for v in obj])
  * 
  */
   __pyx_t_3 = __Pyx_GetItemInt(__pyx_v_signature, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 141, __pyx_L1_error)
@@ -6092,7 +6092,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
     /* "adbus/sdbus/signature.pyx":142
  *             return [_object_cast(signature[1:], v) for v in obj]
  *     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
- *         return [_object_cast(signature[2:], v) for v in obj]             # <<<<<<<<<<<<<<
+ *         return tuple([_object_cast(signature[2:], v) for v in obj])             # <<<<<<<<<<<<<<
  * 
  *     else:
  */
@@ -6153,15 +6153,18 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
       __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_r = __pyx_t_9;
-    __pyx_t_9 = 0;
+    __pyx_t_5 = PyList_AsTuple(((PyObject*)__pyx_t_9)); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 142, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
+    __pyx_r = __pyx_t_5;
+    __pyx_t_5 = 0;
     goto __pyx_L0;
 
     /* "adbus/sdbus/signature.pyx":141
  *         else:
  *             return [_object_cast(signature[1:], v) for v in obj]
  *     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:             # <<<<<<<<<<<<<<
- *         return [_object_cast(signature[2:], v) for v in obj]
+ *         return tuple([_object_cast(signature[2:], v) for v in obj])
  * 
  */
   }
@@ -6175,10 +6178,10 @@ static PyObject *__pyx_f_5adbus_5sdbus__object_cast(PyObject *__pyx_v_signature,
  */
   /*else*/ {
     __Pyx_XDECREF(__pyx_r);
-    __pyx_t_9 = __pyx_f_5adbus_5sdbus__object_cast_basic(__pyx_v_signature, __pyx_v_obj); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 145, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_9);
-    __pyx_r = __pyx_t_9;
-    __pyx_t_9 = 0;
+    __pyx_t_5 = __pyx_f_5adbus_5sdbus__object_cast_basic(__pyx_v_signature, __pyx_v_obj); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 145, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_r = __pyx_t_5;
+    __pyx_t_5 = 0;
     goto __pyx_L0;
   }
 

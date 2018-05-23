@@ -139,7 +139,7 @@ cdef object _object_cast(bytes signature, object obj):
         else:
             return [_object_cast(signature[1:], v) for v in obj]
     elif signature[0] == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
-        return [_object_cast(signature[2:], v) for v in obj]
+        return tuple([_object_cast(signature[2:], v) for v in obj])
 
     else:
         return _object_cast_basic(signature, obj)
