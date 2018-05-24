@@ -5,14 +5,14 @@ from .. import sdbus
 
 
 async def call(
-    service,
-    address,
-    path,
-    interface,
-    method,
-    args=(),
-    response_signature=None,
-    timeout_ms=30000
+        service,
+        address,
+        path,
+        interface,
+        method,
+        args=(),
+        response_signature=None,
+        timeout_ms=30000
 ):
     """Calls a D-Bus Method in another process.
 
@@ -32,12 +32,14 @@ async def call(
 
     """
 
+    _response_signature = (
+            b"Any"
+            if response_signature is None else response_signature.encode()
+    )
+
     call = sdbus.Call(
-        service.sdbus,
-        address.encode(),
-        path.encode(),
-        interface.encode(), method.encode(), args,
-        b"Any" if response_signature is None else response_signature.encode()
+            service.sdbus, address.encode(), path.encode(), interface.encode(),
+            method.encode(), args, _response_signature
     )
 
     call.send(timeout_ms)

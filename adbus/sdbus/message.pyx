@@ -276,7 +276,7 @@ cdef class Message:
                 values.append(v.c_int32)
 
             else:
-                raise SdbusError(f"Unsupported signature type {chr(s)} for read")
+                raise SdbusError(f"Unsupported signature type {signature} -> {chr(s)} for read")
 
         return values
 
