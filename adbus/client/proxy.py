@@ -1,4 +1,4 @@
-# Copyright: 2017, CCX Technologies
+code# Copyright: 2017, CCX Technologies
 """D-Bus Proxy"""
 
 import xml.etree.ElementTree as etree
@@ -237,31 +237,15 @@ class Interface:
             )
 
         if self.properties:
-            try:
-                self.properties_changed_listen = Listen(
-                        service,
-                        address,
-                        path,
-                        "org.freedesktop.DBus.Properties",
-                        "PropertiesChanged",
-                        self.properties_changed,
-                        args=(interface, ),
-                )
-
-            except UnicodeDecodeError:
-                # every once in a while, during startup we get a bad
-                # signature string, this hack just tries again, I think
-                # this is a dbus issue, so this may be the only way to fix it
-                time.sleep(0.5)
-                self.properties_changed_listen = Listen(
-                        service,
-                        address,
-                        path,
-                        "org.freedesktop.DBus.Properties",
-                        "PropertiesChanged",
-                        self.properties_changed,
-                        args=(interface, ),
-                )
+            self.properties_changed_listen = Listen(
+                    service,
+                    address,
+                    path,
+                    "org.freedesktop.DBus.Properties",
+                    "PropertiesChanged",
+                    self.properties_changed,
+                    args=(interface, ),
+            )
 
             self.get_all = get_all(
                     service, address, path, interface, timeout_ms
