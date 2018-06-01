@@ -31,8 +31,11 @@ cdef bytes _object_signature_basic(object obj):
 cdef const char* _object_signature(object obj):
     cdef bytes signature = b''
 
+    if obj is None:
+        return signature + bytes(1)
+
     if hasattr(obj, 'dbus_signature'):
-        return obj.dbus_signature.encode('utf-8')
+        return obj.dbus_signature.encode('utf-8') + bytes(1)
 
     elif isinstance(obj, dict):
         signature += signature_array
@@ -76,13 +79,10 @@ cdef const char* _object_signature(object obj):
             signature += _object_signature(v)
         signature += signature_struct_end
 
-    elif obj is None:
-        return ''
-
     else:
         signature += _object_signature_basic(obj)
 
-    return signature
+    return signature + bytes(1)
 
 def variant_signature():
     return signature_variant.decode()

@@ -1,4 +1,4 @@
-code# Copyright: 2017, CCX Technologies
+# Copyright: 2017, CCX Technologies
 """D-Bus Proxy"""
 
 import xml.etree.ElementTree as etree
