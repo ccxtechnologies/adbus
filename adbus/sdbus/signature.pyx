@@ -32,10 +32,10 @@ cdef const char* _object_signature(object obj):
     cdef bytes signature = b''
 
     if obj is None:
-        return signature + bytes(1)
+        return signature
 
     if hasattr(obj, 'dbus_signature'):
-        return obj.dbus_signature.encode('utf-8') + bytes(1)
+        return obj.dbus_signature.encode('utf-8')
 
     elif isinstance(obj, dict):
         signature += signature_array
@@ -82,7 +82,7 @@ cdef const char* _object_signature(object obj):
     else:
         signature += _object_signature_basic(obj)
 
-    return signature + bytes(1)
+    return signature
 
 def variant_signature():
     return signature_variant.decode()
@@ -112,7 +112,17 @@ def dbus_signature(obj):
     Raises:
         TypeError: If no D-Bus Equivalent for objects type.
     """
-    return _dbus_signature(obj).decode()
+    signature = _dbus_signature(obj)
+
+    try:
+        return signature.decode()
+    except UnicodeDecodeError:
+        # There is a memory management bug that rarely results in a Unicode Decode
+        # error, this was added to get a little more info when it happens, but it
+        # hasn't happened since this was added...
+        import syslog
+        syslog.syslog(f"==> {obj} === {signature}")
+        raise
 
 cdef object _object_cast_basic(bytes signature, object obj):
     if signature[0] == sdbus_h.SD_BUS_TYPE_BOOLEAN :
