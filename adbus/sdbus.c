@@ -5292,12 +5292,12 @@ static PyObject *__pyx_pf_5adbus_5sdbus_4variant_signature(CYTHON_UNUSED PyObjec
  *     return signature_variant.decode()
  * 
  * cdef bytes _dbus_signature(obj):             # <<<<<<<<<<<<<<
- *     signature = _object_signature(obj)
+ *     cdef bytes signature = _object_signature(obj)
  * 
  */
 
 static PyObject *__pyx_f_5adbus_5sdbus__dbus_signature(PyObject *__pyx_v_obj) {
-  char const *__pyx_v_signature;
+  PyObject *__pyx_v_signature = 0;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
@@ -5309,23 +5309,23 @@ static PyObject *__pyx_f_5adbus_5sdbus__dbus_signature(PyObject *__pyx_v_obj) {
   /* "adbus/sdbus/signature.pyx":91
  * 
  * cdef bytes _dbus_signature(obj):
- *     signature = _object_signature(obj)             # <<<<<<<<<<<<<<
+ *     cdef bytes signature = _object_signature(obj)             # <<<<<<<<<<<<<<
  * 
  *     if signature_invalid in signature:
  */
-  __pyx_v_signature = __pyx_f_5adbus_5sdbus__object_signature(__pyx_v_obj);
+  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_f_5adbus_5sdbus__object_signature(__pyx_v_obj)); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 91, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_1);
+  __pyx_v_signature = ((PyObject*)__pyx_t_1);
+  __pyx_t_1 = 0;
 
   /* "adbus/sdbus/signature.pyx":93
- *     signature = _object_signature(obj)
+ *     cdef bytes signature = _object_signature(obj)
  * 
  *     if signature_invalid in signature:             # <<<<<<<<<<<<<<
  *         raise TypeError(f"No D-Bus type equivalent for {obj}")
  * 
  */
-  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_signature); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 93, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_v_5adbus_5sdbus_signature_invalid, __pyx_t_1, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 93, __pyx_L1_error)
-  __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
+  __pyx_t_2 = (__Pyx_PySequence_ContainsTF(__pyx_v_5adbus_5sdbus_signature_invalid, __pyx_v_signature, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(0, 93, __pyx_L1_error)
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (unlikely(__pyx_t_3)) {
 
@@ -5349,7 +5349,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__dbus_signature(PyObject *__pyx_v_obj) {
     __PYX_ERR(0, 94, __pyx_L1_error)
 
     /* "adbus/sdbus/signature.pyx":93
- *     signature = _object_signature(obj)
+ *     cdef bytes signature = _object_signature(obj)
  * 
  *     if signature_invalid in signature:             # <<<<<<<<<<<<<<
  *         raise TypeError(f"No D-Bus type equivalent for {obj}")
@@ -5365,17 +5365,15 @@ static PyObject *__pyx_f_5adbus_5sdbus__dbus_signature(PyObject *__pyx_v_obj) {
  * def dbus_signature(obj):
  */
   __Pyx_XDECREF(__pyx_r);
-  __pyx_t_1 = __Pyx_PyBytes_FromString(__pyx_v_signature); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 96, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_1);
-  __pyx_r = ((PyObject*)__pyx_t_1);
-  __pyx_t_1 = 0;
+  __Pyx_INCREF(__pyx_v_signature);
+  __pyx_r = __pyx_v_signature;
   goto __pyx_L0;
 
   /* "adbus/sdbus/signature.pyx":90
  *     return signature_variant.decode()
  * 
  * cdef bytes _dbus_signature(obj):             # <<<<<<<<<<<<<<
- *     signature = _object_signature(obj)
+ *     cdef bytes signature = _object_signature(obj)
  * 
  */
 
@@ -5386,6 +5384,7 @@ static PyObject *__pyx_f_5adbus_5sdbus__dbus_signature(PyObject *__pyx_v_obj) {
   __Pyx_AddTraceback("adbus.sdbus._dbus_signature", __pyx_clineno, __pyx_lineno, __pyx_filename);
   __pyx_r = 0;
   __pyx_L0:;
+  __Pyx_XDECREF(__pyx_v_signature);
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;

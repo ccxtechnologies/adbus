@@ -88,7 +88,7 @@ def variant_signature():
     return signature_variant.decode()
 
 cdef bytes _dbus_signature(obj):
-    signature = _object_signature(obj)
+    cdef bytes signature = _object_signature(obj)
 
     if signature_invalid in signature:
         raise TypeError(f"No D-Bus type equivalent for {obj}")
