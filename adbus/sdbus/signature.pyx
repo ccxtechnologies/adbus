@@ -45,16 +45,19 @@ cdef const char* _object_signature(object obj):
         signature += signature_dict_end
 
     elif isinstance(obj, list):
-        if all(isinstance(v, type(obj[0])) for v in obj):
-            # if all the same type it's an array
-            signature += signature_array
-            signature += _object_signature(obj[0])
-        else:
-            # otherwise it's a struct
-            signature += signature_struct_begin
-            for v in obj:
-                signature += _object_signature(v)
-            signature += signature_struct_end
+        try:
+            if all(isinstance(v, type(obj[0])) for v in obj):
+                # if all the same type it's an array
+                signature += signature_array
+                signature += _object_signature(obj[0])
+            else:
+                # otherwise it's a struct
+                signature += signature_struct_begin
+                for v in obj:
+                    signature += _object_signature(v)
+                signature += signature_struct_end
+        except:
+            signature += signature_string
 
     elif isinstance(obj, tuple):
         signature += signature_struct_begin
