@@ -27,15 +27,15 @@ class Listen:
     """
 
     def __init__(
-        self,
-        service,
-        address,
-        path,
-        interface,
-        signal,
-        coroutine,
-        args=(),
-        signature=False,
+            self,
+            service,
+            address,
+            path,
+            interface,
+            signal,
+            coroutine,
+            args=(),
+            signature=False,
     ):
 
         if signature is False:
@@ -53,7 +53,15 @@ class Listen:
         else:
             self.signature = signature
 
-        self.sdbus = sdbus.Listen(
-            service.sdbus, address, path, interface, signal, coroutine, args,
-            self.signature.encode(), signature is False
-        )
+        try:
+            self.sdbus = sdbus.Listen(
+                    service.sdbus, address, path, interface, signal, coroutine,
+                    args, self.signature.encode(), signature is False
+            )
+        except sdbus.SdbusError:
+            # sometimes we'll get a EINTR (like one in a million trys), we want
+            # to try again if we do
+            self.sdbus = sdbus.Listen(
+                    service.sdbus, address, path, interface, signal, coroutine,
+                    args, self.signature.encode(), signature is False
+            )
