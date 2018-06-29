@@ -3,7 +3,6 @@
 
 import xml.etree.ElementTree as etree
 import typing
-import time
 
 from .. import sdbus
 from .. import exceptions

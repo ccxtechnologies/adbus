@@ -43,10 +43,9 @@ async def call(
     )
 
     call.send(timeout_ms)
-    await wait_for(call.wait_for_response(), timeout_ms / 1000)
-    response = call.get_response()
+    await call.event.wait()
 
-    if isinstance(response, Exception):
-        raise response
+    if isinstance(call.response, Exception):
+        raise call.response
     else:
-        return response
+        return call.response

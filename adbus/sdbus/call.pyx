@@ -28,8 +28,9 @@ cdef class Call:
     cdef Message message
     cdef Service service
     cdef sdbus_h.sd_bus_slot *_slot
-    cdef object event
-    cdef object response
+    cdef public object event
+    cdef public object response
+    cdef object wait_co
     cdef char *response_signature
 
     def __cinit__(self, Service service, address, path, interface, method,
@@ -55,15 +56,8 @@ cdef class Call:
                 self.message.message, call_callback, <void *>self,
                 timout_ms*1000)
         if ret < 0:
+            self.event.set()
             raise SdbusError(f"Failed to send call: {errorcode[-ret]}", -ret)
 
     cdef wake(self):
         self.event.set()
-
-    def wait_for_response(self):
-        """A couroutine that will wait for a response."""
-        return self.event.wait()
-
-    def get_response(self):
-        """Return the response."""
-        return self.response

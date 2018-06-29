@@ -30,13 +30,12 @@ async def get(service, address, path, interface, name, timeout_ms=30000):
     )
 
     call.send(timeout_ms)
-    await wait_for(call.wait_for_response(), timeout_ms / 1000)
-    response = call.get_response()
+    await call.event.wait()
 
-    if isinstance(response, Exception):
-        raise response
+    if isinstance(call.response, Exception):
+        raise call.response
     else:
-        return response
+        return call.response
 
 
 async def get_all(service, address, path, interface, timeout_ms=30000):
@@ -64,13 +63,12 @@ async def get_all(service, address, path, interface, timeout_ms=30000):
     )
 
     call.send(timeout_ms)
-    await wait_for(call.wait_for_response(), timeout_ms / 1000)
-    response = call.get_response()
+    await call.event.wait()
 
-    if isinstance(response, Exception):
-        raise response
+    if isinstance(call.response, Exception):
+        raise call.response
     else:
-        return response
+        return call.response
 
 
 async def set_(
@@ -99,8 +97,7 @@ async def set_(
     )
 
     call.send(timeout_ms)
-    await wait_for(call.wait_for_response(), timeout_ms / 1000)
-    response = call.get_response()
+    await call.event.wait()
 
-    if isinstance(response, Exception):
-        raise response
+    if isinstance(call.response, Exception):
+        raise call.response
