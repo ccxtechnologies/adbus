@@ -65,18 +65,18 @@ cdef const char* _object_signature(object obj):
             signature += _object_signature(v)
         signature += signature_struct_end
 
-    elif isinstance(obj, GenericMeta) and (obj.__extra__ == dict):
+    elif isinstance(obj, _GenericAlias) and (obj.__origin__ == dict):
         signature += signature_array
         signature += signature_dict_begin
         signature += _object_signature_basic(obj.__args__[0])
         signature += _object_signature(obj.__args__[1])
         signature += signature_dict_end
 
-    elif isinstance(obj, GenericMeta) and (obj.__extra__ == list):
+    elif isinstance(obj, _GenericAlias) and (obj.__origin__ == list):
         signature += signature_array
         signature += _object_signature(obj.__args__[0])
 
-    elif isinstance(obj, TupleMeta) and (obj.__extra__ == tuple):
+    elif isinstance(obj, _GenericAlias) and (obj.__origin__ == tuple):
         signature += signature_struct_begin
         for v in obj.__args__:
             signature += _object_signature(v)

@@ -61,7 +61,7 @@ setup(
         license='MIT',
         url=f'{__url__}/{__module__}',
         download_url=f'{__url__}/archive/v{__version__}.tar.gz',
-        python_requires='>=3.6',
+        python_requires='>=3.7',
         packages=find_packages(exclude=["tests"]),
         ext_modules=cython('sdbus', ["systemd"])
 )

@@ -22,7 +22,7 @@ Links
 Dependencies
 ------------
 
-1. Python >= 3.6
+1. Python >= 3.7
 2. libsystemd >= 232 (don’t need systemd, just libsystemd which is a separate package)
 3. Cython >= 0.25.2 (only required to regenerate sdbus.c, if you make any changes)
 
