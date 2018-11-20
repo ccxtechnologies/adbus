@@ -103,7 +103,7 @@ It's possible to map a remote interface to a local instantiated class using a Pr
 NOTE: If the even loop isn't running no signals will caught, and properties will not
 cache (i.e. will read on every access instead of tracking the property changes signals)
 
-**This is a protoype to see how it looks, it hasn't been implimented yet.**
+**This is a protoype to see how it looks, it hasn't been implemented yet.**
 
 .. code-block:: python
 
@@ -168,5 +168,5 @@ Style Guide
 
 For a consistent style all code is run through yapf using the Facebook style:
 
-All docstings are in the google style.
+All docstrings are in the google style.
 
