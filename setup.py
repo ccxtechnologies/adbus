@@ -52,12 +52,16 @@ def check_external_dependancy(name):
 
 check_external_dependancy("libsystemd")
 
+with open('README.rst') as file:
+    long_description = file.read()
+
 setup(
         name=__module__,
         version=__version__,
         author='CCX Technologies',
         author_email='charles@ccxtechnologies.com',
         description='asyncio based dbus interface',
+        long_description=long_description,
         license='MIT',
         url=f'{__url__}/{__module__}',
         download_url=f'{__url__}/archive/v{__version__}.tar.gz',
