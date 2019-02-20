@@ -100,13 +100,7 @@ ENV/
 # mypy
 .mypy_cache/
 
-# my additions
+# adbus additions
 
 MANIFEST
-adbus/client/.proxy.py.swp
-docs/source/adbus.client.rst
-docs/source/adbus.rst
-docs/source/adbus.server.rst
-docs/source/modules.rst
-
 *.swp

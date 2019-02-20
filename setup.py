@@ -1,11 +1,6 @@
 #!/usr/bin/python
 
-import sys
-import subprocess
-
-from setuptools import setup
-from setuptools import find_packages
-from setuptools.extension import Extension
+from setuptools import Extension, setup, find_packages
 
 __module__ = 'adbus'
 __url__ = 'https://github.com/ccxtechnologies'
@@ -13,59 +8,27 @@ __url__ = 'https://github.com/ccxtechnologies'
 __version__ = None
 exec(open(f'{__module__}/__version__.py').read())
 
-if "--nosystemd" in sys.argv:
-    sys.argv.remove("--nosystemd")
-
-
-def cython(module, libraries):
-    if "--cythonize" in sys.argv:
-        sys.argv.remove("--cythonize")
-        from Cython.Build import cythonize
-        return cythonize(
-                [
-                        Extension(
-                                f"{__module__}.{module}",
-                                [f"{__module__}/{module}.pyx"],
-                                libraries=libraries
-                        )
-                ]
-        )
-    else:
-        return [
-                Extension(
-                        f"{__module__}.{module}", [f"{__module__}/{module}.c"],
-                        libraries=libraries
-                )
-        ]
-
-
-def check_external_dependancy(name):
-    try:
-        whereis = subprocess.run(
-                ['whereis', name], check=True, stdout=subprocess.PIPE
-        )
-        if b'/' not in whereis.stdout:
-            print(f"\033[91m Failed to find dependency {name}.\033[0m")
-    except subprocess.CalledProcessError:
-        print(f"\033[91m Failed to run whereis, is whereis broken?\033[0m")
-
-
-check_external_dependancy("libsystemd")
-
-with open('README.rst') as file:
-    long_description = file.read()
-
 setup(
-        name=__module__,
-        version=__version__,
-        author='CCX Technologies',
-        author_email='charles@ccxtechnologies.com',
-        description='asyncio based dbus interface',
-        long_description=long_description,
-        license='MIT',
-        url=f'{__url__}/{__module__}',
-        download_url=f'{__url__}/archive/v{__version__}.tar.gz',
-        python_requires='>=3.7',
-        packages=find_packages(exclude=["tests"]),
-        ext_modules=cython('sdbus', ["systemd"])
+    name=__module__,
+    version=__version__,
+    author='CCX Technologies',
+    author_email='charles@ccxtechnologies.com',
+    description='asyncio based dbus interface',
+    long_description=open('README.rst', 'rt').read(),
+    license='MIT',
+    url=f'{__url__}/{__module__}',
+    download_url=f'{__url__}/archive/v{__version__}.tar.gz',
+    python_requires='>=3.7',
+    packages=find_packages(exclude=["tests"]),
+    setup_requires=[
+        'setuptools>=18.0',  # Handles Cython extensions natively
+        'cython>=0.25.2',
+    ],
+    ext_modules=[
+        Extension(
+            f"{__module__}.sdbus",
+            sources=[f"{__module__}/sdbus.pyx"],
+            libraries=["systemd"],
+        )
+    ],
 )
