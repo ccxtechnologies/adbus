@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>python-adbus &mdash; python-adbus 0.2.0 documentation</title>
+  <title>python-adbus &mdash; python-adbus 1.0.1 documentation</title>
   
 
   
@@ -17,42 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="python-adbus 0.2.0 documentation" href="index.html"/>
-        <link rel="next" title="adbus" href="modules.html"/>
-        <link rel="prev" title="Welcome to python-adbus’s documentation!" href="index.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="adbus" href="modules.html" />
+    <link rel="prev" title="Welcome to python-adbus’s documentation!" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -64,10 +58,6 @@
 
           
             
-            
-              <div class="version">
-                0.2
-              </div>
             
           
 
@@ -122,7 +112,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">python-adbus</a>
@@ -130,9 +120,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -176,24 +167,24 @@
             
   <div class="section" id="python-adbus">
 <h1>python-adbus<a class="headerlink" href="#python-adbus" title="Permalink to this headline">¶</a></h1>
-<p>D-Bus Binding for Python utilizing the asyncio mainloop.</p>
+<p>D-Bus Binding for Python utilizing the Python’s asyncio module.</p>
 <div class="section" id="status">
 <h2>Status<a class="headerlink" href="#status" title="Permalink to this headline">¶</a></h2>
-<p><strong>This project is currently under development.</strong> The server implementation is
-ready for testing, the client will be added in the next release.</p>
+<a class="reference external image-reference" href="https://www.codacy.com/app/ccxtechnologies/python-adbus?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=ccxtechnologies/python-adbus&amp;amp;utm_campaign=Badge_Grade"><img alt="https://api.codacy.com/project/badge/Grade/c66c19cdcadd4c83bc4b70596d65aa7a" src="https://api.codacy.com/project/badge/Grade/c66c19cdcadd4c83bc4b70596d65aa7a" /></a>
+<a class="reference external image-reference" href="https://www.codacy.com/app/ccxtechnologies/python-adbus?utm_source=github.com&amp;amp;utm_medium=referral&amp;amp;utm_content=ccxtechnologies/python-adbus&amp;amp;utm_campaign=Badge_Coverage"><img alt="https://api.codacy.com/project/badge/Coverage/c66c19cdcadd4c83bc4b70596d65aa7a" src="https://api.codacy.com/project/badge/Coverage/c66c19cdcadd4c83bc4b70596d65aa7a" /></a>
 </div>
 <div class="section" id="links">
 <h2>Links<a class="headerlink" href="#links" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
-<li><a class="reference external" href="https://ccxtechnologies.github.io/python-adbus">Documentation</a></li>
-<li><a class="reference external" href="https://github.com/ccxtechnologies/python-adbus">Project Page</a></li>
-<li><a class="reference external" href="https://github.com/ccxtechnologies/python-adbus/issues">Issues</a></li>
+<li><a class="reference external" href="https://ccxtechnologies.github.io/adbus">Documentation</a></li>
+<li><a class="reference external" href="https://github.com/ccxtechnologies/adbus">Project Page</a></li>
+<li><a class="reference external" href="https://github.com/ccxtechnologies/adbus/issues">Issues</a></li>
 </ul>
 </div>
 <div class="section" id="dependencies">
 <h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
-<li>Python &gt;= 3.6</li>
+<li>Python &gt;= 3.7</li>
 <li>libsystemd &gt;= 232 (don’t need systemd, just libsystemd which is a separate package)</li>
 <li>Cython &gt;= 0.25.2 (only required to regenerate sdbus.c, if you make any changes)</li>
 </ol>
@@ -227,7 +218,7 @@ discover</li>
 <div class="section" id="object-example">
 <h3>Object Example<a class="headerlink" href="#object-example" title="Permalink to this headline">¶</a></h3>
 <p>This is an example of an object, which can be connected to a service.</p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">adbus</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">adbus</span>
 <span class="kn">import</span> <span class="nn">typing</span>
 
 <span class="k">class</span> <span class="nc">ExampleClass</span><span class="p">(</span><span class="n">adbus</span><span class="o">.</span><span class="n">server</span><span class="o">.</span><span class="n">Object</span><span class="p">):</span>
@@ -265,13 +256,13 @@ this when changing multiple properties, it will reduce traffic on the D-Bus.</p>
 <p>It’s possible to map a remote interface to a local instantiated class using a Proxy.</p>
 <p>NOTE: If the even loop isn’t running no signals will caught, and properties will not
 cache (i.e. will read on every access instead of tracking the property changes signals)</p>
-<p><strong>This is a protoype to see how it looks, it hasn’t been implimented yet.</strong></p>
-<div class="highlight-python"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="n">bus</span><span class="o">=</span><span class="s1">&#39;session&#39;</span><span class="p">)</span>
+<p><strong>This is a protoype to see how it looks, it hasn’t been implemented yet.</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">service</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="n">bus</span><span class="o">=</span><span class="s1">&#39;session&#39;</span><span class="p">)</span>
 <span class="n">proxy</span> <span class="o">=</span> <span class="n">adbus</span><span class="o">.</span><span class="n">client</span><span class="o">.</span><span class="n">Proxy</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="s1">&#39;com.example.xxx&#39;</span><span class="p">,</span> <span class="s1">&#39;/com/example/Service1&#39;</span><span class="p">,</span>
     <span class="n">interface</span><span class="o">=</span><span class="s1">&#39;com.example.service.unit&#39;</span><span class="p">)</span>
 
 <span class="n">async</span> <span class="k">def</span> <span class="nf">proxy_examples</span><span class="p">():</span>
-  <span class="n">proxy</span><span class="o">.</span><span class="n">update</span><span class="p">()</span> <span class="c1"># initialize the proxy</span>
+  <span class="n">await</span> <span class="n">proxy</span><span class="o">.</span><span class="n">update</span><span class="p">()</span> <span class="c1"># initialize the proxy</span>
 
   <span class="c1"># == Access Properties</span>
   <span class="n">await</span> <span class="n">proxy</span><span class="o">.</span><span class="n">remote_propertyX</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="mi">45</span><span class="p">)</span>
@@ -302,11 +293,8 @@ cache (i.e. will read on every access instead of tracking the property changes s
   <span class="c1"># == Access a method using a different interface name</span>
   <span class="n">proxy</span><span class="p">[</span><span class="s1">&#39;com.example.service.serve&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">remote_method_800</span><span class="p">(</span><span class="sa">b</span><span class="s2">&quot;data&quot;</span><span class="p">)</span>
 
-  <span class="c1"># == Change a Proxies default interface</span>
-  <span class="n">proxy</span> <span class="o">=</span> <span class="n">proxy</span><span class="p">[</span><span class="s1">&#39;com.example.service.serve&#39;</span><span class="p">]</span>
-
   <span class="c1"># == Create a new proxy from a node in the proxy</span>
-  <span class="n">proxy_new</span> <span class="o">=</span> <span class="n">await</span> <span class="n">proxy</span><span class="p">(</span><span class="s1">&#39;Test&#39;</span><span class="p">)[</span><span class="s1">&#39;com.example.test&#39;</span><span class="p">]</span>
+  <span class="n">proxy_new</span> <span class="o">=</span> <span class="n">await</span> <span class="n">proxy</span><span class="p">(</span><span class="s1">&#39;Test&#39;</span><span class="p">)</span>
 
   <span class="c1"># == Loop through all nodes in a proxy</span>
   <span class="n">sum_cnt</span> <span class="o">=</span> <span class="mi">0</span>
@@ -331,15 +319,13 @@ cache (i.e. will read on every access instead of tracking the property changes s
 <div class="section" id="style-guide">
 <h2>Style Guide<a class="headerlink" href="#style-guide" title="Permalink to this headline">¶</a></h2>
 <p>For a consistent style all code is run through yapf using the Facebook style:</p>
-<p>All docstings are in the google style.</p>
+<p>All docstrings are in the google style.</p>
 </div>
 </div>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -348,7 +334,7 @@ cache (i.e. will read on every access instead of tracking the property changes s
         <a href="modules.html" class="btn btn-neutral float-right" title="adbus" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Welcome to python-adbus’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to python-adbus’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -357,11 +343,11 @@ cache (i.e. will read on every access instead of tracking the property changes s
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, CCX Technolgies.
+        &copy; Copyright 2017, CCX Technolgies
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -374,36 +360,15 @@ cache (i.e. will read on every access instead of tracking the property changes s
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.2.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

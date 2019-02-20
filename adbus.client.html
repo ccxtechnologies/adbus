@@ -1,0 +1,520 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>adbus.client package &mdash; python-adbus 1.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="adbus.server package" href="adbus.server.html" />
+    <link rel="prev" title="adbus package" href="adbus.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> python-adbus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="readme.html">python-adbus</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">adbus</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="adbus.html">adbus package</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="adbus.html#subpackages">Subpackages</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">adbus.client package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="adbus.server.html">adbus.server package</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus.datatypes">adbus.datatypes module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus.exceptions">adbus.exceptions module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus.sdbus">adbus.sdbus module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus.service">adbus.service module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="adbus.html#module-adbus">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">python-adbus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="modules.html">adbus</a> &raquo;</li>
+        
+          <li><a href="adbus.html">adbus package</a> &raquo;</li>
+        
+      <li>adbus.client package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/adbus.client.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="adbus-client-package">
+<h1>adbus.client package<a class="headerlink" href="#adbus-client-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-adbus.client.call">
+<span id="adbus-client-call-module"></span><h2>adbus.client.call module<a class="headerlink" href="#module-adbus.client.call" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="adbus.client.call.call">
+<code class="descclassname">adbus.client.call.</code><code class="descname">call</code><span class="sig-paren">(</span><em>service</em>, <em>address</em>, <em>path</em>, <em>interface</em>, <em>method</em>, <em>args=()</em>, <em>response_signature=None</em>, <em>timeout_ms=30000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/call.html#call"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.call.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calls a D-Bus Method in another process.</p>
+<p>This is a co-routine, so must be await-ed from within a asyncio mainloop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>service</strong> (<em>adbus.server.Service</em>) – service to connect to</li>
+<li><strong>address</strong> (<em>str</em>) – address (name) of the D-Bus Service to call</li>
+<li><strong>path</strong> (<em>str</em>) – path of method to call, ie. /com/awesome/Settings1</li>
+<li><strong>interface</strong> (<em>str</em>) – interface label to call, ie. com.awesome.settings</li>
+<li><strong>method</strong> (<em>str</em>) – name of the method to call, ie. TestMethod</li>
+<li><strong>args</strong> (<em>list</em><em> or </em><em>tuple</em>) – optional, list of arguments to pass to the method</li>
+<li><strong>response_signature</strong> (<em>str</em>) – optional, D-Bus Signature of the expected
+response, if None the signature will be created at run-time,
+specifying it here will speed up the message post-processing</li>
+<li><strong>timeout_ms</strong> (<em>int</em>) – maximum time to wait for a response in milli-seconds</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-adbus.client.getset">
+<span id="adbus-client-getset-module"></span><h2>adbus.client.getset module<a class="headerlink" href="#module-adbus.client.getset" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="adbus.client.getset.get">
+<code class="descclassname">adbus.client.getset.</code><code class="descname">get</code><span class="sig-paren">(</span><em>service</em>, <em>address</em>, <em>path</em>, <em>interface</em>, <em>name</em>, <em>timeout_ms=30000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/getset.html#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.getset.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a D-Bus Property from another process.</p>
+<p>This is a co-routine, so must be await-ed from within a asyncio mainloop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>service</strong> (<em>adbus.server.Service</em>) – service to connect to</li>
+<li><strong>address</strong> (<em>str</em>) – address (name) of the D-Bus Service to call</li>
+<li><strong>path</strong> (<em>str</em>) – path of method to call, ie. /com/awesome/Settings1</li>
+<li><strong>interface</strong> (<em>str</em>) – interface label to call, ie. com.awesome.settings</li>
+<li><strong>name</strong> (<em>str</em>) – name of the name to get, ie. TestProperty</li>
+<li><strong>timeout_ms</strong> (<em>int</em>) – maximum time to wait for a response in milli-seconds</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Value of the name.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="adbus.client.getset.get_all">
+<code class="descclassname">adbus.client.getset.</code><code class="descname">get_all</code><span class="sig-paren">(</span><em>service</em>, <em>address</em>, <em>path</em>, <em>interface</em>, <em>timeout_ms=30000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/getset.html#get_all"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.getset.get_all" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets a All D-Bus Properties from another process.</p>
+<p>This is a co-routine, so must be await-ed from within a asyncio mainloop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>service</strong> (<em>adbus.server.Service</em>) – service to connect to</li>
+<li><strong>address</strong> (<em>str</em>) – address (name) of the D-Bus Service to call</li>
+<li><strong>path</strong> (<em>str</em>) – path of method to call, ie. /com/awesome/Settings1</li>
+<li><strong>interface</strong> (<em>str</em>) – interface label to call, ie. com.awesome.settings</li>
+<li><strong>timeout_ms</strong> (<em>int</em>) – maximum time to wait for a response in milli-seconds</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A dictionary, keys are the name names and values are the name
+values.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="adbus.client.getset.set_">
+<code class="descclassname">adbus.client.getset.</code><code class="descname">set_</code><span class="sig-paren">(</span><em>service</em>, <em>address</em>, <em>path</em>, <em>interface</em>, <em>name</em>, <em>value</em>, <em>timeout_ms=30000</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/getset.html#set_"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.getset.set_" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets a D-Bus Property in another process.</p>
+<p>This is a co-routine, so must be await-ed from within a asyncio mainloop.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>service</strong> (<em>adbus.server.Service</em>) – service to connect to</li>
+<li><strong>address</strong> (<em>str</em>) – address (name) of the D-Bus Service to call</li>
+<li><strong>path</strong> (<em>str</em>) – path of method to call, ie. /com/awesome/Settings1</li>
+<li><strong>interface</strong> (<em>str</em>) – interface label to call, ie. com.awesome.settings</li>
+<li><strong>name</strong> (<em>str</em>) – name of the name to get, ie. TestProperty</li>
+<li><strong>value</strong> (<em>object</em>) – value to set the name to, must be compatible
+with the defined D-Bus Property type</li>
+<li><strong>timeout_ms</strong> (<em>int</em>) – maximum time to wait for a response in milli-seconds</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-adbus.client.listen">
+<span id="adbus-client-listen-module"></span><h2>adbus.client.listen module<a class="headerlink" href="#module-adbus.client.listen" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="adbus.client.listen.Listen">
+<em class="property">class </em><code class="descclassname">adbus.client.listen.</code><code class="descname">Listen</code><span class="sig-paren">(</span><em>service</em>, <em>address</em>, <em>path</em>, <em>interface</em>, <em>signal</em>, <em>coroutine</em>, <em>args=()</em>, <em>signature=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/listen.html#Listen"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.listen.Listen" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Listens for a D-Bus Signal from another process.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>service</strong> (<em>adbus.server.Service</em>) – service to connect to</li>
+<li><strong>address</strong> (<em>str</em>) – address (name) of the D-Bus Service to call</li>
+<li><strong>path</strong> (<em>str</em>) – path of method to call, ie. /com/awesome/Settings1</li>
+<li><strong>interface</strong> (<em>str</em>) – interface label to call, ie. com.awesome.settings</li>
+<li><strong>signal</strong> (<em>str</em>) – name of the signal to listen to, ie. TestSignal</li>
+<li><strong>coroutine</strong> (<em>coroutine</em>) – coroutine to schedule when signal is received</li>
+<li><strong>args</strong> (<em>list</em><em> or </em><em>tuple</em>) – optional, list of argument values to match,
+the argument must be a string, useful for listening to property
+changes</li>
+<li><strong>signature</strong> (<em>str</em>) – optional, signature of the signal, if False the
+types of the coroutine arguments will be used to create the
+signature and the coroutine will be called with one argument
+per signal argument, if defined the coroutine will be called
+with a list of arguments, if None the coroutine will be called
+with a list of types determined at run-time</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-adbus.client.proxy">
+<span id="adbus-client-proxy-module"></span><h2>adbus.client.proxy module<a class="headerlink" href="#module-adbus.client.proxy" title="Permalink to this headline">¶</a></h2>
+<p>D-Bus Proxy</p>
+<dl class="class">
+<dt id="adbus.client.proxy.Interface">
+<em class="property">class </em><code class="descclassname">adbus.client.proxy.</code><code class="descname">Interface</code><span class="sig-paren">(</span><em>parent</em>, <em>service</em>, <em>address</em>, <em>path</em>, <em>etree</em>, <em>camel_convert</em>, <em>timeout_ms</em>, <em>changed_coroutine</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Interface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Interface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="adbus.client.proxy.Interface.properties_changed">
+<code class="descname">properties_changed</code><span class="sig-paren">(</span><em>interface: str, changed: Dict[str, Any], invalidated: List[str]</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Interface.properties_changed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Interface.properties_changed" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="adbus.client.proxy.Interface.set_changed_coroutine">
+<code class="descname">set_changed_coroutine</code><span class="sig-paren">(</span><em>changed_coroutine</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Interface.set_changed_coroutine"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Interface.set_changed_coroutine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the Interface’s Changed Co-Routine.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="adbus.client.proxy.Interface.update_properties">
+<code class="descname">update_properties</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Interface.update_properties"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Interface.update_properties" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="adbus.client.proxy.Method">
+<em class="property">class </em><code class="descclassname">adbus.client.proxy.</code><code class="descname">Method</code><span class="sig-paren">(</span><em>parent</em>, <em>service</em>, <em>address</em>, <em>path</em>, <em>interface</em>, <em>etree</em>, <em>timeout_ms</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Method"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Method" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="adbus.client.proxy.Property">
+<em class="property">class </em><code class="descclassname">adbus.client.proxy.</code><code class="descname">Property</code><span class="sig-paren">(</span><em>parent</em>, <em>service</em>, <em>address</em>, <em>path</em>, <em>interface</em>, <em>etree</em>, <em>timeout_ms</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Property"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Property" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="adbus.client.proxy.Property.cached_value">
+<code class="descname">cached_value</code><em class="property"> = None</em><a class="headerlink" href="#adbus.client.proxy.Property.cached_value" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="adbus.client.proxy.Property.emits_changed_signal">
+<code class="descname">emits_changed_signal</code><em class="property"> = 'true'</em><a class="headerlink" href="#adbus.client.proxy.Property.emits_changed_signal" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="adbus.client.proxy.Property.get">
+<code class="descname">get</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Property.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Property.get" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="adbus.client.proxy.Property.set">
+<code class="descname">set</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Property.set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Property.set" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="adbus.client.proxy.Property.track">
+<code class="descname">track</code><span class="sig-paren">(</span><em>coroutine</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Property.track"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Property.track" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="adbus.client.proxy.Property.untrack">
+<code class="descname">untrack</code><span class="sig-paren">(</span><em>coroutine</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Property.untrack"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Property.untrack" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="adbus.client.proxy.Proxy">
+<em class="property">class </em><code class="descclassname">adbus.client.proxy.</code><code class="descname">Proxy</code><span class="sig-paren">(</span><em>service</em>, <em>address</em>, <em>path</em>, <em>interface=None</em>, <em>changed_coroutines=None</em>, <em>timeout_ms=30000</em>, <em>camel_convert=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Proxy"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Proxy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates a Python Object that maps to an Interface that already
+exists on the D-Bus.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>service</strong> (<em>adbus.server.Service</em>) – service to connect to</li>
+<li><strong>address</strong> (<em>str</em>) – address (name) of the application to connect to
+on the D-Bus.</li>
+<li><strong>path</strong> (<em>str</em>) – path to create on the service
+ie. /com/awesome/Settings1</li>
+<li><strong>interface</strong> (<em>str</em>) – optional, default interface to access, if None will
+use address</li>
+<li><strong>changed_coroutines</strong> – optional, coroutine dictionary of changed
+coroutines, the key is the name of the interface to attach
+to. The coroutine will be called with a single argument which is a
+list of property names.</li>
+<li><strong>timeout_ms</strong> (<em>int</em>) – optional, maximum time to wait for a response in
+milli-seconds</li>
+<li><strong>camel_convert</strong> (<em>bool</em>) – optional, D-Bus method and property
+names are typically defined in Camel Case, but Python
+methods and arguments are typically defined in Snake
+Case, if this is set the cases will be automatically
+converted between the two</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="adbus.client.proxy.Proxy.update">
+<code class="descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Proxy.update"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Proxy.update" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use Introspection on remote server to update the proxy.
+<strong>Must be run once before using the Proxy.</strong></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="adbus.client.proxy.Signal">
+<em class="property">class </em><code class="descclassname">adbus.client.proxy.</code><code class="descname">Signal</code><span class="sig-paren">(</span><em>parent</em>, <em>service</em>, <em>address</em>, <em>path</em>, <em>interface</em>, <em>etree</em>, <em>timeout_ms</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Signal"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Signal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="method">
+<dt id="adbus.client.proxy.Signal.add">
+<code class="descname">add</code><span class="sig-paren">(</span><em>coroutine</em>, <em>signature=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Signal.add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Signal.add" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add a listening coroutine to this signal.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>coroutine</strong> (<em>coroutine</em>) – coroutine to schedule when signal received</li>
+<li><strong>signature</strong> (<em>str</em>) – optional, signature of the signal, if False the
+types of the coroutine arguments will be used to create the
+signature and the coroutine will be called with one argument
+per signal argument, if defined the coroutine will be called
+with a list of arguments, if None the coroutine will be called
+with a list of types determined at run-time</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="adbus.client.proxy.Signal.remove">
+<code class="descname">remove</code><span class="sig-paren">(</span><em>coroutine</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/client/proxy.html#Signal.remove"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.client.proxy.Signal.remove" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-adbus.client">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-adbus.client" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="adbus.server.html" class="btn btn-neutral float-right" title="adbus.server package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="adbus.html" class="btn btn-neutral float-left" title="adbus package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, CCX Technolgies
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>adbus.client.proxy &mdash; python-adbus 1.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> python-adbus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">python-adbus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">adbus</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">python-adbus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>adbus.client.proxy</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for adbus.client.proxy</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright: 2017, CCX Technologies</span>
+<span class="sd">&quot;&quot;&quot;D-Bus Proxy&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">as</span> <span class="nn">etree</span>
+<span class="kn">import</span> <span class="nn">typing</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">sdbus</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">exceptions</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">call</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">get</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">get_all</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">set_</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">Listen</span>
+
+
+<span class="k">class</span> <span class="nc">_Empty_Class</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">_DbusWrapper</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">signature</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbus_signature</span> <span class="o">=</span> <span class="n">signature</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dbus_value</span> <span class="o">=</span> <span class="n">value</span>
+
+
+<div class="viewcode-block" id="Signal"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Signal">[docs]</a><span class="k">class</span> <span class="nc">Signal</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">etree</span><span class="p">,</span> <span class="n">timeout_ms</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="n">interface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_ms</span> <span class="o">=</span> <span class="n">timeout_ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">listens</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">etree</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;signal&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;arg&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">+=</span> <span class="n">x</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="Signal.add"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Signal.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coroutine</span><span class="p">,</span> <span class="n">signature</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add a listening coroutine to this signal.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            coroutine (coroutine): coroutine to schedule when signal received</span>
+<span class="sd">            signature (str): optional, signature of the signal, if False the</span>
+<span class="sd">                types of the coroutine arguments will be used to create the</span>
+<span class="sd">                signature and the coroutine will be called with one argument</span>
+<span class="sd">                per signal argument, if defined the coroutine will be called</span>
+<span class="sd">                with a list of arguments, if None the coroutine will be called</span>
+<span class="sd">                with a list of types determined at run-time</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">listen</span> <span class="o">=</span> <span class="n">Listen</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interface</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                <span class="n">coroutine</span><span class="p">,</span>
+                <span class="n">signature</span><span class="o">=</span><span class="n">signature</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="p">(</span>
+                <span class="p">(</span><span class="n">listen</span><span class="o">.</span><span class="n">signature</span> <span class="o">!=</span> <span class="s1">&#39;ANY&#39;</span><span class="p">)</span>
+                <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">!=</span> <span class="n">listen</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">exceptions</span><span class="o">.</span><span class="n">BusError</span><span class="p">(</span>
+                    <span class="n">f</span><span class="s2">&quot;Coroutine signature </span><span class="si">{listen.signature}</span><span class="s2"> doesn&#39;t &quot;</span>
+                    <span class="n">f</span><span class="s2">&quot;match signal signature </span><span class="si">{self.signature}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">listens</span><span class="p">[</span><span class="n">coroutine</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">listen</span></div>
+
+<div class="viewcode-block" id="Signal.remove"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Signal.remove">[docs]</a>    <span class="k">def</span> <span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coroutine</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">listens</span><span class="p">[</span><span class="n">coroutine</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coroutine</span><span class="p">,</span> <span class="n">remove</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">remove</span> <span class="ow">and</span> <span class="p">(</span><span class="n">coroutine</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">listens</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">coroutine</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">coroutine</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Property"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Property">[docs]</a><span class="k">class</span> <span class="nc">Property</span><span class="p">:</span>
+    <span class="n">emits_changed_signal</span> <span class="o">=</span> <span class="s1">&#39;true&#39;</span>
+    <span class="n">cached_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">etree</span><span class="p">,</span> <span class="n">timeout_ms</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="n">interface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_ms</span> <span class="o">=</span> <span class="n">timeout_ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trackers</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="n">etree</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;access&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;readwrite&#39;</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readonly</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">etree</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;annotation&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span>
+                        <span class="n">x</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span>
+                        <span class="s1">&#39;org.freedesktop.DBus.Property.EmitsChangedSignal&#39;</span>
+                <span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">emits_changed_signal</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Property.get"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Property.get">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">emits_changed_signal</span> <span class="o">==</span> <span class="s1">&#39;false&#39;</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cached_value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cached_value</span> <span class="o">=</span> <span class="k">await</span> <span class="n">get</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">interface</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">timeout_ms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout_ms</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cached_value</span></div>
+
+<div class="viewcode-block" id="Property.set"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Property.set">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">set</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">emits_changed_signal</span> <span class="o">==</span> <span class="s1">&#39;const&#39;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Can&#39;t set read-only property </span><span class="si">{self.name}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="n">set_</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">interface</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_cast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="p">,</span> <span class="n">value</span><span class="p">),</span>
+                    <span class="n">timeout_ms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout_ms</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Property.track"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Property.track">[docs]</a>    <span class="k">def</span> <span class="nf">track</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coroutine</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trackers</span><span class="p">[</span><span class="n">coroutine</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">coroutine</span></div>
+
+<div class="viewcode-block" id="Property.untrack"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Property.untrack">[docs]</a>    <span class="k">def</span> <span class="nf">untrack</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coroutine</span><span class="p">):</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">trackers</span><span class="p">[</span><span class="n">coroutine</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span></div>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Method"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Method">[docs]</a><span class="k">class</span> <span class="nc">Method</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">etree</span><span class="p">,</span> <span class="n">timeout_ms</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="n">interface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">timeout_ms</span> <span class="o">=</span> <span class="n">timeout_ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">arg_signatures</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">return_signature</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">etree</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;method&#39;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">tag</span> <span class="o">==</span> <span class="s1">&#39;arg&#39;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">x</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;direction&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;out&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">return_signature</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+                <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;direction&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;in&#39;</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">arg_signatures</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="n">call</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">service</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">address</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interface</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="p">[</span>
+                        <span class="n">_DbusWrapper</span><span class="p">(</span>
+                                <span class="bp">self</span><span class="o">.</span><span class="n">arg_signatures</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                                <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_cast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">arg_signatures</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">a</span><span class="p">)</span>
+                        <span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+                <span class="p">],</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">return_signature</span><span class="p">,</span>
+                <span class="n">timeout_ms</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">timeout_ms</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Interface"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Interface">[docs]</a><span class="k">class</span> <span class="nc">Interface</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">etree</span><span class="p">,</span> <span class="n">camel_convert</span><span class="p">,</span>
+            <span class="n">timeout_ms</span><span class="p">,</span> <span class="n">changed_coroutine</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="n">interface</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">interface</span> <span class="o">=</span> <span class="n">interface</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">methods</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">signals</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed_coroutine</span> <span class="o">=</span> <span class="n">changed_coroutine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">camel_convert</span> <span class="o">=</span> <span class="n">camel_convert</span>
+
+        <span class="k">def</span> <span class="nf">_add_snake_and_camel</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+            <span class="n">d</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">if</span> <span class="n">camel_convert</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="n">sdbus</span><span class="o">.</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">n</span><span class="p">)]</span> <span class="o">=</span> <span class="n">v</span>
+
+        <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">etree</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;method&#39;</span><span class="p">):</span>
+            <span class="n">_add_snake_and_camel</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">methods</span><span class="p">,</span> <span class="n">m</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                    <span class="n">Method</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span>
+                            <span class="n">timeout_ms</span>
+                    <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">etree</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;property&#39;</span><span class="p">):</span>
+            <span class="n">_add_snake_and_camel</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">,</span> <span class="n">p</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                    <span class="n">Property</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span>
+                            <span class="n">timeout_ms</span>
+                    <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">properties_changed_listen</span> <span class="o">=</span> <span class="n">Listen</span><span class="p">(</span>
+                    <span class="n">service</span><span class="p">,</span>
+                    <span class="n">address</span><span class="p">,</span>
+                    <span class="n">path</span><span class="p">,</span>
+                    <span class="s2">&quot;org.freedesktop.DBus.Properties&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;PropertiesChanged&quot;</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">properties_changed</span><span class="p">,</span>
+                    <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">interface</span><span class="p">,</span> <span class="p">),</span>
+            <span class="p">)</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_all</span> <span class="o">=</span> <span class="n">get_all</span><span class="p">(</span>
+                    <span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">timeout_ms</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">get_all</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">etree</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;signal&#39;</span><span class="p">):</span>
+            <span class="n">_add_snake_and_camel</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">signals</span><span class="p">,</span> <span class="n">s</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span>
+                    <span class="n">Signal</span><span class="p">(</span>
+                            <span class="bp">self</span><span class="p">,</span> <span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span>
+                            <span class="n">timeout_ms</span>
+                    <span class="p">)</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="Interface.update_properties"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Interface.update_properties">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">update_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all</span><span class="p">:</span>
+            <span class="n">values</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_all</span>
+            <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">values</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">cached_value</span> <span class="o">=</span> <span class="n">v</span></div>
+
+<div class="viewcode-block" id="Interface.properties_changed"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Interface.properties_changed">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">properties_changed</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">changed</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">typing</span><span class="o">.</span><span class="n">Any</span><span class="p">],</span>
+            <span class="n">invalidated</span><span class="p">:</span> <span class="n">typing</span><span class="o">.</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+    <span class="p">):</span>
+        <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">changed</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">prop</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">p</span><span class="p">]</span>
+            <span class="n">prop</span><span class="o">.</span><span class="n">cached_value</span> <span class="o">=</span> <span class="n">v</span>
+            <span class="k">for</span> <span class="n">coroutine</span> <span class="ow">in</span> <span class="n">prop</span><span class="o">.</span><span class="n">trackers</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">await</span> <span class="n">coroutine</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">invalidated</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">cached_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">changed_coroutine</span><span class="p">:</span>
+            <span class="n">changed</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">changed</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span> <span class="o">+</span> <span class="n">invalidated</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camel_convert</span><span class="p">:</span>
+                <span class="n">changed</span> <span class="o">=</span> <span class="p">[</span><span class="n">sdbus</span><span class="o">.</span><span class="n">camel_to_snake</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">changed</span><span class="p">]</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">changed_coroutine</span><span class="p">(</span><span class="n">changed</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;properties&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;methods&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">methods</span>
+
+        <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;signals&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signals</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">signals</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span>
+                <span class="n">f</span><span class="s2">&quot;&#39;</span><span class="si">{self.interface}</span><span class="s2">&#39; interface has no attribute &#39;</span><span class="si">{name}</span><span class="s2">&#39;&quot;</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="Interface.set_changed_coroutine"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Interface.set_changed_coroutine">[docs]</a>    <span class="k">def</span> <span class="nf">set_changed_coroutine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">changed_coroutine</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Set the Interface&#39;s Changed Co-Routine.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">changed_coroutine</span> <span class="o">=</span> <span class="n">changed_coroutine</span></div>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_property_multi</span> <span class="o">=</span> <span class="n">_Empty_Class</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_property_multi</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__aexit__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">exception_type</span><span class="p">,</span> <span class="n">exception_value</span><span class="p">,</span> <span class="n">exception_traceback</span>
+    <span class="p">):</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="n">_DbusWrapper</span><span class="p">(</span>
+                <span class="s1">&#39;a</span><span class="si">{sv}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="p">{</span>
+                        <span class="n">sdbus</span><span class="o">.</span><span class="n">snake_to_camel</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">camel_convert</span> <span class="k">else</span> <span class="n">p</span><span class="p">:</span>
+                        <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_cast</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">signature</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                        <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_property_multi</span><span class="o">.</span><span class="vm">__dict__</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">}</span>
+        <span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="p">[</span><span class="s2">&quot;ccx.DBus.Properties&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">methods</span><span class="p">[</span><span class="s2">&quot;SetMulti&quot;</span><span class="p">](</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">interface</span><span class="p">,</span> <span class="n">properties</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">properties</span><span class="o">.</span><span class="n">dbus_value</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">p</span><span class="p">]</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">v</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Proxy"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Proxy">[docs]</a><span class="k">class</span> <span class="nc">Proxy</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Creates a Python Object that maps to an Interface that already</span>
+<span class="sd">    exists on the D-Bus.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        service (adbus.server.Service): service to connect to</span>
+<span class="sd">        address (str): address (name) of the application to connect to</span>
+<span class="sd">            on the D-Bus.</span>
+<span class="sd">        path (str): path to create on the service</span>
+<span class="sd">            ie. /com/awesome/Settings1</span>
+<span class="sd">        interface (str): optional, default interface to access, if None will</span>
+<span class="sd">            use address</span>
+<span class="sd">        changed_coroutines: optional, coroutine dictionary of changed</span>
+<span class="sd">            coroutines, the key is the name of the interface to attach</span>
+<span class="sd">            to. The coroutine will be called with a single argument which is a</span>
+<span class="sd">            list of property names.</span>
+<span class="sd">        timeout_ms (int): optional, maximum time to wait for a response in</span>
+<span class="sd">            milli-seconds</span>
+<span class="sd">        camel_convert (bool): optional, D-Bus method and property</span>
+<span class="sd">            names are typically defined in Camel Case, but Python</span>
+<span class="sd">            methods and arguments are typically defined in Snake</span>
+<span class="sd">            Case, if this is set the cases will be automatically</span>
+<span class="sd">            converted between the two</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_interface</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">_introspect_xml</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">service</span><span class="p">,</span>
+            <span class="n">address</span><span class="p">,</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">interface</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">changed_coroutines</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">timeout_ms</span><span class="o">=</span><span class="mi">30000</span><span class="p">,</span>
+            <span class="n">camel_convert</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node_i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interfaces</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_service</span> <span class="o">=</span> <span class="n">service</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_address</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">interface</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_interface</span> <span class="o">=</span> <span class="n">address</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_interface</span> <span class="o">=</span> <span class="n">interface</span>
+        <span class="k">if</span> <span class="n">changed_coroutines</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_changed_coroutines</span> <span class="o">=</span> <span class="n">changed_coroutines</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_changed_coroutines</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_timeout_ms</span> <span class="o">=</span> <span class="n">timeout_ms</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_camel_convert</span> <span class="o">=</span> <span class="n">camel_convert</span>
+
+    <span class="k">def</span> <span class="nf">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_introspect_xml</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Must update proxy once before accessing.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_interfaces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_interface</span><span class="p">],</span> <span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interface</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_introspect_xml</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Must update proxy once before accessing.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">interface</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interfaces</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Interface </span><span class="si">{interface}</span><span class="s2"> not in proxy&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interfaces</span><span class="p">[</span><span class="n">interface</span><span class="p">]</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">,</span> <span class="n">changed_coroutines</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camel_convert</span><span class="p">:</span>
+            <span class="n">node</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">snake_to_camel</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="n">f</span><span class="s2">&quot;Node </span><span class="si">{node}</span><span class="s2"> not in proxy&quot;</span><span class="p">)</span>
+
+        <span class="n">new</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address</span><span class="p">,</span> <span class="n">f</span><span class="s2">&quot;</span><span class="si">{self._path}</span><span class="s2">/</span><span class="si">{node}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span>
+                <span class="n">changed_coroutines</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout_ms</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_camel_convert</span>
+        <span class="p">)</span>
+
+        <span class="k">await</span> <span class="n">new</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">new</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__aenter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interfaces</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_interface</span><span class="p">]</span><span class="o">.</span><span class="fm">__aenter__</span><span class="p">()</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__aexit__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">exception_type</span><span class="p">,</span> <span class="n">exception_value</span><span class="p">,</span> <span class="n">exception_traceback</span>
+    <span class="p">):</span>
+        <span class="k">return</span> <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interfaces</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_interface</span>
+        <span class="p">]</span><span class="o">.</span><span class="fm">__aexit__</span><span class="p">(</span><span class="n">exception_type</span><span class="p">,</span> <span class="n">exception_value</span><span class="p">,</span> <span class="n">exception_traceback</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__aiter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">async</span> <span class="k">def</span> <span class="nf">__anext__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_node_i</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">StopAsyncIteration</span>
+        <span class="n">proxy</span> <span class="o">=</span> <span class="k">await</span> <span class="bp">self</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_node_i</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_node_i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">proxy</span>
+
+<div class="viewcode-block" id="Proxy.update"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.proxy.Proxy.update">[docs]</a>    <span class="k">async</span> <span class="k">def</span> <span class="nf">update</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Use Introspection on remote server to update the proxy.</span>
+<span class="sd">            **Must be run once before using the Proxy.**</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_introspect_xml</span> <span class="o">=</span> <span class="k">await</span> <span class="n">call</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_address</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span>
+                <span class="s1">&#39;org.freedesktop.DBus.Introspectable&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;Introspect&#39;</span><span class="p">,</span>
+                <span class="n">response_signature</span><span class="o">=</span><span class="s2">&quot;s&quot;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_interfaces</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">interface</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interfaces</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">await</span> <span class="n">interface</span><span class="o">.</span><span class="n">update_properties</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_update_interfaces</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interfaces</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="n">root</span> <span class="o">=</span> <span class="n">etree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_introspect_xml</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;interface&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_interfaces</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Interface</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_service</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_address</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_camel_convert</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_timeout_ms</span><span class="p">,</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_changed_coroutines</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">root</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;node&#39;</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_nodes</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, CCX Technolgies
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

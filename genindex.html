@@ -9,7 +9,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Index &mdash; python-adbus 0.2.0 documentation</title>
+  <title>Index &mdash; python-adbus 1.0.1 documentation</title>
   
 
   
@@ -18,40 +18,34 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="#"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="python-adbus 0.2.0 documentation" href="index.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -63,10 +57,6 @@
 
           
             
-            
-              <div class="version">
-                0.2
-              </div>
             
           
 
@@ -104,7 +94,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">python-adbus</a>
@@ -112,9 +102,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -171,9 +162,9 @@
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  | <a href="#V"><strong>V</strong></a>
- | <a href="#W"><strong>W</strong></a>
  
 </div>
 <h2 id="A">A</h2>
@@ -191,15 +182,15 @@
 </li>
       <li><a href="adbus.client.html#module-adbus.client.proxy">adbus.client.proxy (module)</a>
 </li>
-      <li><a href="adbus.html#module-adbus.exceptions">adbus.exceptions (module)</a>
+      <li><a href="adbus.html#module-adbus.datatypes">adbus.datatypes (module)</a>
 </li>
-      <li><a href="adbus.html#module-adbus.sdbus">adbus.sdbus (module)</a>
+      <li><a href="adbus.html#module-adbus.exceptions">adbus.exceptions (module)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.server.html#module-adbus.server">adbus.server (module)</a>
+      <li><a href="adbus.html#module-adbus.sdbus">adbus.sdbus (module)</a>
 </li>
-      <li><a href="adbus.server.html#module-adbus.server.ccx">adbus.server.ccx (module)</a>
+      <li><a href="adbus.server.html#module-adbus.server">adbus.server (module)</a>
 </li>
       <li><a href="adbus.server.html#module-adbus.server.method">adbus.server.method (module)</a>
 </li>
@@ -245,13 +236,17 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.html#adbus.sdbus.dbus_cast">dbus_cast() (in module adbus.sdbus)</a>
+</li>
       <li><a href="adbus.server.html#adbus.server.method.Method.dbus_name">dbus_name (adbus.server.method.Method attribute)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.html#adbus.datatypes.VariantWrapper.dbus_signature">dbus_signature (adbus.datatypes.VariantWrapper attribute)</a>
+</li>
       <li><a href="adbus.html#adbus.sdbus.dbus_signature">dbus_signature() (in module adbus.sdbus)</a>
 </li>
-      <li><a href="adbus.server.html#adbus.server.object.Object.defer_signals">defer_signals() (adbus.server.object.Object method)</a>
+      <li><a href="adbus.server.html#adbus.server.object.Object.defer_property_updates">defer_property_updates() (adbus.server.object.Object method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -262,7 +257,11 @@
       <li><a href="adbus.html#adbus.sdbus.Signal.emit">emit() (adbus.sdbus.Signal method)</a>
 </li>
       <li><a href="adbus.html#adbus.sdbus.Property.emit_changed">emit_changed() (adbus.sdbus.Property method)</a>
+
+      <ul>
+        <li><a href="adbus.server.html#adbus.server.property.Property.emit_changed">(adbus.server.property.Property method)</a>
 </li>
+      </ul></li>
       <li><a href="adbus.html#adbus.sdbus.Object.emit_properties_changed">emit_properties_changed() (adbus.sdbus.Object method)</a>
 </li>
   </ul></td>
@@ -272,6 +271,8 @@
       <li><a href="adbus.client.html#adbus.client.proxy.Property.emits_changed_signal">emits_changed_signal (adbus.client.proxy.Property attribute)</a>
 </li>
       <li><a href="adbus.html#adbus.sdbus.Error">Error (class in adbus.sdbus)</a>
+</li>
+      <li><a href="adbus.html#adbus.sdbus.Call.event">event (adbus.sdbus.Call attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -285,18 +286,16 @@
         <li><a href="adbus.client.html#adbus.client.getset.get">(in module adbus.client.getset)</a>
 </li>
       </ul></li>
-      <li><a href="adbus.client.html#adbus.client.getset.get_all">get_all() (in module adbus.client.getset)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.getset.get_all">get_all() (in module adbus.client.getset)</a>
+</li>
       <li><a href="adbus.html#adbus.sdbus.Service.get_loop">get_loop() (adbus.sdbus.Service method)</a>
 
       <ul>
         <li><a href="adbus.html#adbus.service.Service.get_loop">(adbus.service.Service method)</a>
 </li>
       </ul></li>
-      <li><a href="adbus.html#adbus.sdbus.Call.get_response">get_response() (adbus.sdbus.Call method)</a>
-</li>
   </ul></td>
 </tr></table>
 
@@ -335,10 +334,6 @@
 </li>
       <li><a href="adbus.html#adbus.sdbus.Message">Message (class in adbus.sdbus)</a>
 </li>
-      <li><a href="adbus.html#adbus.sdbus.MessageEmptyError">MessageEmptyError</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adbus.client.html#adbus.client.proxy.Method">Method (class in adbus.client.proxy)</a>
 
       <ul>
@@ -347,6 +342,8 @@
         <li><a href="adbus.server.html#adbus.server.method.Method">(class in adbus.server.method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adbus.server.html#adbus.server.method.method">method() (in module adbus.server.method)</a>
 </li>
   </ul></td>
@@ -392,17 +389,17 @@
       <li><a href="adbus.client.html#adbus.client.proxy.Signal.remove">remove() (adbus.client.proxy.Signal method)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.html#adbus.sdbus.Call.response">response (adbus.sdbus.Call attribute)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.server.html#adbus.server.object.Object.sdbus">sdbus (adbus.server.object.Object attribute)</a>
-
-      <ul>
-        <li><a href="adbus.html#adbus.service.Service.sdbus">(adbus.service.Service attribute)</a>
+      <li><a href="adbus.html#adbus.service.Service.sdbus">sdbus (adbus.service.Service attribute)</a>
 </li>
-      </ul></li>
       <li><a href="adbus.html#adbus.sdbus.SdbusError">SdbusError</a>
 </li>
       <li><a href="adbus.html#adbus.sdbus.Call.send">send() (adbus.sdbus.Call method)</a>
@@ -413,14 +410,14 @@
         <li><a href="adbus.html#adbus.service.Service">(class in adbus.service)</a>
 </li>
       </ul></li>
+      <li><a href="adbus.client.html#adbus.client.proxy.Property.set">set() (adbus.client.proxy.Property method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.client.html#adbus.client.proxy.Property.set">set() (adbus.client.proxy.Property method)</a>
-
-      <ul>
-        <li><a href="adbus.client.html#adbus.client.getset.set">(in module adbus.client.getset)</a>
+      <li><a href="adbus.client.html#adbus.client.getset.set_">set_() (in module adbus.client.getset)</a>
 </li>
-      </ul></li>
+      <li><a href="adbus.client.html#adbus.client.proxy.Interface.set_changed_coroutine">set_changed_coroutine() (adbus.client.proxy.Interface method)</a>
+</li>
       <li><a href="adbus.client.html#adbus.client.proxy.Signal">Signal (class in adbus.client.proxy)</a>
 
       <ul>
@@ -434,13 +431,23 @@
   </ul></td>
 </tr></table>
 
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.proxy.Property.track">track() (adbus.client.proxy.Property method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.client.html#adbus.client.proxy.Proxy.update">update() (adbus.client.proxy.Proxy method)</a>
+      <li><a href="adbus.client.html#adbus.client.proxy.Property.untrack">untrack() (adbus.client.proxy.Property method)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="adbus.client.html#adbus.client.proxy.Proxy.update">update() (adbus.client.proxy.Proxy method)</a>
+</li>
       <li><a href="adbus.client.html#adbus.client.proxy.Interface.update_properties">update_properties() (adbus.client.proxy.Interface method)</a>
 </li>
   </ul></td>
@@ -451,6 +458,10 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adbus.html#adbus.sdbus.variant_signature">variant_signature() (in module adbus.sdbus)</a>
 </li>
+      <li><a href="adbus.html#adbus.datatypes.VariantWrapper">VariantWrapper (class in adbus.datatypes)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="adbus.server.html#adbus.server.method.Method.vt">vt() (adbus.server.method.Method method)</a>
 
       <ul>
@@ -460,26 +471,12 @@
 </li>
       </ul></li>
   </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.server.html#adbus.server.object.Object.vtable">vtable (adbus.server.object.Object attribute)</a>
-</li>
-  </ul></td>
-</tr></table>
-
-<h2 id="W">W</h2>
-<table style="width: 100%" class="indextable genindextable"><tr>
-  <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="adbus.html#adbus.sdbus.Call.wait_for_response">wait_for_response() (adbus.sdbus.Call method)</a>
-</li>
-  </ul></td>
 </tr></table>
 
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -488,11 +485,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, CCX Technolgies.
+        &copy; Copyright 2017, CCX Technolgies
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -505,36 +502,15 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.2.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

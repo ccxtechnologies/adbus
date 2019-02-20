@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>adbus.client.getset &mdash; python-adbus 1.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> python-adbus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">python-adbus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">adbus</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">python-adbus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>adbus.client.getset</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for adbus.client.getset</h1><div class="highlight"><pre>
+<span></span><span class="c1"># == Copyright: 2017, CCX Technologies</span>
+
+<span class="kn">from</span> <span class="nn">asyncio</span> <span class="k">import</span> <span class="n">wait_for</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">sdbus</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">datatypes</span>
+
+
+<div class="viewcode-block" id="get"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.getset.get">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">timeout_ms</span><span class="o">=</span><span class="mi">30000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets a D-Bus Property from another process.</span>
+
+<span class="sd">    This is a co-routine, so must be await-ed from within a asyncio mainloop.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        service (adbus.server.Service): service to connect to</span>
+<span class="sd">        address (str): address (name) of the D-Bus Service to call</span>
+<span class="sd">        path (str): path of method to call, ie. /com/awesome/Settings1</span>
+<span class="sd">        interface (str): interface label to call, ie. com.awesome.settings</span>
+<span class="sd">        name (str): name of the name to get, ie. TestProperty</span>
+<span class="sd">        timeout_ms (int): maximum time to wait for a response in milli-seconds</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Value of the name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">call</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span>
+        <span class="n">service</span><span class="o">.</span><span class="n">sdbus</span><span class="p">,</span>
+        <span class="n">address</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s2">&quot;org.freedesktop.DBus.Properties&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;Get&quot;</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">interface</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span> <span class="sa">b</span><span class="s2">&quot;v&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">call</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">timeout_ms</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">response</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">call</span><span class="o">.</span><span class="n">response</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">call</span><span class="o">.</span><span class="n">response</span></div>
+
+
+<div class="viewcode-block" id="get_all"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.getset.get_all">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">get_all</span><span class="p">(</span><span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">timeout_ms</span><span class="o">=</span><span class="mi">30000</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets a All D-Bus Properties from another process.</span>
+
+<span class="sd">    This is a co-routine, so must be await-ed from within a asyncio mainloop.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        service (adbus.server.Service): service to connect to</span>
+<span class="sd">        address (str): address (name) of the D-Bus Service to call</span>
+<span class="sd">        path (str): path of method to call, ie. /com/awesome/Settings1</span>
+<span class="sd">        interface (str): interface label to call, ie. com.awesome.settings</span>
+<span class="sd">        timeout_ms (int): maximum time to wait for a response in milli-seconds</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        A dictionary, keys are the name names and values are the name</span>
+<span class="sd">        values.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">call</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span>
+        <span class="n">service</span><span class="o">.</span><span class="n">sdbus</span><span class="p">,</span>
+        <span class="n">address</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s2">&quot;org.freedesktop.DBus.Properties&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;GetAll&quot;</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">interface</span><span class="p">,</span> <span class="p">),</span> <span class="sa">b</span><span class="s2">&quot;a</span><span class="si">{sv}</span><span class="s2">&quot;</span>
+    <span class="p">)</span>
+
+    <span class="n">call</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">timeout_ms</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">response</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">call</span><span class="o">.</span><span class="n">response</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">call</span><span class="o">.</span><span class="n">response</span></div>
+
+
+<div class="viewcode-block" id="set_"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.getset.set_">[docs]</a><span class="k">async</span> <span class="k">def</span> <span class="nf">set_</span><span class="p">(</span>
+    <span class="n">service</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">timeout_ms</span><span class="o">=</span><span class="mi">30000</span>
+<span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Sets a D-Bus Property in another process.</span>
+
+<span class="sd">    This is a co-routine, so must be await-ed from within a asyncio mainloop.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        service (adbus.server.Service): service to connect to</span>
+<span class="sd">        address (str): address (name) of the D-Bus Service to call</span>
+<span class="sd">        path (str): path of method to call, ie. /com/awesome/Settings1</span>
+<span class="sd">        interface (str): interface label to call, ie. com.awesome.settings</span>
+<span class="sd">        name (str): name of the name to get, ie. TestProperty</span>
+<span class="sd">        value (object): value to set the name to, must be compatible</span>
+<span class="sd">            with the defined D-Bus Property type</span>
+<span class="sd">        timeout_ms (int): maximum time to wait for a response in milli-seconds</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">call</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Call</span><span class="p">(</span>
+        <span class="n">service</span><span class="o">.</span><span class="n">sdbus</span><span class="p">,</span>
+        <span class="n">address</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span>
+        <span class="n">path</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="sa">b</span><span class="s2">&quot;org.freedesktop.DBus.Properties&quot;</span><span class="p">,</span> <span class="sa">b</span><span class="s2">&quot;Set&quot;</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">interface</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">datatypes</span><span class="o">.</span><span class="n">VariantWrapper</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+    <span class="p">)</span>
+
+    <span class="n">call</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">timeout_ms</span><span class="p">)</span>
+    <span class="k">await</span> <span class="n">call</span><span class="o">.</span><span class="n">event</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">call</span><span class="o">.</span><span class="n">response</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">call</span><span class="o">.</span><span class="n">response</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, CCX Technolgies
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,46 @@
+adbus.client package
+====================
+
+Submodules
+----------
+
+adbus.client.call module
+------------------------
+
+.. automodule:: adbus.client.call
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+adbus.client.getset module
+--------------------------
+
+.. automodule:: adbus.client.getset
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+adbus.client.listen module
+--------------------------
+
+.. automodule:: adbus.client.listen
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+adbus.client.proxy module
+-------------------------
+
+.. automodule:: adbus.client.proxy
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: adbus.client
+    :members:
+    :undoc-members:
+    :show-inheritance:

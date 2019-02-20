@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>adbus package &mdash; python-adbus 0.2.0 documentation</title>
+  <title>adbus package &mdash; python-adbus 1.0.1 documentation</title>
   
 
   
@@ -17,43 +17,36 @@
   
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="genindex.html"/>
-        <link rel="search" title="Search" href="search.html"/>
-    <link rel="top" title="python-adbus 0.2.0 documentation" href="index.html"/>
-        <link rel="up" title="adbus" href="modules.html"/>
-        <link rel="next" title="adbus.client package" href="adbus.client.html"/>
-        <link rel="prev" title="adbus" href="modules.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="adbus.client package" href="adbus.client.html" />
+    <link rel="prev" title="adbus" href="modules.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -65,10 +58,6 @@
 
           
             
-            
-              <div class="version">
-                0.2
-              </div>
             
           
 
@@ -102,6 +91,7 @@
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-adbus.datatypes">adbus.datatypes module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-adbus.exceptions">adbus.exceptions module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-adbus.sdbus">adbus.sdbus module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#module-adbus.service">adbus.service module</a></li>
@@ -121,7 +111,7 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">python-adbus</a>
@@ -129,9 +119,10 @@
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -192,7 +183,6 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="adbus.server.html">adbus.server package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="adbus.server.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="adbus.server.html#module-adbus.server.ccx">adbus.server.ccx module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adbus.server.html#module-adbus.server.method">adbus.server.method module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adbus.server.html#module-adbus.server.object">adbus.server.object module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="adbus.server.html#module-adbus.server.property">adbus.server.property module</a></li>
@@ -206,13 +196,29 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-adbus.datatypes">
+<span id="adbus-datatypes-module"></span><h2>adbus.datatypes module<a class="headerlink" href="#module-adbus.datatypes" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="adbus.datatypes.VariantWrapper">
+<em class="property">class </em><code class="descclassname">adbus.datatypes.</code><code class="descname">VariantWrapper</code><span class="sig-paren">(</span><em>value</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/datatypes.html#VariantWrapper"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.datatypes.VariantWrapper" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Creates a D-Bus Variant from any value.
+For sending to D-Bus Interfaces.</p>
+<dl class="attribute">
+<dt id="adbus.datatypes.VariantWrapper.dbus_signature">
+<code class="descname">dbus_signature</code><em class="property"> = 'v'</em><a class="headerlink" href="#adbus.datatypes.VariantWrapper.dbus_signature" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-adbus.exceptions">
 <span id="adbus-exceptions-module"></span><h2>adbus.exceptions module<a class="headerlink" href="#module-adbus.exceptions" title="Permalink to this headline">¶</a></h2>
 <p>D-Bus Exceptions from the adbus package</p>
 <dl class="exception">
 <dt id="adbus.exceptions.BusError">
 <em class="property">exception </em><code class="descclassname">adbus.exceptions.</code><code class="descname">BusError</code><a class="reference internal" href="_modules/adbus/exceptions.html#BusError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.exceptions.BusError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Error Interfacing on the D-Bus</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -232,67 +238,58 @@ called by external applications.</p>
 <dl class="class">
 <dt id="adbus.sdbus.Call">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Call</code><a class="headerlink" href="#adbus.sdbus.Call" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-<dl class="method">
-<dt id="adbus.sdbus.Call.get_response">
-<code class="descname">get_response</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Call.get_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return the response.</p>
-</dd></dl>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="attribute">
+<dt id="adbus.sdbus.Call.event">
+<code class="descname">event</code><a class="headerlink" href="#adbus.sdbus.Call.event" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="adbus.sdbus.Call.response">
+<code class="descname">response</code><a class="headerlink" href="#adbus.sdbus.Call.response" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
 
 <dl class="method">
 <dt id="adbus.sdbus.Call.send">
 <code class="descname">send</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Call.send" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
-<dl class="method">
-<dt id="adbus.sdbus.Call.wait_for_response">
-<code class="descname">wait_for_response</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Call.wait_for_response" title="Permalink to this definition">¶</a></dt>
-<dd><p>A couroutine that will wait for a response.</p>
-</dd></dl>
-
 </dd></dl>
 
 <dl class="class">
 <dt id="adbus.sdbus.Error">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Error</code><a class="headerlink" href="#adbus.sdbus.Error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="adbus.sdbus.Listen">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Listen</code><a class="headerlink" href="#adbus.sdbus.Listen" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="adbus.sdbus.Manager">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Manager</code><a class="headerlink" href="#adbus.sdbus.Manager" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="adbus.sdbus.Message">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Message</code><a class="headerlink" href="#adbus.sdbus.Message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
-</dd></dl>
-
-<dl class="exception">
-<dt id="adbus.sdbus.MessageEmptyError">
-<em class="property">exception </em><code class="descclassname">adbus.sdbus.</code><code class="descname">MessageEmptyError</code><a class="headerlink" href="#adbus.sdbus.MessageEmptyError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
-<p>Empty Message Element Error</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="adbus.sdbus.Method">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Method</code><a class="headerlink" href="#adbus.sdbus.Method" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 </dd></dl>
 
 <dl class="class">
 <dt id="adbus.sdbus.Object">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Object</code><a class="headerlink" href="#adbus.sdbus.Object" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="adbus.sdbus.Object.emit_properties_changed">
 <code class="descname">emit_properties_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Object.emit_properties_changed" title="Permalink to this definition">¶</a></dt>
@@ -303,7 +300,7 @@ called by external applications.</p>
 <dl class="class">
 <dt id="adbus.sdbus.Property">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Property</code><a class="headerlink" href="#adbus.sdbus.Property" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="adbus.sdbus.Property.emit_changed">
 <code class="descname">emit_changed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Property.emit_changed" title="Permalink to this definition">¶</a></dt>
@@ -314,14 +311,14 @@ called by external applications.</p>
 <dl class="exception">
 <dt id="adbus.sdbus.SdbusError">
 <em class="property">exception </em><code class="descclassname">adbus.sdbus.</code><code class="descname">SdbusError</code><a class="headerlink" href="#adbus.sdbus.SdbusError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>SD-Bus Library Configuration Error</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="adbus.sdbus.Service">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Service</code><a class="headerlink" href="#adbus.sdbus.Service" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="adbus.sdbus.Service.get_loop">
 <code class="descname">get_loop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Service.get_loop" title="Permalink to this definition">¶</a></dt>
@@ -343,8 +340,8 @@ called by external applications.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
-<li><code class="xref py py-exc docutils literal"><span class="pre">sdbus.BusError</span></code> – if an error occurs interfacing with the D-Bus</li>
-<li><code class="xref py py-exc docutils literal"><span class="pre">Exception</span></code> – re-raised if raised by any callbacks, or property setters</li>
+<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">sdbus.BusError</span></code> – if an error occurs interfacing with the D-Bus</li>
+<li><code class="xref py py-exc docutils literal notranslate"><span class="pre">Exception</span></code> – re-raised if raised by any callbacks, or property setters</li>
 </ul>
 </td>
 </tr>
@@ -357,7 +354,7 @@ called by external applications.</p>
 <dl class="class">
 <dt id="adbus.sdbus.Signal">
 <em class="property">class </em><code class="descclassname">adbus.sdbus.</code><code class="descname">Signal</code><a class="headerlink" href="#adbus.sdbus.Signal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <dl class="method">
 <dt id="adbus.sdbus.Signal.emit">
 <code class="descname">emit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.Signal.emit" title="Permalink to this definition">¶</a></dt>
@@ -382,6 +379,27 @@ called by external applications.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="adbus.sdbus.dbus_cast">
+<code class="descclassname">adbus.sdbus.</code><code class="descname">dbus_cast</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.dbus_cast" title="Permalink to this definition">¶</a></dt>
+<dd><p>Casts an object into the type defined in a D-Bus signature.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>signature</strong> (<em>str</em>) – D-Bus type signature</li>
+<li><strong>obj</strong> (<em>object</em><em> or </em><em>type</em>) – Python object or type</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">A new type, cast from the D-Bus Signature.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="adbus.sdbus.dbus_signature">
 <code class="descclassname">adbus.sdbus.</code><code class="descname">dbus_signature</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#adbus.sdbus.dbus_signature" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates a D-Bus Signature from a Python object or type.</p>
@@ -389,7 +407,7 @@ called by external applications.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<a class="reference internal" href="adbus.server.html#module-adbus.server.object" title="adbus.server.object"><em>object</em></a><em> or </em><em>type</em>) – Python object or type,
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>obj</strong> (<em>object</em><em> or </em><em>type</em>) – Python object or type,
 If the object has a dbus_signature attribute it will
 be used, otherwise the object or type will be parsed
 to calculate the D-Bus Signature.
@@ -398,7 +416,7 @@ typing library, List, Dict, and Tuple.</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A string representing the D-Bus Signature.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal"><span class="pre">TypeError</span></code> – If no D-Bus Equivalent for objects type.</td>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><code class="xref py py-exc docutils literal notranslate"><span class="pre">TypeError</span></code> – If no D-Bus Equivalent for objects type.</td>
 </tr>
 </tbody>
 </table>
@@ -432,7 +450,7 @@ typing library, List, Dict, and Tuple.</td>
 <dl class="class">
 <dt id="adbus.service.Service">
 <em class="property">class </em><code class="descclassname">adbus.service.</code><code class="descname">Service</code><span class="sig-paren">(</span><em>name=None</em>, <em>loop=None</em>, <em>bus='system'</em>, <em>replace_existing=False</em>, <em>allow_replacement=False</em>, <em>name_queue=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/adbus/service.html#Service"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#adbus.service.Service" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Serves objects onto a D-Bus, runs within an asyncio loop.</p>
 <p>This is a class can be used to create a server that attaches the to
 D-Bus and either serves objects or provides and interface for a client
@@ -456,7 +474,7 @@ name once the existing service relinquishes it</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">BusError</span></code> – if an error occurs during initialization</p>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal notranslate"><span class="pre">BusError</span></code> – if an error occurs during initialization</p>
 </td>
 </tr>
 </tbody>
@@ -487,9 +505,7 @@ name once the existing service relinquishes it</li>
 
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -498,7 +514,7 @@ name once the existing service relinquishes it</li>
         <a href="adbus.client.html" class="btn btn-neutral float-right" title="adbus.client package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="modules.html" class="btn btn-neutral" title="adbus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral float-left" title="adbus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -507,11 +523,11 @@ name once the existing service relinquishes it</li>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, CCX Technolgies.
+        &copy; Copyright 2017, CCX Technolgies
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -524,36 +540,15 @@ name once the existing service relinquishes it</li>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'0.2.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

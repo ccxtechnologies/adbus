@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>adbus.server.service &mdash; python-adbus 0.2.0 documentation</title>
+  <title>adbus.service &mdash; python-adbus 1.0.1 documentation</title>
   
 
   
@@ -17,45 +17,38 @@
   
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-        <link rel="index" title="Index"
-              href="../../../genindex.html"/>
-        <link rel="search" title="Search" href="../../../search.html"/>
-    <link rel="top" title="python-adbus 0.2.0 documentation" href="../../../index.html"/>
-        <link rel="up" title="Module code" href="../../index.html"/> 
-
-  
-  <script src="../../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
    
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
-            <a href="../../../index.html" class="icon icon-home"> python-adbus
+            <a href="../../index.html" class="icon icon-home"> python-adbus
           
 
           
@@ -64,15 +57,11 @@
           
             
             
-              <div class="version">
-                0.2
-              </div>
-            
           
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -91,8 +80,8 @@
             
               <p class="caption"><span class="caption-text">Contents:</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">python-adbus</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">adbus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../readme.html">python-adbus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">adbus</a></li>
 </ul>
 
             
@@ -104,17 +93,18 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+      <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">python-adbus</a>
+          <a href="../../index.html">python-adbus</a>
         
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
 
@@ -135,16 +125,14 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
         
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
         
-      <li>adbus.server.service</li>
+      <li>adbus.service</li>
     
     
       <li class="wy-breadcrumbs-aside">
-        
-            
         
       </li>
     
@@ -156,25 +144,19 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <h1>Source code for adbus.server.service</h1><div class="highlight"><pre>
+  <h1>Source code for adbus.service</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright: 2017, CCX Technologies</span>
 <span class="sd">&quot;&quot;&quot;D-Bus Service&quot;&quot;&quot;</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">sdbus</span>
-<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">exceptions</span>
-<span class="kn">import</span> <span class="nn">asyncio</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="k">import</span> <span class="n">sdbus</span>
 
 
-<div class="viewcode-block" id="Service"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.service.Service">[docs]</a><span class="k">class</span> <span class="nc">Service</span><span class="p">:</span>
+<div class="viewcode-block" id="Service"><a class="viewcode-back" href="../../adbus.html#adbus.service.Service">[docs]</a><span class="k">class</span> <span class="nc">Service</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;Serves objects onto a D-Bus, runs within an asyncio loop.</span>
 
 <span class="sd">    This is a class can be used to create a server that attaches the to</span>
-<span class="sd">    D-Bus and serves objects. To process requests it must be run within an</span>
-<span class="sd">    asyncio loop.</span>
-
-<span class="sd">    Objects are added by initializing them with an instantiated service.</span>
-<span class="sd">    More than one object can be attached to a service as long as they</span>
-<span class="sd">    don&#39;t have the same path.</span>
+<span class="sd">    D-Bus and either serves objects or provides and interface for a client</span>
+<span class="sd">    proxy. To process requests it must be run within an asyncio loop.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        name (str): name to be used on the D-Bus, ie. org.test</span>
@@ -191,12 +173,11 @@
 
 <span class="sd">    Raises:</span>
 <span class="sd">        BusError: if an error occurs during initialization</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">name</span><span class="p">,</span>
+        <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">loop</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="n">bus</span><span class="o">=</span><span class="s1">&#39;system&#39;</span><span class="p">,</span>
         <span class="n">replace_existing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -208,17 +189,15 @@
         <span class="p">)</span>
         <span class="sd">&quot;&quot;&quot;Interface to sd-bus library&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="Service.is_running"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.service.Service.is_running">[docs]</a>    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Service.is_running"><a class="viewcode-back" href="../../adbus.html#adbus.service.Service.is_running">[docs]</a>    <span class="k">def</span> <span class="nf">is_running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span><span class="o">.</span><span class="n">is_running</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="Service.get_loop"><a class="viewcode-back" href="../../../adbus.server.html#adbus.server.service.Service.get_loop">[docs]</a>    <span class="k">def</span> <span class="nf">get_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="Service.get_loop"><a class="viewcode-back" href="../../adbus.html#adbus.service.Service.get_loop">[docs]</a>    <span class="k">def</span> <span class="nf">get_loop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span><span class="o">.</span><span class="n">get_loop</span><span class="p">()</span></div></div>
 </pre></div>
 
            </div>
-           <div class="articleComments">
-            
-           </div>
+           
           </div>
           <footer>
   
@@ -227,11 +206,11 @@
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2017, CCX Technolgies.
+        &copy; Copyright 2017, CCX Technolgies
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -244,36 +223,15 @@
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../../',
-            VERSION:'0.2.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true,
-            SOURCELINK_SUFFIX: '.txt'
-        };
-    </script>
-      <script type="text/javascript" src="../../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../../_static/doctools.js"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

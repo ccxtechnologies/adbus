@@ -1,43 +1,35 @@
-adbus\.server package
-=====================
+adbus.server package
+====================
 
 Submodules
 ----------
 
-adbus\.server\.ccx module
--------------------------
-
-.. automodule:: adbus.server.ccx
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-adbus\.server\.method module
-----------------------------
+adbus.server.method module
+--------------------------
 
 .. automodule:: adbus.server.method
     :members:
     :undoc-members:
     :show-inheritance:
 
-adbus\.server\.object module
-----------------------------
+adbus.server.object module
+--------------------------
 
 .. automodule:: adbus.server.object
     :members:
     :undoc-members:
     :show-inheritance:
 
-adbus\.server\.property module
-------------------------------
+adbus.server.property module
+----------------------------
 
 .. automodule:: adbus.server.property
     :members:
     :undoc-members:
     :show-inheritance:
 
-adbus\.server\.signal module
-----------------------------
+adbus.server.signal module
+--------------------------
 
 .. automodule:: adbus.server.signal
     :members:

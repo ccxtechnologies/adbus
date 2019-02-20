@@ -1,0 +1,256 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>adbus.client.listen &mdash; python-adbus 1.0.1 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../../../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../../index.html" class="icon icon-home"> python-adbus
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../readme.html">python-adbus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../modules.html">adbus</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">python-adbus</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+        
+      <li>adbus.client.listen</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for adbus.client.listen</h1><div class="highlight"><pre>
+<span></span><span class="c1"># == Copyright: 2017, CCX Technologies</span>
+
+<span class="kn">import</span> <span class="nn">inspect</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">sdbus</span>
+
+
+<div class="viewcode-block" id="Listen"><a class="viewcode-back" href="../../../adbus.client.html#adbus.client.listen.Listen">[docs]</a><span class="k">class</span> <span class="nc">Listen</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Listens for a D-Bus Signal from another process.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        service (adbus.server.Service): service to connect to</span>
+<span class="sd">        address (str): address (name) of the D-Bus Service to call</span>
+<span class="sd">        path (str): path of method to call, ie. /com/awesome/Settings1</span>
+<span class="sd">        interface (str): interface label to call, ie. com.awesome.settings</span>
+<span class="sd">        signal (str): name of the signal to listen to, ie. TestSignal</span>
+<span class="sd">        coroutine (coroutine): coroutine to schedule when signal is received</span>
+<span class="sd">        args (list or tuple): optional, list of argument values to match,</span>
+<span class="sd">            the argument must be a string, useful for listening to property</span>
+<span class="sd">            changes</span>
+<span class="sd">        signature (str): optional, signature of the signal, if False the</span>
+<span class="sd">            types of the coroutine arguments will be used to create the</span>
+<span class="sd">            signature and the coroutine will be called with one argument</span>
+<span class="sd">            per signal argument, if defined the coroutine will be called</span>
+<span class="sd">            with a list of arguments, if None the coroutine will be called</span>
+<span class="sd">            with a list of types determined at run-time</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">service</span><span class="p">,</span>
+            <span class="n">address</span><span class="p">,</span>
+            <span class="n">path</span><span class="p">,</span>
+            <span class="n">interface</span><span class="p">,</span>
+            <span class="n">signal</span><span class="p">,</span>
+            <span class="n">coroutine</span><span class="p">,</span>
+            <span class="n">args</span><span class="o">=</span><span class="p">(),</span>
+            <span class="n">signature</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">signature</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+            <span class="n">sig</span> <span class="o">=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">coroutine</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">sig</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">annotation</span> <span class="o">!=</span> <span class="n">inspect</span><span class="o">.</span><span class="n">Parameter</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">+=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">dbus_signature</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">+=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">variant_signature</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="n">signature</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">=</span> <span class="s1">&#39;ANY&#39;</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">signature</span> <span class="o">=</span> <span class="n">signature</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Listen</span><span class="p">(</span>
+                    <span class="n">service</span><span class="o">.</span><span class="n">sdbus</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">coroutine</span><span class="p">,</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">signature</span> <span class="ow">is</span> <span class="kc">False</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">SdbusError</span><span class="p">:</span>
+            <span class="c1"># sometimes we&#39;ll get a EINTR (like one in a million trys), we want</span>
+            <span class="c1"># to try again if we do</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sdbus</span> <span class="o">=</span> <span class="n">sdbus</span><span class="o">.</span><span class="n">Listen</span><span class="p">(</span>
+                    <span class="n">service</span><span class="o">.</span><span class="n">sdbus</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">interface</span><span class="p">,</span> <span class="n">signal</span><span class="p">,</span> <span class="n">coroutine</span><span class="p">,</span>
+                    <span class="n">args</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">signature</span><span class="o">.</span><span class="n">encode</span><span class="p">(),</span> <span class="n">signature</span> <span class="ow">is</span> <span class="kc">False</span>
+            <span class="p">)</span></div>
+</pre></div>
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2017, CCX Technolgies
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

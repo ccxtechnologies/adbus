@@ -12,24 +12,32 @@ Subpackages
 Submodules
 ----------
 
-adbus\.exceptions module
-------------------------
+adbus.datatypes module
+----------------------
+
+.. automodule:: adbus.datatypes
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+adbus.exceptions module
+-----------------------
 
 .. automodule:: adbus.exceptions
     :members:
     :undoc-members:
     :show-inheritance:
 
-adbus\.sdbus module
--------------------
+adbus.sdbus module
+------------------
 
 .. automodule:: adbus.sdbus
     :members:
     :undoc-members:
     :show-inheritance:
 
-adbus\.service module
----------------------
+adbus.service module
+--------------------
 
 .. automodule:: adbus.service
     :members:
