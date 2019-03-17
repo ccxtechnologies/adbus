@@ -103,7 +103,7 @@ ENV/
 # my additions
 
 MANIFEST
-adbus/client/.proxy.py.swp
+adbus/sdbus.c
 docs/source/adbus.client.rst
 docs/source/adbus.rst
 docs/source/adbus.server.rst

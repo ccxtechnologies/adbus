@@ -1,11 +1,11 @@
 #!/usr/bin/python
 
-import sys
 import subprocess
+import sys
 
 from setuptools import setup
 from setuptools import find_packages
-from setuptools.extension import Extension
+from setuptools import Extension
 
 __module__ = 'adbus'
 __url__ = 'https://github.com/ccxtechnologies'
@@ -13,30 +13,9 @@ __url__ = 'https://github.com/ccxtechnologies'
 __version__ = None
 exec(open(f'{__module__}/__version__.py').read())
 
+# Required for CCX's Build System, do not remove
 if "--nosystemd" in sys.argv:
     sys.argv.remove("--nosystemd")
-
-
-def cython(module, libraries):
-    if "--cythonize" in sys.argv:
-        sys.argv.remove("--cythonize")
-        from Cython.Build import cythonize
-        return cythonize(
-                [
-                        Extension(
-                                f"{__module__}.{module}",
-                                [f"{__module__}/{module}.pyx"],
-                                libraries=libraries
-                        )
-                ]
-        )
-    else:
-        return [
-                Extension(
-                        f"{__module__}.{module}", [f"{__module__}/{module}.c"],
-                        libraries=libraries
-                )
-        ]
 
 
 def check_external_dependancy(name):
@@ -52,20 +31,27 @@ def check_external_dependancy(name):
 
 check_external_dependancy("libsystemd")
 
-with open('README.rst') as file:
-    long_description = file.read()
-
 setup(
         name=__module__,
         version=__version__,
         author='CCX Technologies',
         author_email='charles@ccxtechnologies.com',
         description='asyncio based dbus interface',
-        long_description=long_description,
+        long_description=open('README.rst', 'rt').read(),
         license='MIT',
         url=f'{__url__}/{__module__}',
         download_url=f'{__url__}/archive/v{__version__}.tar.gz',
         python_requires='>=3.7',
         packages=find_packages(exclude=["tests"]),
-        ext_modules=cython('sdbus', ["systemd"])
-)
+        setup_requires=[
+            'setuptools>=18.0',  # Handles Cython extensions natively
+            'cython>=0.25.2',
+            ],
+        ext_modules=[
+            Extension(
+                f"{__module__}.sdbus",
+                sources=[f"{__module__}/sdbus.pyx"],
+                libraries=["systemd"],
+                )
+            ],
+        )
