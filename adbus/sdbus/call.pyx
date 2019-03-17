@@ -6,7 +6,7 @@ cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
     cdef Call call = <Call>call_ptr
     cdef Message message = Message()
 
-    sdbus_h.sd_bus_slot_unref(call._slot)
+    call._slot = sdbus_h.sd_bus_slot_unref(call._slot)
 
     try:
         message.import_sd_bus_message(m)
