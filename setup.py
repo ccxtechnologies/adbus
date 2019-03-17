@@ -31,6 +31,13 @@ def check_external_dependancy(name):
 
 check_external_dependancy("libsystemd")
 
+module = Extension(
+        f"{__module__}.sdbus",
+        sources=[f"{__module__}/sdbus.pyx"],
+        libraries=["systemd"],
+)
+module.cython_c_in_temp = True
+
 setup(
         name=__module__,
         version=__version__,
@@ -44,14 +51,8 @@ setup(
         python_requires='>=3.7',
         packages=find_packages(exclude=["tests"]),
         setup_requires=[
-            'setuptools>=18.0',  # Handles Cython extensions natively
-            'cython>=0.25.2',
-            ],
-        ext_modules=[
-            Extension(
-                f"{__module__}.sdbus",
-                sources=[f"{__module__}/sdbus.pyx"],
-                libraries=["systemd"],
-                )
-            ],
-        )
+                'setuptools>=18.0',  # Handles Cython extensions natively
+                'cython>=0.25.2',
+        ],
+        ext_modules=[module],
+)
