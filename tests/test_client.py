@@ -6,11 +6,10 @@
 import unittest
 import typing
 import asyncio
-import asyncio.subprocess
 import random
 import string
-import subprocess
 import time
+from multiprocessing import Process
 
 import adbus
 
@@ -34,13 +33,16 @@ class Test(unittest.TestCase):
         return random.randint(-2000, 2000)
 
     @classmethod
+    def run_test_wait(cls):
+        import test_server
+        test_server.Test.setUpClass()
+        test = test_server.Test()
+        test.test_method_wait()
+
+    @classmethod
     def setUpClass(cls):
-        cls.server = subprocess.Popen(
-                [
-                        'python', '-m', 'unittest',
-                        'tests.test_server.Test.test_method_wait'
-                ]
-        )
+        cls.server = Process(target=cls.run_test_wait, name='run_test_wait')
+        cls.server.start()
         time.sleep(3)
 
         cls.loop = asyncio.get_event_loop()
