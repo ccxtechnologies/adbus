@@ -9,6 +9,7 @@ import asyncio.subprocess
 import typing
 import time
 import sys
+from multiprocessing import current_process
 
 import adbus
 
@@ -198,7 +199,8 @@ class Test(unittest.TestCase):
         )
 
     @unittest.skipIf(
-            "tests.test_server.Test.test_method_wait" not in sys.argv,
+            "tests.test_server.Test.test_method_wait" not in sys.argv and \
+            current_process().name != "run_test_wait",
             "long test used for development"
     )
     def test_method_wait(self):
