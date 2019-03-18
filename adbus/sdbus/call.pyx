@@ -1,4 +1,5 @@
 # == Copyright: 2017, CCX Technologies
+#cython: language_level=3
 
 cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
         sdbus_h.sd_bus_error *err):
@@ -23,6 +24,7 @@ cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
 
     finally:
         call.wake()
+        Py_DECREF(call)
 
 cdef class Call:
     cdef Message message
@@ -58,6 +60,8 @@ cdef class Call:
         if ret < 0:
             self.event.set()
             raise SdbusError(f"Failed to send call: {errorcode[-ret]}", -ret)
+
+        Py_INCREF(self)
 
     cdef wake(self):
         self.event.set()

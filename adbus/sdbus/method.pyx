@@ -1,4 +1,5 @@
 # == Copyright: 2017, CCX Technologies
+#cython: language_level=3
 
 cdef void _method_message_handler(Method method, Message message):
     cdef Error error

@@ -1,4 +1,5 @@
 # == Copyright: 2017, CCX Technologies
+#cython: language_level=3
 
 cdef int listen_message_handler(sdbus_h.sd_bus_message *m,
         void *userdata, sdbus_h.sd_bus_error *err):

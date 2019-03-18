@@ -1,9 +1,8 @@
 # Copyright: 2017, CCX Technologies
-"""Interface to the systemd sd-bus library, not expected to be directly
-    called by external applications."""
+#cython: language_level=3
 
 import re
-cimport sdbus_h
+from adbus cimport sdbus_h
 
 from typing import _GenericAlias
 from typing import Any
@@ -20,6 +19,8 @@ from libc.string cimport memcpy
 from libc.string cimport strncpy
 from libc.string cimport strlen
 from cpython.ref cimport PyObject
+from cpython.ref cimport Py_INCREF
+from cpython.ref cimport Py_DECREF
 from cpython cimport bool
 from .exceptions import BusError
 

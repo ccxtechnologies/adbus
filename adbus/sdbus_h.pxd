@@ -1,6 +1,5 @@
 # Copyright: 2017, CCX Technologies
-
-"""Wrapper for libsystemd's dbus library."""
+#cython: language_level=3
 
 from libc cimport stdint
 

@@ -1,4 +1,5 @@
 # == Copyright: 2017, CCX Technologies
+#cython: language_level=3
 
 cdef class Signal:
     cdef stdint.uint8_t type

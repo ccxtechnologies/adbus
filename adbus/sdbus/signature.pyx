@@ -1,4 +1,5 @@
 # Copyright: 2017, CCX Technologies
+#cython: language_level=3
 
 cdef bytes signature_variant = int(sdbus_h.SD_BUS_TYPE_VARIANT).to_bytes(1, 'big')
 cdef bytes signature_boolean = int(sdbus_h.SD_BUS_TYPE_BOOLEAN).to_bytes(1, 'big')

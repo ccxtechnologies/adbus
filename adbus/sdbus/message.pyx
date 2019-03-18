@@ -1,4 +1,5 @@
 # == Copyright: 2017, CCX Technologies
+#cython: language_level=3
 
 cdef union _value:
     stdint.uint8_t c_byte
@@ -195,13 +196,13 @@ cdef class Message:
 
         return value
 
-    cdef list read(self, const char *signature="ANY"):
+    cdef list read(self, const char *signature=b"ANY"):
         cdef _value v
         cdef list values = []
         cdef unsigned int i = 0
         cdef char s
 
-        if signature[0] == 'A':
+        if signature[0] == b'A':
             signature = sdbus_h.sd_bus_message_get_signature(self.message, 0)
 
         while True:

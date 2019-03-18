@@ -1,4 +1,5 @@
 # == Copyright: 2017, CCX Technologies
+#cython: language_level=3
 
 cdef int property_get_handler(sdbus_h.sd_bus *bus,
             const char *path, const char *interface, const char *propname,

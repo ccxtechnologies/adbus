@@ -1,4 +1,5 @@
 # Copyright: 2017, CCX Technologies
+#cython: language_level=3
 
 def snake_to_camel(snake):
     """Converts a snake_case string to CamelCase.

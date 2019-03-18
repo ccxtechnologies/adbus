@@ -1,4 +1,5 @@
 # == Copyright: 2017, CCX Technologies
+#cython: language_level=3
 
 cdef class Object:
     cdef sdbus_h.sd_bus *bus
