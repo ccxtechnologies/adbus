@@ -205,7 +205,7 @@ cdef class Message:
         if signature[0] == b'A':
             signature = sdbus_h.sd_bus_message_get_signature(self.message, 0)
 
-        while True:
+        while i < len(signature):
             s = signature[i]
             i += 1
 
