@@ -1,0 +1,3 @@
+include adbus/sdbus.pyx
+include adbus/sdbus_h.pxd
+include adbus/sdbus/*.pxi
