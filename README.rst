@@ -6,6 +6,9 @@ D-Bus Binding for Python utilizing the Python's asyncio module.
 Status
 ------
 
+.. image:: https://travis-ci.com/ccxtechnologies/adbus.svg?branch=master
+  :target: https://travis-ci.com/ccxtechnologies/adbus
+
 .. image:: https://api.codacy.com/project/badge/Grade/c66c19cdcadd4c83bc4b70596d65aa7a
   :target: https://www.codacy.com/app/ccxtechnologies/python-adbus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ccxtechnologies/python-adbus&amp;utm_campaign=Badge_Grade
 
@@ -42,14 +45,23 @@ Unit-Tests
 
 NOTE: Some test-cases require the busctl tool from systemd.
 
--  To run a specific unit-test from the root directory (eg.): python -m
-   unittest tests.test\_sdbus\_method.Test.test\_method\_single\_str
+-  To run a specific unit-test from the root directory (eg.):
+
+::
+
+   python -m unittest tests.test\_sdbus\_method.Test.test\_method\_single\_str
 
 -  To run a specific unit-test module from the root directory (eg.):
+
+::
+
    python -m unittest tests.test\_sdbus\_method
 
--  To run all unit-tests from the root directory: python -m unittest
-   discover
+-  To run all unit-tests from the root directory:
+
+::
+
+   tox
 
 Server Examples
 ---------------

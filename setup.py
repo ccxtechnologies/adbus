@@ -7,6 +7,12 @@ from setuptools import setup
 from setuptools import find_packages
 from setuptools import Extension
 
+try:
+    from Cython.Build import cythonize
+    USE_CYTHON = True
+except ImportError:
+    USE_CYTHON = False
+
 __module__ = 'adbus'
 __url__ = 'https://github.com/ccxtechnologies'
 
@@ -31,12 +37,17 @@ def check_external_dependancy(name):
 
 check_external_dependancy("libsystemd")
 
-module = Extension(
+ext = '.pyx' if USE_CYTHON else '.c'
+
+module = [Extension(
         f"{__module__}.sdbus",
-        sources=[f"{__module__}/sdbus.pyx"],
+        sources=[f"{__module__}/sdbus" + ext],
         libraries=["systemd"],
-)
-module.cython_c_in_temp = True
+)]
+
+
+if USE_CYTHON:
+    module = cythonize(module)
 
 setup(
         name=__module__,
@@ -54,5 +65,5 @@ setup(
                 'setuptools>=18.0',  # Handles Cython extensions natively
                 'cython>=0.25.2',
         ],
-        ext_modules=[module],
+        ext_modules=module,
 )
