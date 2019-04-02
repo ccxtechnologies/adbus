@@ -212,6 +212,12 @@ class Interface:
         self.changed_coroutine = changed_coroutine
         self.camel_convert = camel_convert
 
+        self.service = service
+        self.address = address
+        self.path = path
+        self.interface = interface
+        self.timeout_ms = timeout_ms
+
         def _add_snake_and_camel(d, n, v):
             d[n] = v
             if camel_convert:
@@ -246,11 +252,8 @@ class Interface:
                     args=(interface, ),
             )
 
-            self.get_all = get_all(
-                    service, address, path, interface, timeout_ms
-            )
         else:
-            self.get_all = None
+            self.properties_changed_listen = None
 
         for s in etree.iter('signal'):
             _add_snake_and_camel(
@@ -262,8 +265,11 @@ class Interface:
             )
 
     async def update_properties(self):
-        if self.get_all:
-            values = await self.get_all
+        if self.properties_changed_listen is not None:
+            values = await get_all(
+                    self.service, self.address, self.path, self.interface,
+                    self.timeout_ms
+            )
             for p, v in values.items():
                 self.properties[p].cached_value = v
 
