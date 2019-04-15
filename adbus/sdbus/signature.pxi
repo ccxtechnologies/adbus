@@ -29,7 +29,7 @@ cdef bytes _object_signature_basic(object obj):
         return signature_variant
     return signature_invalid
 
-cdef const char* _object_signature(object obj):
+cdef bytes _object_signature(object obj):
     cdef bytes signature = b''
 
     if obj is None:

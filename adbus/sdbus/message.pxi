@@ -310,9 +310,11 @@ cdef class Message:
             raise SdbusError(f"Failed to close array {esignature}")
 
     cdef _append_variant(self, object value):
+        cdef bytes signature
         cdef const char *esignature
 
-        esignature = _object_signature(value)
+        signature = _object_signature(value)
+        esignature = signature
 
         if sdbus_h.sd_bus_message_open_container(self.message,
                 sdbus_h.SD_BUS_TYPE_VARIANT, esignature) < 0:
