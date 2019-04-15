@@ -43,6 +43,8 @@ module = [Extension(
         f"{__module__}.sdbus",
         sources=[f"{__module__}/sdbus" + ext],
         libraries=["systemd"],
+        extra_compile_args=["-g"],
+        extra_link_args=["-g"],
 )]
 
 
