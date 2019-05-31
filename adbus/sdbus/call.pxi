@@ -6,6 +6,7 @@ cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
     cdef PyObject *call_ptr = <PyObject*>userdata
     cdef Call call = <Call>call_ptr
     cdef Message message = Message()
+    cdef int errcode
 
     call._slot = sdbus_h.sd_bus_slot_unref(call._slot)
 
@@ -20,7 +21,8 @@ cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
 
     except SdbusError as e:
         call.response = e
-        return -e.errno
+        errcode = <int>e.errno
+        return -errcode
 
     finally:
         call.wake()

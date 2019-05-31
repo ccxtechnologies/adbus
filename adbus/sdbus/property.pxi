@@ -7,8 +7,9 @@ cdef int property_get_handler(sdbus_h.sd_bus *bus,
     cdef PyObject *property_ptr = (((<PyObject**>userdata)[0]))
     cdef Property property = <Method>property_ptr
     cdef Message message = Message()
-    cdef Error error
     cdef object value
+    cdef bytes err_name
+    cdef bytes err_message
 
     message.import_sd_bus_message(m)
 
@@ -16,14 +17,15 @@ cdef int property_get_handler(sdbus_h.sd_bus *bus,
         value = getattr(<object>(property.instance), property.attr_name)
         message.append(property.signature, value)
     except Exception as e:
-        property.loop.call_exception_handler({'message': str(e), 'exception': e})
-        error = Error()
-        try:
-            error.reply_from_exception(message, e)
-        except SdbusError as e:
-            return -e.errno
-        else:
-            return 1
+        property.loop.call_exception_handler({'message': f"{e} for {property.attr_name} <{property.signature}>", 'exception': e})
+
+		#NOTE: sd_bus uses the System.Error prefix for general purpose errors
+        err_name = b"System.Error." + \
+            e.__class__.__name__.encode('utf-8')
+        err_message = f"{e} for {property.attr_name} <{property.signature}>".encode('utf-8')
+        sdbus_h.sd_bus_error_set(err, err_name, err_message)
+
+        return -1
 
     return 1
 
@@ -35,6 +37,8 @@ cdef int property_set_handler(sdbus_h.sd_bus *bus,
     cdef Message message = Message()
     cdef Error error
     cdef list values
+    cdef bytes err_name
+    cdef bytes err_message
 
     message.import_sd_bus_message(m)
     values = message.read(property.signature)
@@ -50,14 +54,15 @@ cdef int property_set_handler(sdbus_h.sd_bus *bus,
 
         setattr(<object>(property.instance), property.attr_name, value)
     except Exception as e:
-        property.loop.call_exception_handler({'message': str(e), 'exception': e})
-        error = Error()
-        try:
-            error.reply_from_exception(message, e)
-        except SdbusError as e:
-            return -e.errno
-        else:
-            return 1
+        property.loop.call_exception_handler({'message': f"{e} for {property.attr_name}", 'exception': e})
+
+		#NOTE: sd_bus uses the System.Error prefix for general purpose errors
+        err_name = b"System.Error." + \
+            e.__class__.__name__.encode('utf-8')
+        err_message = f"{e} for {property.attr_name}".encode('utf-8')
+        sdbus_h.sd_bus_error_set(err, err_name, err_message)
+
+        return -1
 
     return 1
 
@@ -140,4 +145,3 @@ cdef class Property:
         if not self.object:
             raise SdbusError("Property not associated")
         return self.object.emit_properties_changed([self.name.decode()])
-
