@@ -4,9 +4,6 @@
 import asyncio
 
 from .. import sdbus
-from .method import method
-
-import typing
 
 
 class Object:
@@ -80,7 +77,7 @@ class Object:
             self._deferred_property_signals[dbus_name.encode()] = True
 
         elif self.service.is_running():
-            asyncio.ensure_future(
+            asyncio.run_coroutine_threadsafe(
                     self.sdbus.emit_properties_changed([dbus_name.encode()]),
                     loop=self.service.get_loop()
             )
@@ -95,7 +92,7 @@ class Object:
 
             self._defer_properties = False
             if self._deferred_property_signals:
-                asyncio.ensure_future(
+                asyncio.run_coroutine_threadsafe(
                         self.sdbus.emit_properties_changed(
                                 list(self._deferred_property_signals.keys())
                         ),
