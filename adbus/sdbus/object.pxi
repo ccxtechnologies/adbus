@@ -80,7 +80,8 @@ cdef class Object:
                 self.path, self.interface, self._vtable, self._userdata)
         if ret < 0:
             raise SdbusError(
-                    f"Failed to register vtable: {errorcode[-ret]}", -ret)
+                    "Failed to register vtable at "
+					f" {self.path} {self.interface}: {errorcode[-ret]}", -ret)
 
     async def emit_properties_changed(self, property_names):
         cdef int ret
