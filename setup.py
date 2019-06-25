@@ -23,6 +23,7 @@ module = [
                 f"{__module__}.sdbus",
                 sources=[f"{__module__}/sdbus" + ext],
                 libraries=["systemd"],
+                extra_compile_args=["-O3", "-std=c99"],  # match systemd
         )
 ]
 
