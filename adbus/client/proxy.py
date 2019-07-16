@@ -457,22 +457,27 @@ class Proxy:
         self._node_i += 1
         return proxy
 
-    async def update(self):
+    async def update(self, timeout_ms=None):
         """Use Introspection on remote server to update the proxy.
             **Must be run once before using the Proxy.**
         """
+        timeout_ms = timeout_ms if timeout_ms is not None else self._timeout_ms
+
         self._introspect_xml = await call(
                 self._service,
                 self._address,
                 self._path,
                 'org.freedesktop.DBus.Introspectable',
                 'Introspect',
-                response_signature="s"
+                response_signature="s",
+                timeout_ms=timeout_ms,
         )
 
         self._update_interfaces()
         for interface in self._interfaces.values():
             await interface.update_properties()
+
+        return self
 
     def _update_interfaces(self):
         self._interfaces = {}
