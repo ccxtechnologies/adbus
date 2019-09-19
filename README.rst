@@ -87,7 +87,7 @@ This is an example of an object, which can be connected to a service.
       def __init__(self, service):
           super().__init__(service, path='/xxx/yyy', interface='yyy.xxx')
 
-      @adbus.method(name='test', hidden=True)
+      @adbus.server.method(name='test', hidden=True)
       def test_method(self, r: int, gg: str) -> int:
           return r + 10
 
