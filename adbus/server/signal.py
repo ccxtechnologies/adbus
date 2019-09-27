@@ -23,9 +23,12 @@ class Signal:
             Case, if this is set the cases will be automatically
             converted between the two
     """
-
     def __init__(
-        self, name=None, deprectiated=False, hidden=False, camel_convert=True
+            self,
+            name=None,
+            deprectiated=False,
+            hidden=False,
+            camel_convert=True
     ):
 
         self.dbus_name = name
@@ -51,12 +54,22 @@ class Signal:
             signature = iter(owner.__annotations__[name])
         except TypeError:
             self.dbus_signature = (
-                sdbus.dbus_signature(owner.__annotations__[name]),
+                    sdbus.dbus_signature(owner.__annotations__[name]),
             )
         except KeyError:
             self.dbus_signature = sdbus.variant_signature()
         else:
-            self.dbus_signature = [sdbus.dbus_signature(s) for s in signature]
+            try:
+                self.dbus_signature = [
+                        sdbus.dbus_signature(s) for s in signature
+                ]
+            except RuntimeError:
+                # this is a work around for an issue with the
+                # typing library on Python version 3.7 creating an
+                # unusable iterator from typing.List[int]
+                self.dbus_signature = (
+                        sdbus.dbus_signature(owner.__annotations__[name]),
+                )
 
         if not self.dbus_name:
             self.dbus_name = name
@@ -66,7 +79,8 @@ class Signal:
 
     def vt(self, instance):
         signal = sdbus.Signal(
-            self.dbus_name, self.dbus_signature, self.deprectiated, self.hidden
+                self.dbus_name, self.dbus_signature, self.deprectiated,
+                self.hidden
         )
         instance.__dict__[self.py_name] = signal
         return signal
