@@ -82,7 +82,7 @@ This is an example of an object, which can be connected to a service.
       signal2: typing.List[int] = adbus.server.Signal()
 
       property1: str = adbus.server.Property('none', read_only=True, hidden=True)
-      property2: typing.List[int] = adbus.server.Property(['rr', 'ff'], deprectiated=True)
+      property2: typing.List[int] = adbus.server.Property(['rr', 'ff'], deprecated=True)
 
       def __init__(self, service):
           super().__init__(service, path='/xxx/yyy', interface='yyy.xxx')

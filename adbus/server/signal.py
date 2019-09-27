@@ -13,8 +13,8 @@ class Signal:
     Args:
         name (str): optional, signal name used in the D-Bus, if None the
             signal's label will be used
-        depreciated (bool): optional, if true object is labelled
-            as depreciated in the introspect XML data
+        deprecated (bool): optional, if true object is labelled
+            as deprecated in the introspect XML data
         hidden (bool): optional, if true object won't be added
             to the introspect XML data
         camel_convert (bool): optional, D-Bus method and property
@@ -26,13 +26,13 @@ class Signal:
     def __init__(
             self,
             name=None,
-            deprectiated=False,
+            deprecated=False,
             hidden=False,
             camel_convert=True
     ):
 
         self.dbus_name = name
-        self.deprectiated = deprectiated
+        self.deprecated = deprecated
         self.hidden = hidden
         self.camel_convert = camel_convert
 
@@ -79,7 +79,7 @@ class Signal:
 
     def vt(self, instance):
         signal = sdbus.Signal(
-                self.dbus_name, self.dbus_signature, self.deprectiated,
+                self.dbus_name, self.dbus_signature, self.deprecated,
                 self.hidden
         )
         instance.__dict__[self.py_name] = signal

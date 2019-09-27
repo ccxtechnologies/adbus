@@ -22,8 +22,8 @@ class Method:
             if no type is defined a D-Bus Variant will be used
         name (str): optional, name of the method advertised on the D-Bus
             if not set then will use the callback name
-        depreciated (bool): optional, if true object is labelled
-            as depreciated in the introspect XML data
+        deprecated (bool): optional, if true object is labelled
+            as deprecated in the introspect XML data
         hidden (bool): optional, if true object won't be added
             to the introspect XML data
         unprivileged (bool): optional, indicates that this method
@@ -51,7 +51,7 @@ class Method:
             self,
             callback,
             name=None,
-            depreciated=False,
+            deprecated=False,
             hidden=False,
             unprivileged=False,
             camel_convert=True,
@@ -70,7 +70,7 @@ class Method:
         else:
             self.dbus_name = name
 
-        self.depreciated = depreciated
+        self.deprecated = deprecated
         self.hidden = hidden
         self.unprivileged = unprivileged
 
@@ -117,14 +117,14 @@ class Method:
     def vt(self, instance=None):
         return sdbus.Method(
                 self.dbus_name, self.callback, self.arg_signature,
-                self.return_signature, self.depreciated, self.hidden,
+                self.return_signature, self.deprecated, self.hidden,
                 self.unprivileged, self.dont_block, instance
         )
 
 
 def method(
         name=None,
-        depreciated=False,
+        deprecated=False,
         hidden=False,
         unprivileged=False,
         camel_convert=True,
@@ -142,8 +142,8 @@ def method(
     Args:
         name (str): optional, if set this name will be used on
             the D-Bus, instead of the decorated function's name
-        depreciated (bool): optional, if true object is labelled
-            as depreciated in the introspect XML data
+        deprecated (bool): optional, if true object is labelled
+            as deprecated in the introspect XML data
         hidden (bool): optional, if true object won't be added
             to the introspect XML data
         unprivileged (bool): optional, indicates that this method
@@ -172,7 +172,7 @@ def method(
         return Method(
                 function,
                 name,
-                depreciated,
+                deprecated,
                 hidden,
                 unprivileged,
                 camel_convert,

@@ -80,7 +80,7 @@ cdef class Property:
     cdef object loop
 
     def __cinit__(self, name, py_object, attr_name, signature='', read_only=False,
-            depreciated=False, hidden=False, unprivileged=False,
+            deprecated=False, hidden=False, unprivileged=False,
             emits_constant=False, emits_change=False, emits_invalidation=False):
 
         self.name = name.encode()
@@ -95,7 +95,7 @@ cdef class Property:
             self.type = sdbus_h._SD_BUS_VTABLE_WRITABLE_PROPERTY
 
         self.flags = 0
-        if depreciated:
+        if deprecated:
             self.flags |= sdbus_h.SD_BUS_VTABLE_DEPRECATED
 
         if hidden:

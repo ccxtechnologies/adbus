@@ -74,7 +74,7 @@ class TestObject(adbus.server.Object):
     def test_method(self, r: int, gg: str) -> int:
         return r + len(gg)
 
-    @adbus.server.method(name="DifferentName", depreciated=True)
+    @adbus.server.method(name="DifferentName", deprecated=True)
     def test_method2(self, r: int, gg: str) -> int:
         return r + 10 * len(gg)
 

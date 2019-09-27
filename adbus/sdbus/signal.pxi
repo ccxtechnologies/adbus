@@ -14,7 +14,7 @@ cdef class Signal:
     cdef bytes path
     cdef bytes interface
 
-    def __cinit__(self, name, signature=(), depreciated=False, hidden=False):
+    def __cinit__(self, name, signature=(), deprecated=False, hidden=False):
 
         self.name = name.encode()
         self.signature = [s.encode() for s in signature]
@@ -23,7 +23,7 @@ cdef class Signal:
         self.connected = False
 
         self.flags = 0
-        if depreciated:
+        if deprecated:
             self.flags |= sdbus_h.SD_BUS_VTABLE_DEPRECATED
 
         if hidden:
