@@ -30,8 +30,8 @@ class Object:
             this list is in addition to the methods, properties, and
             signals which are added to this object using the provided
             decorators and descriptors
-        depreciated (bool): optional, if true object is labelled
-            as depreciated in the introspect XML data
+        deprecated (bool): optional, if true object is labelled
+            as deprecated in the introspect XML data
         hidden (bool): optional, if true object won't be added
             to the introspect XML data
         manager (bool): optional, if True add a device manager to this object,
@@ -48,7 +48,7 @@ class Object:
             path,
             interface,
             vtable=(),
-            depreciated=False,
+            deprecated=False,
             hidden=False,
             manager=False,
     ):
@@ -66,7 +66,7 @@ class Object:
         ]
 
         self.sdbus = sdbus.Object(
-                service.sdbus, path, interface, vtable, depreciated, hidden
+                service.sdbus, path, interface, vtable, deprecated, hidden
         )
 
         if manager:

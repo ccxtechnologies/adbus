@@ -18,8 +18,8 @@ class Property:
             (but can still be set locally)
         constant (bool): if True the property can only be read via D-Bus or
             locally, it also advertises constant in the introspect XML data
-        depreciated (bool): optional, if true object is labelled
-            as depreciated in the introspect XML data
+        deprecated (bool): optional, if true object is labelled
+            as deprecated in the introspect XML data
         hidden (bool): optional, if true object won't be added
             to the introspect XML data
         unprivileged (bool): optional, indicates that this method
@@ -43,7 +43,7 @@ class Property:
             name=None,
             read_only=False,
             constant=False,
-            depreciated=False,
+            deprecated=False,
             hidden=False,
             unprivileged=False,
             emits_change=True,
@@ -55,7 +55,7 @@ class Property:
         self.dbus_name = name
         self.read_only = read_only or constant
         self.constant = constant
-        self.depreciated = depreciated
+        self.deprecated = deprecated
         self.hidden = hidden
         self.unprivileged = unprivileged
         self.emits_change = emits_change and (not emits_invalidation)
@@ -100,7 +100,7 @@ class Property:
         """Interface to sd-bus library"""
         return sdbus.Property(
                 self.dbus_name, instance, self.py_name, self.dbus_signature,
-                self.read_only, self.depreciated, self.hidden,
+                self.read_only, self.deprecated, self.hidden,
                 self.unprivileged, self.constant, self.emits_change,
                 self.emits_invalidation
         )

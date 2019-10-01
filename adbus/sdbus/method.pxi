@@ -57,7 +57,7 @@ cdef class Method:
     cdef object loop
 
     def __cinit__(self, name, callback, arg_signature='', return_signature='',
-            depreciated=False, hidden=False, unprivileged=False, no_reply=False, instance=None):
+            deprecated=False, hidden=False, unprivileged=False, no_reply=False, instance=None):
 
         self.name = name.encode()
         self.arg_signature = arg_signature[1:].encode() if instance is not None else arg_signature.encode()
@@ -72,7 +72,7 @@ cdef class Method:
         if no_reply:
             self.flags |= sdbus_h.SD_BUS_VTABLE_METHOD_NO_REPLY
 
-        if depreciated:
+        if deprecated:
             self.flags |= sdbus_h.SD_BUS_VTABLE_DEPRECATED
 
         if hidden:
