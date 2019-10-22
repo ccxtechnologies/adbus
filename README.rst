@@ -112,10 +112,11 @@ Accessing Remote Interface via a Proxy
 
 It's possible to map a remote interface to a local instantiated class using a Proxy.
 
-NOTE: If the even loop isn't running no signals will caught, and properties will not
-cache (i.e. will read on every access instead of tracking the property changes signals)
+**If the even loop isn't running no signals will caught, and properties will not**
+**cache (i.e. will read on every access instead of tracking the property changes signals)**
 
-**This is a protoype to see how it looks, it hasn't been implemented yet.**
+**The proxy opbject must be saved for as long as you want to activily receive signals.**
+**If the proxy object is garbage collected it will no longer receive signals and it won't forward them to a watcher.**
 
 .. code-block:: python
 
