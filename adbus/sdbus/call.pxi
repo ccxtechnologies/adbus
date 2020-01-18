@@ -56,14 +56,14 @@ cdef class Call:
         cdef int ret
         self.event.clear()
 
+        Py_INCREF(self)
         ret = sdbus_h.sd_bus_call_async(self.service.bus, &self._slot,
                 self.message.message, call_callback, <void *>self,
                 timout_ms*1000)
         if ret < 0:
+            Py_DECREF(self)
             self.event.set()
             raise SdbusError(f"Failed to send call: {errorcode[-ret]}", -ret)
-
-        Py_INCREF(self)
 
     cdef wake(self):
         self.event.set()
