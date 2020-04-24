@@ -177,7 +177,7 @@ class Method:
                 self.name = x.attrib['name']
             if x.tag == 'arg':
                 if x.attrib['direction'] == 'out':
-                    self.return_signature = x.attrib['type']
+                    self.return_signature += x.attrib['type']
                 elif x.attrib['direction'] == 'in':
                     self.arg_signatures.append(x.attrib['type'])
 
