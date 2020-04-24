@@ -13,10 +13,12 @@ cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
     try:
         message.import_sd_bus_message(m)
         response = message.read(call.response_signature)
-        if response:
+        if len(response) == 1:
             call.response = response[0]
-        else:
+        elif len(response) == 0:
             call.response = None
+        else:
+            call.response = response
         return 0
 
     except SdbusError as e:
