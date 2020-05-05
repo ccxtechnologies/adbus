@@ -18,6 +18,7 @@ from cpython.mem cimport PyMem_Free
 from libc.string cimport memcpy
 from libc.string cimport strncpy
 from libc.string cimport strlen
+from libc.string cimport memset
 from cpython.ref cimport PyObject
 from cpython.ref cimport Py_INCREF
 from cpython.ref cimport Py_DECREF

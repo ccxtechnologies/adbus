@@ -36,10 +36,12 @@ cdef class Object:
                 (length+2)*sizeof(sdbus_h.sd_bus_vtable))
         if not self._vtable:
             raise MemoryError("Failed to allocate vtable")
+        memset(self._vtable, 0, (length+2)*sizeof(sdbus_h.sd_bus_vtable))
 
         self._userdata = <void **>PyMem_Malloc(length*sizeof(void*))
         if not self._userdata:
             raise MemoryError("Failed to allocate userdata")
+        memset(self._userdata, 0, length*sizeof(void*))
 
     def _init_vtable(self, deprecated, hidden):
         length = len(self.vtable)
@@ -89,6 +91,7 @@ cdef class Object:
                 (len(property_names)+1)*sizeof(char*))
         if not names:
             raise MemoryError("Failed to allocate names")
+        memset(names, 0, (len(property_names)+1)*sizeof(char*))
 
         names[len(property_names)] = NULL
         for i, name in enumerate(property_names):
