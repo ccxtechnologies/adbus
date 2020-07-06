@@ -56,7 +56,7 @@ cdef class Service:
         if not loop:
             loop = get_event_loop()
 
-        loop.add_reader(bus_fd, self.process)
+        loop.add_writer(hus_fd, self.process)
 
         self.loop = loop
 
