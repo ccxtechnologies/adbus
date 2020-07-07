@@ -2,6 +2,7 @@
 """D-Bus Service"""
 
 from . import sdbus
+import asyncio
 
 
 class Service:
@@ -40,6 +41,10 @@ class Service:
         self.sdbus = sdbus.Service(
             name, loop, bus, replace_existing, allow_replacement, name_queue
         )
+        if loop:
+            loop.create_task(self.process())
+        else:
+            asyncio.get_event_loop().create_task(self.process())
         """Interface to sd-bus library"""
 
     def is_running(self):
@@ -47,3 +52,6 @@ class Service:
 
     def get_loop(self):
         return self.sdbus.get_loop()
+
+    async def process(self):
+        self.sdbus.process()
