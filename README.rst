@@ -6,8 +6,8 @@ D-Bus Binding for Python utilizing the Python's asyncio module.
 Status
 ------
 
-.. image:: https://travis-ci.org/ccxtechnologies/adbus.svg?branch=master
-  :target: https://travis-ci.org/ccxtechnologies/adbus
+.. image:: https://travis-ci.com/ccxtechnologies/adbus.svg?branch=master
+  :target: https://travis-ci.com/ccxtechnologies/adbus
 
 .. image:: https://api.codacy.com/project/badge/Grade/c66c19cdcadd4c83bc4b70596d65aa7a
   :target: https://www.codacy.com/app/ccxtechnologies/python-adbus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ccxtechnologies/python-adbus&amp;utm_campaign=Badge_Grade
