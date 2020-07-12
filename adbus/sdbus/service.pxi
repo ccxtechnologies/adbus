@@ -56,6 +56,7 @@ cdef class Service:
         if not loop:
             loop = get_event_loop()
 
+        loop.create_task(self.startup_process())
         loop.add_reader(bus_fd, self.process)
 
         self.loop = loop
@@ -70,6 +71,9 @@ cdef class Service:
 
     def __dealloc__(self):
         self.bus = sdbus_h.sd_bus_unref(self.bus)
+
+    async def startup_process(self):
+        self.process()
 
     def process(self):
         """Processes all available transactions from the D-Bus.
