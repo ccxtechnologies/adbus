@@ -38,7 +38,7 @@ cdef int method_message_handler(sdbus_h.sd_bus_message *m,
     cdef Message message = Message()
 
     message.import_sd_bus_message(m)
-    method.loop.run_in_executor(None, _method_message_handler, method, message)
+    method.loop.run_in_executor(method.executor, _method_message_handler, method, message)
     return 1
 
 cdef class Method:
@@ -55,9 +55,10 @@ cdef class Method:
     cdef bytes return_signature
     cdef bool connected
     cdef object loop
+    cdef object executor
 
     def __cinit__(self, name, callback, arg_signature='', return_signature='',
-            deprecated=False, hidden=False, unprivileged=False, no_reply=False, instance=None):
+            deprecated=False, hidden=False, unprivileged=False, no_reply=False, instance=None, executor=None):
 
         self.name = name.encode()
         self.arg_signature = arg_signature[1:].encode() if instance is not None else arg_signature.encode()
@@ -65,6 +66,7 @@ cdef class Method:
         self.callback = callback
         self.py_instance = instance
         self.connected = False
+        self.executor = executor
 
         self.type = sdbus_h._SD_BUS_VTABLE_METHOD
 

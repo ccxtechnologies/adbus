@@ -42,11 +42,12 @@ class Method:
             default is True
             **NOTE: this will only work if this is decorating a class
             method, as the lock has to be connected to the method**
+        executor (concurrent.futures.Executor): optional, executor
+            to schedule callback calls on, None will use the default executor
 
     Raises:
         BusError: if an error occurs during initialization
     """
-
     def __init__(
             self,
             callback,
@@ -57,6 +58,7 @@ class Method:
             camel_convert=True,
             dont_block=False,
             threadsafe=True,
+            executor=None,
     ):
         if not name:
             name = callback.__name__
@@ -73,6 +75,7 @@ class Method:
         self.deprecated = deprecated
         self.hidden = hidden
         self.unprivileged = unprivileged
+        self.executor = executor
 
         self.arg_signature = ''
         sig = inspect.signature(callback)
@@ -118,7 +121,7 @@ class Method:
         return sdbus.Method(
                 self.dbus_name, self.callback, self.arg_signature,
                 self.return_signature, self.deprecated, self.hidden,
-                self.unprivileged, self.dont_block, instance
+                self.unprivileged, self.dont_block, instance, self.executor
         )
 
 
@@ -130,6 +133,7 @@ def method(
         camel_convert=True,
         dont_block=False,
         threadsafe=True,
+        executor=None
 ):
     """D-Bus Method Decorator.
 
@@ -162,12 +166,13 @@ def method(
             default is True
             **NOTE: this will only work if this is decorating a class
             method, as the lock has to be connected to the method**
+        executor (concurrent.futures.Executor): optional, executor
+            to schedule callback calls on, None will use the default executor
 
     Returns:
         Instantiated Method, which can be used to replace a method
         or function.
     """
-
     def wrapper(function):
         return Method(
                 function,
@@ -178,6 +183,7 @@ def method(
                 camel_convert,
                 dont_block=dont_block,
                 threadsafe=threadsafe,
+                executor=executor
         )
 
     return wrapper
