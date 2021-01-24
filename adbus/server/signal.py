@@ -63,7 +63,7 @@ class Signal:
                 self.dbus_signature = [
                         sdbus.dbus_signature(s) for s in signature
                 ]
-            except RuntimeError:
+            except (RuntimeError, TypeError):
                 # this is a work around for an issue with the
                 # typing library on Python version 3.7 creating an
                 # unusable iterator from typing.List[int]
