@@ -42,7 +42,7 @@ cdef class Call:
     def __cinit__(self, Service service, address, path, interface, method,
             args=None, response_signature=b''):
 
-        self.event = Event(loop=service.loop)
+        self.event = Event()
         self.service = service
         self.response = None
         self.message = Message()
