@@ -25,7 +25,6 @@ class Listen:
             with a list of arguments, if None the coroutine will be called
             with a list of types determined at run-time
     """
-
     def __init__(
             self,
             service,

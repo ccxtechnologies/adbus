@@ -9,7 +9,6 @@ from adbus.sdbus import camel_to_snake
 
 class Test(unittest.TestCase):
     """Snake Case to Camel Case Converter test cases."""
-
     def test_snake_to_camel(self):
         c = snake_to_camel("test_one")
         self.assertEqual(c, "TestOne")

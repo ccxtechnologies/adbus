@@ -19,8 +19,8 @@
 #
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../../'))
 
+sys.path.insert(0, os.path.abspath('../../'))
 
 # -- General configuration ------------------------------------------------
 
@@ -31,8 +31,10 @@ sys.path.insert(0, os.path.abspath('../../'))
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode',
-    'sphinx.ext.napoleon', 'sphinx.ext.githubpages']
+extensions = [
+        'sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.napoleon',
+        'sphinx.ext.githubpages'
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -57,6 +59,7 @@ author = 'Charles Eidsness'
 #
 # The short X.Y version.
 from adbus import __version__
+
 version = '.'.join(__version__.split()[:-1])
 # The full version, including alpha/beta/rc tags.
 release = __version__
@@ -78,7 +81,6 @@ pygments_style = 'sphinx'
 
 # If true, `todo` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
-
 
 # -- Options for HTML output ----------------------------------------------
 
@@ -104,60 +106,60 @@ html_theme = 'sphinx_rtd_theme'
 # This is required for the alabaster theme
 # refs: http://alabaster.readthedocs.io/en/latest/installation.html#sidebars
 html_sidebars = {
-    '**': [
-        'about.html',
-        'navigation.html',
-        'relations.html',  # needs 'show_related': True theme option to display
-        'searchbox.html',
-        'donate.html',
-    ]
+        '**': [
+                'about.html',
+                'navigation.html',
+                'relations.html',  # needs 'show_related': True theme option to display
+                'searchbox.html',
+                'donate.html',
+        ]
 }
-
 
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'python-adbusdoc'
 
-
 # -- Options for LaTeX output ---------------------------------------------
 
 latex_elements = {
-    # The paper size ('letterpaper' or 'a4paper').
-    #
-    # 'papersize': 'letterpaper',
+        # The paper size ('letterpaper' or 'a4paper').
+        #
+        # 'papersize': 'letterpaper',
 
-    # The font size ('10pt', '11pt' or '12pt').
-    #
-    # 'pointsize': '10pt',
+        # The font size ('10pt', '11pt' or '12pt').
+        #
+        # 'pointsize': '10pt',
 
-    # Additional stuff for the LaTeX preamble.
-    #
-    # 'preamble': '',
+        # Additional stuff for the LaTeX preamble.
+        #
+        # 'preamble': '',
 
-    # Latex figure (float) alignment
-    #
-    # 'figure_align': 'htbp',
+        # Latex figure (float) alignment
+        #
+        # 'figure_align': 'htbp',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'python-adbus.tex', 'python-adbus Documentation',
-     'Charles Eidsness', 'manual'),
+        (
+                master_doc, 'python-adbus.tex', 'python-adbus Documentation',
+                'Charles Eidsness', 'manual'
+        ),
 ]
-
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'python-adbus', 'python-adbus Documentation',
-     [author], 1)
+        (
+                master_doc, 'python-adbus', 'python-adbus Documentation',
+                [author], 1
+        )
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -165,10 +167,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'python-adbus', 'python-adbus Documentation',
-     author, 'python-adbus', 'One line description of project.',
-     'Miscellaneous'),
+        (
+                master_doc, 'python-adbus', 'python-adbus Documentation',
+                author, 'python-adbus', 'One line description of project.',
+                'Miscellaneous'
+        ),
 ]
-
-
-

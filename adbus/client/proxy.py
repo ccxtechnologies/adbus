@@ -1,4 +1,4 @@
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2021, CCX Technologies
 """D-Bus Proxy"""
 
 import xml.etree.ElementTree as etree
@@ -135,15 +135,28 @@ class Property:
         if self.emits_changed_signal == 'const':
             raise AttributeError(f"Can't set read-only property {self.name}")
         else:
-            await set_(
-                    self.service,
-                    self.address,
-                    self.path,
-                    self.interface,
-                    self.name,
-                    sdbus.dbus_cast(self.signature, value),
-                    timeout_ms=self.timeout_ms
-            )
+            try:
+                await set_(
+                        self.service,
+                        self.address,
+                        self.path,
+                        self.interface,
+                        self.name,
+                        sdbus.dbus_cast(self.signature, value),
+                        timeout_ms=self.timeout_ms
+                )
+            except sdbus.SdbusError:
+                # sometimes we'll get a EINTR (like one in a million trys), we want
+                # to try again if we do
+                await set_(
+                        self.service,
+                        self.address,
+                        self.path,
+                        self.interface,
+                        self.name,
+                        sdbus.dbus_cast(self.signature, value),
+                        timeout_ms=self.timeout_ms
+                )
 
     def track(self, coroutine):
         self.trackers[coroutine.__name__] = coroutine

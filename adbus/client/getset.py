@@ -23,10 +23,8 @@ async def get(service, address, path, interface, name, timeout_ms=30000):
     """
 
     call = sdbus.Call(
-        service.sdbus,
-        address.encode(),
-        path.encode(), b"org.freedesktop.DBus.Properties", b"Get",
-        (interface, name), b"v"
+            service.sdbus, address.encode(), path.encode(),
+            b"org.freedesktop.DBus.Properties", b"Get", (interface, name), b"v"
     )
 
     call.send(timeout_ms)
@@ -56,10 +54,9 @@ async def get_all(service, address, path, interface, timeout_ms=30000):
     """
 
     call = sdbus.Call(
-        service.sdbus,
-        address.encode(),
-        path.encode(), b"org.freedesktop.DBus.Properties", b"GetAll",
-        (interface, ), b"a{sv}"
+            service.sdbus, address.encode(), path.encode(),
+            b"org.freedesktop.DBus.Properties", b"GetAll", (interface, ),
+            b"a{sv}"
     )
 
     call.send(timeout_ms)
@@ -72,7 +69,7 @@ async def get_all(service, address, path, interface, timeout_ms=30000):
 
 
 async def set_(
-    service, address, path, interface, name, value, timeout_ms=30000
+        service, address, path, interface, name, value, timeout_ms=30000
 ):
     """Sets a D-Bus Property in another process.
 
@@ -90,10 +87,9 @@ async def set_(
     """
 
     call = sdbus.Call(
-        service.sdbus,
-        address.encode(),
-        path.encode(), b"org.freedesktop.DBus.Properties", b"Set",
-        (interface, name, datatypes.VariantWrapper(value))
+            service.sdbus, address.encode(), path.encode(),
+            b"org.freedesktop.DBus.Properties", b"Set",
+            (interface, name, datatypes.VariantWrapper(value))
     )
 
     call.send(timeout_ms)

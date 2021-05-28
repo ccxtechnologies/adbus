@@ -41,7 +41,6 @@ class Object:
         BusError: if an error occurs during initialization
 
     """
-
     def __init__(
             self,
             service,

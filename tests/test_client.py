@@ -20,7 +20,6 @@ object_interface = 'adbus.test'
 
 class Test(unittest.TestCase):
     """adbus method test cases."""
-
     @classmethod
     def rnd_str(cls, N=8):
         return ''.join(
@@ -148,8 +147,10 @@ class Test(unittest.TestCase):
                     "/adbus/test/Tests1",
                     "adbus.test",
                     "ComplexType1",
-                    {"a": "A",
-                     "b": "B"},
+                    {
+                            "a": "A",
+                            "b": "B"
+                    },
             )
             value = await adbus.client.get(
                     self.service,

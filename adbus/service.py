@@ -27,18 +27,18 @@ class Service:
     Raises:
         BusError: if an error occurs during initialization
     """
-
     def __init__(
-        self,
-        name=None,
-        loop=None,
-        bus='system',
-        replace_existing=False,
-        allow_replacement=False,
-        name_queue=False
+            self,
+            name=None,
+            loop=None,
+            bus='system',
+            replace_existing=False,
+            allow_replacement=False,
+            name_queue=False
     ):
         self.sdbus = sdbus.Service(
-            name, loop, bus, replace_existing, allow_replacement, name_queue
+                name, loop, bus, replace_existing, allow_replacement,
+                name_queue
         )
         """Interface to sd-bus library"""
 

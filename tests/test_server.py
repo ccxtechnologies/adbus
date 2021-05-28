@@ -47,9 +47,8 @@ class TestObject(adbus.server.Object):
             }
     )
 
-    complex_type2: typing.Tuple[str, str, int] = adbus.server.Property(
-            ("a", "b", 10)
-    )
+    complex_type2: typing.Tuple[str, str,
+                                int] = adbus.server.Property(("a", "b", 10))
 
     signal1: (int, str) = adbus.server.Signal()
     signal2: int = adbus.server.Signal()
@@ -115,15 +114,15 @@ class TestObject(adbus.server.Object):
         del self.test
 
     @adbus.server.method()
-    def complicated_args(self, properties: typing.Dict[str, typing.Any]
-                         ) -> _TestObect:
+    def complicated_args(
+            self, properties: typing.Dict[str, typing.Any]
+    ) -> _TestObect:
         print(properties)
         return "/this/is/nothing"
 
 
 class Test(unittest.TestCase):
     """adbus method test cases."""
-
     @classmethod
     def setUpClass(cls):
         cls.loop = asyncio.get_event_loop()
