@@ -8,8 +8,6 @@ cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
     cdef Message message = Message()
     cdef int errcode
 
-    call._slot = sdbus_h.sd_bus_slot_unref(call._slot)
-
     try:
         message.import_sd_bus_message(m)
         response = message.read(call.response_signature)
@@ -33,7 +31,6 @@ cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
 cdef class Call:
     cdef Message message
     cdef Service service
-    cdef sdbus_h.sd_bus_slot *_slot
     cdef public object event
     cdef public object response
     cdef object wait_co
@@ -59,7 +56,7 @@ cdef class Call:
         self.event.clear()
 
         Py_INCREF(self)
-        ret = sdbus_h.sd_bus_call_async(self.service.bus, &self._slot,
+        ret = sdbus_h.sd_bus_call_async(self.service.bus, NULL,
                 self.message.message, call_callback, <void *>self,
                 timout_ms*1000)
         if ret < 0:
