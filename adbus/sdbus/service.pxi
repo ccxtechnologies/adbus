@@ -1,4 +1,4 @@
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2021, CCX Technologies
 #cython: language_level=3
 
 cdef class Service:
@@ -6,8 +6,10 @@ cdef class Service:
     cdef bytes name
     cdef bytes unique_name
     cdef bool connected
+    cdef bool process_loop
     cdef stdint.uint64_t flags
     cdef object loop
+    cdef object startup_task
 
     def __cinit__(self, name=None, loop=None, bus='system',
             replace_existing=False, allow_replacement=False, queue=False):
@@ -56,10 +58,26 @@ cdef class Service:
         if not loop:
             loop = get_event_loop()
 
-        loop.create_task(self.startup_process())
+        self.process_loop = True
+        self.startup_task = loop.create_task(self.startup_process())
         loop.add_reader(bus_fd, self.process)
 
         self.loop = loop
+
+    def stop(self):
+        self.startup_task.cancel()
+        bus_fd = sdbus_h.sd_bus_get_fd(self.bus)
+        if bus_fd > 0:
+            self.loop.remove_reader(bus_fd)
+        self.process_loop = False
+
+        self.bus = sdbus_h.sd_bus_flush_close_unref(self.bus)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        self.stop()
 
     def is_running(self):
         """Service is running."""
@@ -68,9 +86,6 @@ cdef class Service:
     def get_loop(self):
         """Get the service's asyncio loop."""
         return self.loop
-
-    def __dealloc__(self):
-        self.bus = sdbus_h.sd_bus_unref(self.bus)
 
     async def startup_process(self):
         self.process()
@@ -88,7 +103,7 @@ cdef class Service:
 
         self.connected = True
         try:
-            while True:
+            while self.process_loop:
                 r = sdbus_h.sd_bus_process(self.bus, NULL)
 
                 if r < 0:

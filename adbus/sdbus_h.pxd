@@ -123,7 +123,7 @@ cdef extern from "systemd/sd-bus.h":
     int sd_bus_open_system(sd_bus **ret)
     int sd_bus_request_name(sd_bus *bus, const char *name, stdint.uint64_t flags)
     int sd_bus_get_unique_name(sd_bus *bus, const char **unique)
-    sd_bus *sd_bus_unref(sd_bus *bus)
+    sd_bus *sd_bus_flush_close_unref(sd_bus *bus)
 
     int sd_bus_add_object_vtable(sd_bus *bus, sd_bus_slot **slot,
             const char *path, const char *interface,

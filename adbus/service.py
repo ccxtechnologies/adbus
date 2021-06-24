@@ -47,3 +47,12 @@ class Service:
 
     def get_loop(self):
         return self.sdbus.get_loop()
+
+    def stop(self):
+        self.sdbus.stop()
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exception_type, exception_value, exception_traceback):
+        self.stop()
