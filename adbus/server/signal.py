@@ -1,7 +1,7 @@
 # Copyright: 2017, CCX Technologies
 """D-Bus Signal"""
 
-from .. import sdbus
+from .. import sdbus  # type: ignore[attr-defined]
 
 
 class Signal:

@@ -1,7 +1,6 @@
 # == Copyright: 2017, CCX Technologies
 
-from asyncio import wait_for
-from .. import sdbus
+from .. import sdbus  # type: ignore[attr-defined]
 from .. import datatypes
 
 

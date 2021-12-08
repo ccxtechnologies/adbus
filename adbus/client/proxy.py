@@ -4,9 +4,9 @@
 import xml.etree.ElementTree as etree
 import typing
 
-from .. import sdbus
+from .. import sdbus  # type: ignore[attr-defined]
 from .. import exceptions
-from . import call
+from . import call  # type: ignore[no-redef]
 from . import get
 from . import get_all
 from . import set_
@@ -300,9 +300,13 @@ class Interface:
             self.properties[p].cached_value = None
 
         if self.changed_coroutine:
-            changed = list(changed.keys()) + invalidated
+            changed = list(
+                    changed.keys()
+            ) + invalidated  # type: ignore[assignment]
             if self.camel_convert:
-                changed = [sdbus.camel_to_snake(x) for x in changed]
+                changed = [
+                        sdbus.camel_to_snake(x) for x in changed
+                ]  # type: ignore[assignment]
             await self.changed_coroutine(changed)
 
     def __getattr__(self, name):

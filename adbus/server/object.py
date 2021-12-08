@@ -3,7 +3,7 @@
 
 import asyncio
 
-from .. import sdbus
+from .. import sdbus  # type: ignore[attr-defined]
 
 
 class Object:

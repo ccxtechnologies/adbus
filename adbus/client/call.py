@@ -1,6 +1,6 @@
 # == Copyright: 2017, CCX Technologies
 
-from .. import sdbus
+from .. import sdbus  # type: ignore[attr-defined]
 
 
 async def call(
