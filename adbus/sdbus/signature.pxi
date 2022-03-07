@@ -131,7 +131,7 @@ def dbus_signature(obj):
 cdef object _object_cast_basic(bytes signature, object obj):
     if signature[0] == sdbus_h.SD_BUS_TYPE_BOOLEAN :
         return bool(obj)
-    elif signature[0] == sdbus_h.SD_BUS_TYPE_INT32:
+    elif signature[0] == sdbus_h.SD_BUS_TYPE_INT64:
         return int(obj)
     elif signature[0] == sdbus_h.SD_BUS_TYPE_DOUBLE:
         return float(obj)
