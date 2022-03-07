@@ -16,25 +16,25 @@ class Test(unittest.TestCase):
         self.assertEqual(sig, "s")
 
         sig = dbus_signature(1)
-        self.assertEqual(sig, "i")
+        self.assertEqual(sig, "x")
 
         sig = dbus_signature(3000000000)
-        self.assertEqual(sig, "i")
+        self.assertEqual(sig, "x")
 
         sig = dbus_signature({'test': 1, "brown": 45})
         self.assertEqual(sig, "a{si}")
 
         sig = dbus_signature([1, 45, 12])
-        self.assertEqual(sig, "ai")
+        self.assertEqual(sig, "ax")
 
         def f(g: int, x: typing.List[int]):
             pass
 
         sig = dbus_signature(f.__annotations__['g'])
-        self.assertEqual(sig, "i")
+        self.assertEqual(sig, "x")
 
         sig = dbus_signature(f.__annotations__['x'])
-        self.assertEqual(sig, "ai")
+        self.assertEqual(sig, "ax")
 
         with self.assertRaises(TypeError):
             dbus_signature(Test)
