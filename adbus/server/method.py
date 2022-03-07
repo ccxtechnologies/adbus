@@ -48,6 +48,7 @@ class Method:
     Raises:
         BusError: if an error occurs during initialization
     """
+
     def __init__(
             self,
             callback,
@@ -173,6 +174,7 @@ def method(
         Instantiated Method, which can be used to replace a method
         or function.
     """
+
     def wrapper(function):
         return Method(
                 function,

@@ -10,6 +10,7 @@ from adbus.sdbus import dbus_signature
 
 class Test(unittest.TestCase):
     """D-Bus Signature Creator test cases."""
+
     def test_objects(self):
         sig = dbus_signature('test')
         self.assertEqual(sig, "s")

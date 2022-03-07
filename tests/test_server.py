@@ -123,6 +123,7 @@ class TestObject(adbus.server.Object):
 
 class Test(unittest.TestCase):
     """adbus method test cases."""
+
     @classmethod
     def setUpClass(cls):
         cls.loop = asyncio.get_event_loop()
@@ -203,6 +204,7 @@ class Test(unittest.TestCase):
             "long test used for development"
     )
     def test_method_wait(self):
+
         async def _ping():
             cnt = 0
             while True:
@@ -227,6 +229,7 @@ class Test(unittest.TestCase):
         self.loop.run_until_complete(set_props(self.obj))
 
     def test_signal(self):
+
         async def set_signal(obj):
             obj.signal1 = (1056, "Hello")
             obj.signal2 = -100
