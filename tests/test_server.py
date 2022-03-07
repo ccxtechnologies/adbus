@@ -169,7 +169,7 @@ class Test(unittest.TestCase):
     def test_method_basic(self):
         self.loop.run_until_complete(
                 self.call_method(
-                        "TestMethod", "is", [-100, "doggie"], 'i', -94
+                        "TestMethod", "xs", [-100, "doggie"], 'x', -94
                 )
         )
 
@@ -184,15 +184,15 @@ class Test(unittest.TestCase):
     def test_method_rename(self):
         self.loop.run_until_complete(
                 self.call_method(
-                        "DifferentName", "is", [-100, "different"], 'i', -10
+                        "DifferentName", "xs", [-100, "different"], 'x', -10
                 )
         )
 
     def test_method_variants(self):
         self.loop.run_until_complete(
                 self.call_method(
-                        "VarMethod1", "isvvd", [
-                                -100, "different", 's', "test_string", 'i',
+                        "VarMethod1", "xsvvd", [
+                                -100, "different", 's', "test_string", 'x',
                                 100, 12.5
                         ], 'v s', '"test_string"'
                 )
