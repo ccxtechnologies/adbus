@@ -22,7 +22,7 @@ class Test(unittest.TestCase):
         self.assertEqual(sig, "x")
 
         sig = dbus_signature({'test': 1, "brown": 45})
-        self.assertEqual(sig, "a{si}")
+        self.assertEqual(sig, "a{sx}")
 
         sig = dbus_signature([1, 45, 12])
         self.assertEqual(sig, "ax")
