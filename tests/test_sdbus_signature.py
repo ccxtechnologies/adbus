@@ -15,6 +15,12 @@ class Test(unittest.TestCase):
         sig = dbus_signature('test')
         self.assertEqual(sig, "s")
 
+        sig = dbus_signature(1)
+        self.assertEqual(sig, "i")
+
+        sig = dbus_signature(3000000000)
+        self.assertEqual(sig, "i")
+
         sig = dbus_signature({'test': 1, "brown": 45})
         self.assertEqual(sig, "a{si}")
 
