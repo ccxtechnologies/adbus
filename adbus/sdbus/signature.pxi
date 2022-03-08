@@ -4,7 +4,7 @@
 cdef bytes signature_variant = int(sdbus_h.SD_BUS_TYPE_VARIANT).to_bytes(1, 'big')
 cdef bytes signature_boolean = int(sdbus_h.SD_BUS_TYPE_BOOLEAN).to_bytes(1, 'big')
 cdef bytes signature_byte = int(sdbus_h.SD_BUS_TYPE_BYTE).to_bytes(1, 'big')
-cdef bytes signature_int = int(sdbus_h.SD_BUS_TYPE_INT32).to_bytes(1, 'big')
+cdef bytes signature_int = int(sdbus_h.SD_BUS_TYPE_INT64).to_bytes(1, 'big')
 cdef bytes signature_float = int(sdbus_h.SD_BUS_TYPE_DOUBLE).to_bytes(1, 'big')
 cdef bytes signature_string = int(sdbus_h.SD_BUS_TYPE_STRING).to_bytes(1, 'big')
 cdef bytes signature_array = int(sdbus_h.SD_BUS_TYPE_ARRAY).to_bytes(1, 'big')
@@ -131,7 +131,7 @@ def dbus_signature(obj):
 cdef object _object_cast_basic(bytes signature, object obj):
     if signature[0] == sdbus_h.SD_BUS_TYPE_BOOLEAN :
         return bool(obj)
-    elif signature[0] == sdbus_h.SD_BUS_TYPE_INT32:
+    elif signature[0] == sdbus_h.SD_BUS_TYPE_INT64:
         return int(obj)
     elif signature[0] == sdbus_h.SD_BUS_TYPE_DOUBLE:
         return float(obj)

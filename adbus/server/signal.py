@@ -23,6 +23,7 @@ class Signal:
             Case, if this is set the cases will be automatically
             converted between the two
     """
+
     def __init__(
             self,
             name=None,

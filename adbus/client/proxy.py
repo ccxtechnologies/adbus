@@ -18,12 +18,14 @@ class _Empty_Class:
 
 
 class _DbusWrapper:
+
     def __init__(self, signature, value):
         self.dbus_signature = signature
         self.dbus_value = value
 
 
 class Signal:
+
     def __init__(
             self, parent, service, address, path, interface, etree, timeout_ms
     ):
@@ -173,6 +175,7 @@ class Property:
 
 
 class Method:
+
     def __init__(
             self, parent, service, address, path, interface, etree, timeout_ms
     ):
@@ -212,6 +215,7 @@ class Method:
 
 
 class Interface:
+
     def __init__(
             self, parent, service, address, path, etree, camel_convert,
             timeout_ms, changed_coroutine

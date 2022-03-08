@@ -20,6 +20,7 @@ object_interface = 'adbus.test'
 
 class Test(unittest.TestCase):
     """adbus method test cases."""
+
     @classmethod
     def rnd_str(cls, N=8):
         return ''.join(
@@ -60,6 +61,7 @@ class Test(unittest.TestCase):
         print('\n' + '=' * loops)
 
     def test_call_basic(self):
+
         async def call_basic():
             print("Calling...")
             value = await adbus.client.call(
@@ -76,6 +78,7 @@ class Test(unittest.TestCase):
         self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     def test_call_complicated(self):
+
         async def call_basic():
             print("Calling...")
 
@@ -97,6 +100,7 @@ class Test(unittest.TestCase):
         self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     def test_get(self):
+
         async def call_basic():
             value = await adbus.client.get(
                     self.service,
@@ -110,6 +114,7 @@ class Test(unittest.TestCase):
         self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     def test_get_all(self):
+
         async def call_basic():
             value = await adbus.client.get_all(
                     self.service,
@@ -122,6 +127,7 @@ class Test(unittest.TestCase):
         self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     def test_set(self):
+
         async def call_basic():
             await adbus.client.set_(
                     self.service,
@@ -135,6 +141,7 @@ class Test(unittest.TestCase):
         self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     def test_set_dict(self):
+
         class _Crud:
             dbus_signature = 'a{ss}'
             dbus_value = {"c": "43", "d": "test"}
@@ -164,6 +171,7 @@ class Test(unittest.TestCase):
         self.loop.run_until_complete(asyncio.gather(call_basic(), ))
 
     def test_set_tuple(self):
+
         class _Crud:
             dbus_signature = 'a{ss}'
             dbus_value = {"c": "43", "d": "test"}
@@ -192,6 +200,7 @@ class Test(unittest.TestCase):
 
     @unittest.skip("long test used for development")
     def test_listen(self):
+
         async def test_cb(
                 interface: str, changed: typing.Dict[str, typing.Any],
                 invalidated: typing.List[str]
