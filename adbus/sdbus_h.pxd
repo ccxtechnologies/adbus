@@ -142,6 +142,7 @@ cdef extern from "systemd/sd-bus.h":
     int sd_bus_message_new_method_call(sd_bus *bus, sd_bus_message **m,
             const char *destination, const char *path, const char *interface,
             const char *member)
+    int sd_bus_message_set_expect_reply(sd_bus_message *m, int expect_reply)
 
     const char *sd_bus_message_get_signature(sd_bus_message *m, int complete)
     int sd_bus_message_read_basic(sd_bus_message *m, char type, void *p)

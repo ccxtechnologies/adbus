@@ -35,15 +35,17 @@ cdef class Call:
     cdef public object response
     cdef object wait_co
     cdef char *response_signature
+    cdef bint expect_reply
 
     def __cinit__(self, Service service, address, path, interface, method,
-            args=None, response_signature=b''):
+            args=None, response_signature=b'', expect_reply=True):
 
         self.event = Event()
         self.service = service
         self.response = None
         self.message = Message()
-        self.message.new_method_call(service, address, path, interface, method)
+        self.message.new_method_call(service, address, path, interface, method, expect_reply)
+        self.expect_reply = expect_reply
         self.response_signature = response_signature
 
         if args:
@@ -55,14 +57,18 @@ cdef class Call:
         cdef int ret
         self.event.clear()
 
-        Py_INCREF(self)
-        ret = sdbus_h.sd_bus_call_async(self.service.bus, NULL,
-                self.message.message, call_callback, <void *>self,
-                timout_ms*1000)
-        if ret < 0:
-            Py_DECREF(self)
+        if self.expect_reply:
+            Py_INCREF(self)
+            ret = sdbus_h.sd_bus_call_async(self.service.bus, NULL,
+                    self.message.message, call_callback, <void *>self,
+                    timout_ms*1000)
+            if ret < 0:
+                Py_DECREF(self)
+                self.event.set()
+                raise SdbusError(f"Failed to send call: {errorcode[-ret]}", -ret)
+        else:
+            self.message.send()
             self.event.set()
-            raise SdbusError(f"Failed to send call: {errorcode[-ret]}", -ret)
 
     cdef wake(self):
         self.event.set()
