@@ -3,19 +3,6 @@ python-adbus
 
 D-Bus Binding for Python utilizing the Python's asyncio module.
 
-Status
-------
-
-.. image:: https://travis-ci.com/ccxtechnologies/adbus.svg?branch=master
-  :target: https://travis-ci.com/ccxtechnologies/adbus
-
-.. image:: https://api.codacy.com/project/badge/Grade/c66c19cdcadd4c83bc4b70596d65aa7a
-  :target: https://www.codacy.com/app/ccxtechnologies/python-adbus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ccxtechnologies/python-adbus&amp;utm_campaign=Badge_Grade
-
-.. image:: https://api.codacy.com/project/badge/Coverage/c66c19cdcadd4c83bc4b70596d65aa7a
-  :target: https://www.codacy.com/app/ccxtechnologies/python-adbus?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ccxtechnologies/python-adbus&amp;utm_campaign=Badge_Coverage
-
-
 Links
 -----
 - `Documentation <https://ccxtechnologies.github.io/adbus>`_
@@ -179,7 +166,8 @@ It's possible to map a remote interface to a local instantiated class using a Pr
 Style Guide
 -----------
 
-For a consistent style all code is run through yapf using the Facebook style:
+For a consistent style all code is updated using yapf with the following options:
 
-All docstrings are in the google style.
-
+  yapf --recursive --verbose --in-place --no-local-style \
+    --style=\"{dedent_closing_brackets: True, continuation_indent_width: 8, split_complex_comprehension: True}\" \
+    <filename>
