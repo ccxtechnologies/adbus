@@ -11,7 +11,8 @@ async def call(
         method,
         args=(),
         response_signature=None,
-        timeout_ms=30000
+        timeout_ms=30000,
+        expect_reply=True,
 ):
     """Calls a D-Bus Method in another process.
 
@@ -27,7 +28,8 @@ async def call(
         response_signature (str): optional, D-Bus Signature of the expected
             response, if None the signature will be created at run-time,
             specifying it here will speed up the message post-processing
-        timeout_ms (int): maximum time to wait for a response in milli-seconds
+        timeout_ms (int): optional, maximum time to wait for a response in milli-seconds
+        expect_reply (bool): optional, expect a method call reply
 
     """
 
@@ -38,7 +40,7 @@ async def call(
 
     call = sdbus.Call(
             service.sdbus, address.encode(), path.encode(), interface.encode(),
-            method.encode(), args, _response_signature
+            method.encode(), args, _response_signature, expect_reply
     )
 
     call.send(timeout_ms)

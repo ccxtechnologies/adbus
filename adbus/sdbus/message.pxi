@@ -35,7 +35,7 @@ cdef class Message:
         self.message = sdbus_h.sd_bus_message_ref(message)
 
     cdef new_method_call(self, Service service, char *destination,
-            char *path, char *interface, const char *member):
+            char *path, char *interface, const char *member, bint expect_reply):
         cdef int ret
 
         self.message = sdbus_h.sd_bus_message_unref(self.message)
@@ -44,6 +44,10 @@ cdef class Message:
         if ret < 0:
             raise SdbusError(
                 f"Failed to create new method call: {errorcode[-ret]}", -ret)
+        ret = sdbus_h.sd_bus_message_set_expect_reply(self.message, expect_reply)
+        if ret < 0:
+            raise SdbusError(
+                f"Failed to set message expect reply: {expect_reply}. Error: {errorcode[-ret]}", expect_reply, -ret)
 
     cdef new_method_return(self):
         cdef int ret
