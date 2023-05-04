@@ -1,4 +1,4 @@
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2023, CCX Technologies
 #cython: language_level=3
 
 def snake_to_camel(snake):
