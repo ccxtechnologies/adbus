@@ -39,6 +39,12 @@ class Test(unittest.TestCase):
         c = camel_to_snake("TTestOne")
         self.assertEqual(c, "t_test_one")
 
+        c = camel_to_snake("OneABCTest")
+        self.assertEqual(c, "one_a_b_c_test")
+
+        c = camel_to_snake("DataA11BC")
+        self.assertEqual(c, "data_a11_b_c")
+
 
 if __name__ == "__main__":
     unittest.main()
