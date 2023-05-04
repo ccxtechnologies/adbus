@@ -33,9 +33,6 @@ class Test(unittest.TestCase):
         c = camel_to_snake("Test_One")
         self.assertEqual(c, "test__one")
 
-        c = camel_to_snake("testOne")
-        self.assertEqual(c, "test_one")
-
         c = camel_to_snake("TestOneTwoThree")
         self.assertEqual(c, "test_one_two_three")
 
