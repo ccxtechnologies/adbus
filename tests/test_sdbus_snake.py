@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2023, CCX Technologies
 """Test of low-level sd-bus snake and camel conversion utilities"""
 
 import unittest
