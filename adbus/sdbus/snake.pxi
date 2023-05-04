@@ -12,8 +12,7 @@ def snake_to_camel(snake):
     """
     return "".join(x[:1].upper() + x[1:] for x in snake.split("_"))
 
-first_cap_re = re.compile('(.)([A-Z][a-z]+)')
-all_cap_re = re.compile('([a-z0-9])([A-Z])')
+cap_re = re.compile('(?<!^)(?=[A-Z])')
 def camel_to_snake(camel):
     """Converts CamelCase separated string to snake_case.
 
@@ -23,5 +22,5 @@ def camel_to_snake(camel):
     Returns:
         A string in snake_case.
     """
-    s1 = first_cap_re.sub(r'\1_\2', camel)
-    return all_cap_re.sub(r'\1_\2', s1).lower()
+    s1 = cap_re.sub('_', camel)
+    return s1.lower()
