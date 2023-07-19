@@ -422,6 +422,7 @@ cdef class Message:
         cdef unsigned int i = 1
         cdef char s
         cdef bytes v_str
+        cdef str v_bytes
 
         s = signature[0]
 
@@ -487,7 +488,10 @@ cdef class Message:
                 v.c_str = v_str
             else:
                 try:
-                    v.c_str = value
+                    # dbus only accepts valid utf-8
+                    v_bytes = value.decode('utf-8')
+                    v_str = v_bytes.encode('utf-8')
+                    v.c_str = v_str
                 except TypeError as e:
                     e.args = (f"expected str or bytes, {type(value).__name__} found",)
                     raise
@@ -499,7 +503,10 @@ cdef class Message:
                 v.c_str = v_str
             else:
                 try:
-                    v.c_str = value
+                    # dbus only accepts valid utf-8
+                    v_bytes = value.decode('utf-8')
+                    v_str = v_bytes.encode('utf-8')
+                    v.c_str = v_str
                 except TypeError as e:
                     e.args = (f"expected str or bytes, {type(value).__name__} found",)
                     raise
@@ -511,7 +518,10 @@ cdef class Message:
                 v.c_str = v_str
             else:
                 try:
-                    v.c_str = value
+                    # dbus only accepts valid utf-8
+                    v_bytes = value.decode('utf-8')
+                    v_str = v_bytes.encode('utf-8')
+                    v.c_str = v_str
                 except TypeError as e:
                     e.args = (f"expected str or bytes, {type(value).__name__} found",)
                     raise
@@ -532,4 +542,3 @@ cdef class Message:
         ret = sdbus_h.sd_bus_send(NULL, self.message, NULL)
         if ret < 0:
             raise SdbusError(f"Failed to send message: {errorcode[-ret]}", -ret)
-
