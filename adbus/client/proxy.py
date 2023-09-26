@@ -144,18 +144,20 @@ class Property:
                         self.path,
                         self.interface,
                         self.name,
+                        self.signature,
                         sdbus.dbus_cast(self.signature, value),
                         timeout_ms=self.timeout_ms
                 )
             except sdbus.SdbusError:
-                # sometimes we'll get a EINTR (like one in a million trys), we want
-                # to try again if we do
+                # sometimes we'll get a EINTR (like one in a million trys),
+                # we want to try again if we do
                 await set_(
                         self.service,
                         self.address,
                         self.path,
                         self.interface,
                         self.name,
+                        self.signature,
                         sdbus.dbus_cast(self.signature, value),
                         timeout_ms=self.timeout_ms
                 )
