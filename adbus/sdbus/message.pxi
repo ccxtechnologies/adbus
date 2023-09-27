@@ -317,7 +317,18 @@ cdef class Message:
         cdef bytes signature
         cdef const char *esignature
 
-        signature = _object_signature(value)
+        try:
+            signature = value.dbus_value_signature.encode('utf-8')
+            value = value.dbus_value
+
+        except AttributeError:
+            try:
+                value = value.dbus_value
+            except AttributeError:
+                pass
+
+            signature = _object_signature(value)
+
         esignature = signature
 
         if sdbus_h.sd_bus_message_open_container(self.message,
@@ -426,22 +437,23 @@ cdef class Message:
 
         s = signature[0]
 
+        if s == sdbus_h._SD_BUS_TYPE_INVALID:
+            return
+
+        if s == sdbus_h.SD_BUS_TYPE_VARIANT:
+            self._append_variant(value)
+            return
+
         try:
             value = value.dbus_value
         except AttributeError:
             pass
 
-        if s == sdbus_h._SD_BUS_TYPE_INVALID:
-            return
-
-        elif s == sdbus_h.SD_BUS_TYPE_ARRAY:
+        if s == sdbus_h.SD_BUS_TYPE_ARRAY:
             if signature[1] == sdbus_h.SD_BUS_TYPE_DICT_ENTRY_BEGIN:
                 self._append_dict(signature, value, &i)
             else:
                 self._append_array(signature, value, &i)
-
-        elif s == sdbus_h.SD_BUS_TYPE_VARIANT:
-            self._append_variant(value)
 
         elif s == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
             self._append_struct(signature, value, &i)
