@@ -95,8 +95,10 @@ async def set_(
 
     call = sdbus.Call(
             service.sdbus, address.encode(), path.encode(),
-            b"org.freedesktop.DBus.Properties", b"Set",
-            (interface, name, datatypes.VariantWrapper(value, signature))
+            b"org.freedesktop.DBus.Properties", b"Set", (
+                    interface, name,
+                    datatypes.VariantWrapper(value, signature=signature)
+            )
     )
 
     call.send(timeout_ms)
