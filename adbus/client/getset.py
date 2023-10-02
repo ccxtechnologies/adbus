@@ -74,8 +74,8 @@ async def set_(
         path,
         interface,
         name,
-        signature,
         value,
+        signature=None,
         timeout_ms=30000
 ):
     """Sets a D-Bus Property in another process.
@@ -96,7 +96,7 @@ async def set_(
     call = sdbus.Call(
             service.sdbus, address.encode(), path.encode(),
             b"org.freedesktop.DBus.Properties", b"Set",
-            (interface, name, datatypes.VariantWrapper(signature, value))
+            (interface, name, datatypes.VariantWrapper(value, signature))
     )
 
     call.send(timeout_ms)

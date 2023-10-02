@@ -144,8 +144,8 @@ class Property:
                         self.path,
                         self.interface,
                         self.name,
-                        self.signature,
                         sdbus.dbus_cast(self.signature, value),
+                        signature=self.signature,
                         timeout_ms=self.timeout_ms
                 )
             except sdbus.SdbusError:
@@ -157,8 +157,8 @@ class Property:
                         self.path,
                         self.interface,
                         self.name,
-                        self.signature,
                         sdbus.dbus_cast(self.signature, value),
+                        signature=self.signature,
                         timeout_ms=self.timeout_ms
                 )
 
