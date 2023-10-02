@@ -90,6 +90,8 @@ async def set_(
         name (str): name of the name to get, ie. TestProperty
         value (object): value to set the name to, must be compatible
             with the defined D-Bus Property type
+        signature (str): optional, D-Bus type signature of the value, if None
+            the signature will be determined based on the value at run-time
         timeout_ms (int): maximum time to wait for a response in milli-seconds
     """
 
