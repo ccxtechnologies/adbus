@@ -432,7 +432,7 @@ cdef class Message:
         s = signature[0]
 
         try:
-            value_signature = value.dbus_value_signature.encode('utf-8')
+            value_signature = value.dbus_value_signature.encode()
         except AttributeError:
             pass
 
