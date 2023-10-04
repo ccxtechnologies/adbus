@@ -7,6 +7,7 @@ class VariantWrapper:
     """
     dbus_signature = "v"
 
-    def __init__(self, value):
+    def __init__(self, value, signature=None):
+        self.dbus_value_signature = signature
         self.dbus_value = value
         self.value = value

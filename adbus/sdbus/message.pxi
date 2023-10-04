@@ -313,11 +313,15 @@ cdef class Message:
         if sdbus_h.sd_bus_message_close_container(self.message) < 0:
             raise SdbusError(f"Failed to close array {esignature}")
 
-    cdef _append_variant(self, object value):
+    cdef _append_variant(self, object value, value_signature):
         cdef bytes signature
         cdef const char *esignature
 
-        signature = _object_signature(value)
+        if value_signature is not None:
+            signature = value_signature
+        else:
+            signature = _object_signature(value)
+
         esignature = signature
 
         if sdbus_h.sd_bus_message_open_container(self.message,
@@ -421,10 +425,16 @@ cdef class Message:
         cdef _value v
         cdef unsigned int i = 1
         cdef char s
+        cdef bytes value_signature = None
         cdef bytes v_str
         cdef str v_bytes
 
         s = signature[0]
+
+        try:
+            value_signature = value.dbus_value_signature.encode()
+        except AttributeError:
+            pass
 
         try:
             value = value.dbus_value
@@ -441,7 +451,7 @@ cdef class Message:
                 self._append_array(signature, value, &i)
 
         elif s == sdbus_h.SD_BUS_TYPE_VARIANT:
-            self._append_variant(value)
+            self._append_variant(value, value_signature)
 
         elif s == sdbus_h.SD_BUS_TYPE_STRUCT_BEGIN:
             self._append_struct(signature, value, &i)
