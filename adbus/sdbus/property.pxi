@@ -3,7 +3,7 @@
 
 cdef int property_get_handler(sdbus_h.sd_bus *bus,
             const char *path, const char *interface, const char *propname,
-            sdbus_h.sd_bus_message *m, void *userdata, sdbus_h.sd_bus_error *err):
+            sdbus_h.sd_bus_message *m, void *userdata, sdbus_h.sd_bus_error *err) noexcept:
     cdef PyObject *property_ptr = (((<PyObject**>userdata)[0]))
     cdef Property property = <Method>property_ptr
     cdef Message message = Message()
@@ -31,7 +31,7 @@ cdef int property_get_handler(sdbus_h.sd_bus *bus,
 
 cdef int property_set_handler(sdbus_h.sd_bus *bus,
             const char *path, const char *interface, const char *propname,
-            sdbus_h.sd_bus_message *m, void *userdata, sdbus_h.sd_bus_error *err):
+            sdbus_h.sd_bus_message *m, void *userdata, sdbus_h.sd_bus_error *err) noexcept:
     cdef PyObject *property_ptr = (((<PyObject**>userdata)[0]))
     cdef Property property = <Method>property_ptr
     cdef Message message = Message()

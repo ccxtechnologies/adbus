@@ -31,7 +31,7 @@ cdef void _method_message_handler(Method method, Message message):
         method.loop.call_exception_handler({'message': str(e), 'exception': e})
 
 cdef int method_message_handler(sdbus_h.sd_bus_message *m,
-        void *userdata, sdbus_h.sd_bus_error *err):
+        void *userdata, sdbus_h.sd_bus_error *err) noexcept:
 
     cdef PyObject *method_ptr = (((<PyObject**>userdata)[0]))
     cdef Method method = <Method>method_ptr

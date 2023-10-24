@@ -2,7 +2,7 @@
 #cython: language_level=3
 
 cdef int call_callback(sdbus_h.sd_bus_message *m, void *userdata,
-        sdbus_h.sd_bus_error *err):
+        sdbus_h.sd_bus_error *err) noexcept:
     cdef PyObject *call_ptr = <PyObject*>userdata
     cdef Call call = <Call>call_ptr
     cdef Message message = Message()

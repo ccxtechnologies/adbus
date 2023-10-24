@@ -2,7 +2,7 @@
 #cython: language_level=3
 
 cdef int listen_message_handler(sdbus_h.sd_bus_message *m,
-        void *userdata, sdbus_h.sd_bus_error *err):
+        void *userdata, sdbus_h.sd_bus_error *err) noexcept:
     cdef PyObject *listen_ptr = <PyObject*>userdata
     cdef Listen listen = <Listen>listen_ptr
     cdef Message message = Message()
