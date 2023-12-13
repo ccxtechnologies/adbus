@@ -24,6 +24,9 @@ cdef class Object:
         self._populate_vtable()
         self._register_vtable()
 
+    def detach(self):
+        self._slot = sdbus_h.sd_bus_slot_unref(self._slot)
+
     def __dealloc__(self):
         self._slot = sdbus_h.sd_bus_slot_unref(self._slot)
         PyMem_Free(self._vtable)

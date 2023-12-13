@@ -101,6 +101,9 @@ class Object:
 
                 self._deferred_property_signals = {}
 
+    def detach(self):
+        self.sdbus.detach()
+
     def __enter__(self):
         self.defer_property_updates(True)
         return self
