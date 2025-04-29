@@ -1,4 +1,4 @@
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2025, CCX Technologies
 """D-Bus Property"""
 
 from .. import sdbus
@@ -77,6 +77,9 @@ class Property:
             self.emit_changed(instance)
 
     def emit_changed(self, instance):
+        if self.hidden:
+            return
+
         if self.emits_change or self.emits_invalidation:
             instance.emit_property_changed(self.dbus_name)
 
