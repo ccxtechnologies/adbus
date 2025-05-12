@@ -79,7 +79,7 @@ class Object:
 
         elif self.service.is_running():
             _loop = self.service.get_loop()
-            if _loop._thread_id != threading.get_ident():
+            if _loop._ccx_thread_id != threading.get_ident():
                 asyncio.run_coroutine_threadsafe(
                         self.sdbus.emit_properties_changed(
                                 [dbus_name.encode()]
@@ -105,7 +105,7 @@ class Object:
             self._defer_properties = False
             if self._deferred_property_signals:
                 _loop = self.service.get_loop()
-                if _loop._thread_id != threading.get_ident():
+                if _loop._ccx_thread_id != threading.get_ident():
                     asyncio.run_coroutine_threadsafe(
                             self.sdbus.emit_properties_changed(
                                     list(

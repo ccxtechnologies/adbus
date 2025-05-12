@@ -1,6 +1,8 @@
 # Copyright: 2017-2021, CCX Technologies
 #cython: language_level=3
 
+import threading
+
 cdef class Service:
     cdef sdbus_h.sd_bus *bus
     cdef bytes name
@@ -12,7 +14,8 @@ cdef class Service:
     cdef object startup_task
 
     def __cinit__(self, name=None, loop=None, bus='system',
-            replace_existing=False, allow_replacement=False, queue=False):
+            replace_existing=False, allow_replacement=False, queue=False,
+            thread_id=0):
         cdef const char *unique
 
         if name:
@@ -57,10 +60,12 @@ cdef class Service:
 
         if not loop:
             loop = get_event_loop()
+            thread_id = threading.get_ident()
 
         self.process_loop = True
         self.startup_task = loop.create_task(self.startup_process())
         loop.add_reader(bus_fd, self.process)
+        loop._ccx_thread_id = thread_id
 
         self.loop = loop
 
