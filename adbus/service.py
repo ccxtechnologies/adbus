@@ -1,4 +1,4 @@
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2025, CCX Technologies
 """D-Bus Service"""
 
 from . import sdbus

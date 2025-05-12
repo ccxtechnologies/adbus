@@ -1,4 +1,4 @@
-# Copyright: 2017-2021, CCX Technologies
+# Copyright: 2017-2025, CCX Technologies
 #cython: language_level=3
 
 import threading
