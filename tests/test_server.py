@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2025, CCX Technologies
 """Test the method wrapper and decorators."""
 
 import unittest
@@ -38,6 +38,7 @@ class TestObject(adbus.server.Object):
     property1: str = adbus.server.Property('propertystring')
     property2: int = adbus.server.Property(100, emits_change=False)
     property3: typing.List[int] = adbus.server.Property([1, 2, 3])
+    property4: str = adbus.server.Property('hidden', hidden=True)
     datatype: TestDataType = adbus.server.Property(TestDataType(6))
 
     complex_type1: typing.Dict[str, str] = adbus.server.Property(
@@ -223,6 +224,7 @@ class Test(unittest.TestCase):
                 o.property1 = 'yellow'
                 o.property2 = 42
                 o.property3 = [6, 7, 10, 43, 102]
+                o.property4 = 'red'
 
             await self.delay(3)
 

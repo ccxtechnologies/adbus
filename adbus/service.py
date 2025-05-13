@@ -1,4 +1,4 @@
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2025, CCX Technologies
 """D-Bus Service"""
 
 from . import sdbus
@@ -23,6 +23,8 @@ class Service:
         name_queue (bool): optional, if our name is in use by another
             service put ourselves in the D-Bus name queue, we will get
             name once the existing service relinquishes it
+        thread_id: optional, the thread id associated with the loop. If the
+            loop is not defined, will use threading.get_ident()
 
     Raises:
         BusError: if an error occurs during initialization
@@ -35,11 +37,12 @@ class Service:
             bus='system',
             replace_existing=False,
             allow_replacement=False,
-            name_queue=False
+            name_queue=False,
+            thread_id=0
     ):
         self.sdbus = sdbus.Service(
                 name, loop, bus, replace_existing, allow_replacement,
-                name_queue
+                name_queue, thread_id
         )
         """Interface to sd-bus library"""
 

@@ -1,7 +1,8 @@
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2025, CCX Technologies
 """D-Bus Object"""
 
 import asyncio
+import threading
 
 from .. import sdbus
 
@@ -77,10 +78,21 @@ class Object:
             self._deferred_property_signals[dbus_name.encode()] = True
 
         elif self.service.is_running():
-            asyncio.run_coroutine_threadsafe(
-                    self.sdbus.emit_properties_changed([dbus_name.encode()]),
-                    loop=self.service.get_loop()
-            )
+            _loop = self.service.get_loop()
+            if _loop._ccx_thread_id != threading.get_ident():
+                asyncio.run_coroutine_threadsafe(
+                        self.sdbus.emit_properties_changed(
+                                [dbus_name.encode()]
+                        ),
+                        loop=_loop
+                )
+            else:
+                asyncio.ensure_future(
+                        self.sdbus.emit_properties_changed(
+                                [dbus_name.encode()]
+                        ),
+                        loop=_loop
+                )
 
     def defer_property_updates(self, enable):
         if enable:
@@ -92,12 +104,27 @@ class Object:
 
             self._defer_properties = False
             if self._deferred_property_signals:
-                asyncio.run_coroutine_threadsafe(
-                        self.sdbus.emit_properties_changed(
-                                list(self._deferred_property_signals.keys())
-                        ),
-                        loop=self.service.get_loop()
-                )
+                _loop = self.service.get_loop()
+                if _loop._ccx_thread_id != threading.get_ident():
+                    asyncio.run_coroutine_threadsafe(
+                            self.sdbus.emit_properties_changed(
+                                    list(
+                                            self._deferred_property_signals.
+                                            keys()
+                                    )
+                            ),
+                            loop=_loop
+                    )
+                else:
+                    asyncio.ensure_future(
+                            self.sdbus.emit_properties_changed(
+                                    list(
+                                            self._deferred_property_signals.
+                                            keys()
+                                    )
+                            ),
+                            loop=_loop
+                    )
 
                 self._deferred_property_signals = {}
 
