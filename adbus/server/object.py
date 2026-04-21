@@ -1,4 +1,4 @@
-# Copyright: 2017-2025, CCX Technologies
+# Copyright: 2017-2026, CCX Technologies
 """D-Bus Object"""
 
 import asyncio
@@ -72,6 +72,8 @@ class Object:
 
         if manager:
             self.manager = sdbus.Manager(service.sdbus, path)
+        else:
+            self.manager = None
 
     def emit_property_changed(self, dbus_name):
         if self._defer_properties:
@@ -127,6 +129,54 @@ class Object:
                     )
 
                 self._deferred_property_signals = {}
+
+    def emit_interfaces_added(self, path, interfaces):
+        if self.manager is not None and self.service.is_running():
+            _loop = self.service.get_loop()
+            if _loop._ccx_thread_id != threading.get_ident():
+
+                async def _emit():
+                    self.manager.emit_interfaces_added(path, interfaces)
+
+                asyncio.run_coroutine_threadsafe(_emit(), _loop).result()
+            else:
+                self.manager.emit_interfaces_added(path, interfaces)
+
+    def emit_interfaces_removed(self, path, interfaces):
+        if self.manager is not None and self.service.is_running():
+            _loop = self.service.get_loop()
+            if _loop._ccx_thread_id != threading.get_ident():
+
+                async def _emit():
+                    self.manager.emit_interfaces_removed(path, interfaces)
+
+                asyncio.run_coroutine_threadsafe(_emit(), _loop).result()
+            else:
+                self.manager.emit_interfaces_removed(path, interfaces)
+
+    def emit_object_added(self, path):
+        if self.manager is not None and self.service.is_running():
+            _loop = self.service.get_loop()
+            if _loop._ccx_thread_id != threading.get_ident():
+
+                async def _emit():
+                    self.manager.emit_object_added(path)
+
+                asyncio.run_coroutine_threadsafe(_emit(), _loop).result()
+            else:
+                self.manager.emit_object_added(path)
+
+    def emit_object_removed(self, path):
+        if self.manager is not None and self.service.is_running():
+            _loop = self.service.get_loop()
+            if _loop._ccx_thread_id != threading.get_ident():
+
+                async def _emit():
+                    self.manager.emit_object_removed(path)
+
+                asyncio.run_coroutine_threadsafe(_emit(), _loop).result()
+            else:
+                self.manager.emit_object_removed(path)
 
     def detach(self):
         self.sdbus.detach()
