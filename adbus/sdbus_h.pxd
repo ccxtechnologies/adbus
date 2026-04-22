@@ -1,4 +1,4 @@
-# Copyright: 2017, CCX Technologies
+# Copyright: 2017-2026, CCX Technologies
 #cython: language_level=3
 
 from libc cimport stdint
@@ -177,3 +177,10 @@ cdef extern from "systemd/sd-bus.h":
 
     int sd_bus_add_match(sd_bus *bus, sd_bus_slot **slot, const char *match,
             sd_bus_message_handler_t callback, void *userdata)
+
+    int sd_bus_emit_interfaces_added_strv(sd_bus *bus, const char *path,
+            char **interfaces)
+    int sd_bus_emit_interfaces_removed_strv(sd_bus *bus, const char *path,
+            char **interfaces)
+    int sd_bus_emit_object_added(sd_bus *bus, const char *path)
+    int sd_bus_emit_object_removed(sd_bus *bus, const char *path)
