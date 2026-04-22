@@ -134,11 +134,9 @@ class Object:
         if self.manager is not None and self.service.is_running():
             _loop = self.service.get_loop()
             if _loop._ccx_thread_id != threading.get_ident():
-
-                async def _emit():
-                    self.manager.emit_interfaces_added(path, interfaces)
-
-                asyncio.run_coroutine_threadsafe(_emit(), _loop).result()
+                _loop.call_soon_threadsafe(
+                        self.manager.emit_interfaces_added, path, interfaces
+                )
             else:
                 self.manager.emit_interfaces_added(path, interfaces)
 
@@ -146,11 +144,9 @@ class Object:
         if self.manager is not None and self.service.is_running():
             _loop = self.service.get_loop()
             if _loop._ccx_thread_id != threading.get_ident():
-
-                async def _emit():
-                    self.manager.emit_interfaces_removed(path, interfaces)
-
-                asyncio.run_coroutine_threadsafe(_emit(), _loop).result()
+                _loop.call_soon_threadsafe(
+                        self.manager.emit_interfaces_removed, path, interfaces
+                )
             else:
                 self.manager.emit_interfaces_removed(path, interfaces)
 
@@ -158,11 +154,9 @@ class Object:
         if self.manager is not None and self.service.is_running():
             _loop = self.service.get_loop()
             if _loop._ccx_thread_id != threading.get_ident():
-
-                async def _emit():
-                    self.manager.emit_object_added(path)
-
-                asyncio.run_coroutine_threadsafe(_emit(), _loop).result()
+                _loop.call_soon_threadsafe(
+                        self.manager.emit_object_added, path
+                )
             else:
                 self.manager.emit_object_added(path)
 
@@ -170,11 +164,9 @@ class Object:
         if self.manager is not None and self.service.is_running():
             _loop = self.service.get_loop()
             if _loop._ccx_thread_id != threading.get_ident():
-
-                async def _emit():
-                    self.manager.emit_object_removed(path)
-
-                asyncio.run_coroutine_threadsafe(_emit(), _loop).result()
+                _loop.call_soon_threadsafe(
+                        self.manager.emit_object_removed, path
+                )
             else:
                 self.manager.emit_object_removed(path)
 
